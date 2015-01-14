@@ -48,7 +48,7 @@ Copies of this document may be made for your own use and for distribution to oth
 ## 12. 다음 읽을거리
 
 # III. 스프링부트 사용
-## 13. 시스템 빌드
+## 13. 빌드 시스템
 ### 13.1. 메이븐
 #### 13.1.1. 스프링부트 스타터 부모 상속
 #### 13.1.2. 부모 POM 없이 스프링부트 사용
@@ -990,12 +990,74 @@ $ java -jar target/myproject-0.0.1-SNAPSHOT.jar
 
 단순히 스프링부트를 실행시켜보는 것이 목적이라면, 이 섹션을 시작하기 전에 [바로 시작하기]()만 읽어도 충분할 것이다.
 
-## 13. 시스템 빌드
+## 13. 빌드 시스템
+선택한 빌드 시스템이 *의존성 관리* 지원은 필수적인 요구사항이며, 이를 위해서 "메이븐 중앙" 저장소repository에 배포된 아티팩트들을 사용할 수 있다. 스프링부트는 메이븐 혹은 그레들 중에서 하나를 선택해야 한다. 물론 스프링부트는 다른 빌드시스템(예를 들어 앤트Ant)에서 사용할 수 있지만, 특정 부분에 대해서는 정상동작하지 않을 수도 있다.
+
 ### 13.1. 메이븐<a name="메이븐"><a/>
+메이븐 사용자는 ```spring-boot-starter-parent``` 프로젝트를 합리적인 기본값들을 상속하고 있다는 것을 살펴볼 수 있다. 부모 프로젝트는 다음과 같은 기능을 제공한다:
+
+* 기본 컴파일러 레벨은 자바 1.6
+* UTF8 소스 인코딩
+* 의존성 관리 섹션에서, 공통 의존성들에서 ```<version>``` 태그와 관련한 부분은, ```spring-boot-dependencies``` POM을 상속
+* 합리적인 [리소스 필터링](https://maven.apache.org/plugins/maven-resources-plugin/examples/filter.html)
+* 합리적인 플러그인 설정([plugin exec](http://mojo.codehaus.org/exec-maven-plugin/), [surefire](http://maven.apache.org/surefire/maven-surefire-plugin/), [Git commit ID](https://github.com/ktoso/maven-git-commit-id-plugin), [shade](http://maven.apache.org/plugins/maven-shade-plugin/))
+* application.properties 와 applicaton.yml을 위한 적절한 리소스 필터링
+
+마지막으로, 기본설정파일들에서는 스프링 스타일의 플레이스홀더(```${...}```)와 유사한 형태로 메이븐 필터링을 이용해서 사용할 수 있는 ```@..@ 플레이스홀더를 제공한다(메이븐 속성 ```resource.delimiter```를 재정의할 수 있다).
+
 #### 13.1.1. 스프링부트 스타터 부모 상속
+```spring-boot-starter-parent```를 ```parent```에 정의하면 스프링부트와 관련된 기본적인 설정을 프로젝트에 상속한다.
+```xml
+<!-- Inherit defaults from Spring Boot -->
+<parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>1.2.0.BUILD-SNAPSHOT</version>
+</parent>
+```
+> 노트: 이 의존성에 대해서만은 스프링부트 버전넘버가 필요하다. starters를 추가하는 경에는 버전넘버를 생략해도 된다. -> spring-boot-starter-parent에는 starter 들의 버전이 기본설정되어 있다. 필요에 따라서는 자신이 필요한 버전```<version><version>```을 정의하여 사용할 수 있다. 다만, 자동설정에서 문제가 발생할 수도 있다.
+
 #### 13.1.2. 부모 POM 없이 스프링부트 사용<a name="부모 POM 없이 스프링부트 사용"></a>
+모든 이들이 ```spring-boot-starter-parent```을 상속하는 것을 좋아하지는 않는다. 별도로 사용하는 기본 부모가 있거나 필요하다면, 메이븐 설정에서 명시적으로 선언하는 것을 선호하기도 할 것이다.
+
+```spring-boot-starter-parent``` 사용을 원하지 않으면서도, 의존성 관리의 이점(플러그인 관리는 제외)은 유지하길 바란다면 ```scope=import``` 의존성을 사용할 수 있다:
+```xml
+<dependencyManagement>
+     <dependencies>
+        <dependency>
+            <!-- Import dependency management from Spring Boot -->
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-dependencies</artifactId>
+            <version>1.2.0.BUILD-SNAPSHOT</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+    </dependencies>
+</dependencyManagement>
+```
+
 #### 13.1.3. 자바 버전 변경
+```spring-boot-starter-parent```는 보수적으로 자바 안정성을 고려했다. 필요에 따라 최신 자바 버전을 사용하려한다면 ```java.version``` 프로퍼티를 추가하면 된다:
+```xml
+<properties>
+    <java.version>1.8</java.version>
+</properties>
+```
+
 #### 13.1.4. 스프링부트 메이븐 플러그인 사용
+스프링부트는 실행가능한 jar로 프로젝트를 압축하기 위해 메이븐 플러그인을 포함하고 있다. 이 플러그인을 추가하고 싶다면 ```<plugin>``` 섹션에 다음과 같이 추가한다:
+```xml
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+        </plugin>
+    </plugins>
+</build>
+```
+> 노트: 스프링부트 스타터 부모 POM을 사용하고 있는 상황에서, 플러그인 추가가 필요할 때, 부모에 정의되어 있는 설정을 변경하려하지 않는한 추가적인 설정을 할 필요는 없다.
+
 ### 13.2. 그레들<a name="그레들"></a>
 ### 13.3. 앤트<a name="앤트"></a>
 ### 13.4. 스프링부트 스타터 POM 목록<a name="스프링부트 스타터 POMs"></a>
