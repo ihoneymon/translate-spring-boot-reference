@@ -1094,9 +1094,71 @@ dependencies {
 (74.8 앤트를 이용해서 실행가능한 아카이브 빌드)[#앤트를 이용해서 실행가능한 아카이브 빌드]을 보면 "어떻게 하지?"에 관한 보다 상세한 안내를 받을 수 있다.
 
 ### 13.4. 스프링부트 스타터 POM 목록<a name="스프링부트 스타터 POMs"></a>
+스타터 POM들은 애플리케이션에 포함된 의존성 명세의 편의성을 제공한다. 필요하다면, 스프링과 관련 기술에 관한 모든 것을, 예제 코드를 찾아보고 의존성 명세 복사해서 붙이지 않아도 되는, 한곳에 해결할 수 있는 대형만물상을 가지게 된 것이다. 예를 들어, 스프링과 데이터처리용 JPA를 바탕으로 시작하려 한다면, 프로젝트 의존성에 ```spring-boot-starter-data-jpa``` 만 추가하면,바로 시작할 수 있다.
 
+스타터들은 프로젝트에서 필요로하고 빠르게 실행하고 일관성있고 상황에 따라 관리할 수 의존성들을 바탕으로 구성되어 있다. 
+
+#### 이름이 가진 의미
+모든 스타터들은 ```spring-boot-starter-*,``` 라고 하는 작명규칙을 따른다. ```*```은 애플리케이션의 특별한 유형을 정의한다. 이 이름구조는 필요한 스타터를 찾을때 유용하다. 많은 IDE의 메이븐 통합시스템은 이름을 통해서 의존성들을 검색한다. 예를 들어, STS 플러그인이 설치된 이클립스에서, POM에디터에서 ```ctrl-space```를 치고 ```"spring-boot-starter"```라고 입력하면 관련한 목록이 보인다.
+
+다음 목록은 ```org.springframework.boot``` 그룹 하위의 스프링부트에서 제공하는 애플리케이션 스타터들이다:
 
 #### 표 13.1. 스프링부트 애플리케이션 스타터들
+|Name|Description|
+|----|-----------|
+|```spring-boot-starter```|The core Spring Boot starter, including auto-configuration support, logging and YAML.|
+|```spring-boot-starter-actuator```|Production ready features to help you monitor and manage your application.|
+|```spring-boot-starter-amqp```|Support for the “Advanced Message Queuing Protocol” via spring-rabbit.|
+|```spring-boot-starter-aop```|Support for aspect-oriented programming including spring-aop and AspectJ.|
+|```spring-boot-starter-batch```|Support for “Spring Batch” including HSQLDB database.|
+|```spring-boot-starter-data-elasticsearch```|Support for the Elasticsearch search and analytics engine including spring-data-elasticsearch.|
+|```spring-boot-starter-data-gemfire```|Support for the GemFire distributed data store including spring-data-gemfire.|
+|```spring-boot-starter-data-jpa```|Support for the “Java Persistence API” including spring-data-jpa, spring-orm and Hibernate.|
+|```spring-boot-starter-data-mongodb```|Support for the MongoDB NoSQL Database, including spring-data-mongodb.|
+|```spring-boot-starter-data-rest```|Support for exposing Spring Data repositories over REST via spring-data-rest-webmvc.|
+|```spring-boot-starter-data-solr```|Support for the Apache Solr search platform, including spring-data-solr.|
+|```spring-boot-starter-freemarker```|Support for the FreeMarker templating engine|
+|```spring-boot-starter-groovy-templates```|Support for the Groovy templating engine|
+|```spring-boot-starter-hornetq```|Support for “Java Message Service API” via HornetQ.|
+|```spring-boot-starter-integration```|Support for common spring-integration modules.|
+|```spring-boot-starter-jdbc```|Support for JDBC databases.|
+|```spring-boot-starter-jta-atomikos```|Support for JTA distributed transactions via Atomikos.|
+|```spring-boot-starter-jta-bitronix```|Support for JTA distributed transactions via Bitronix.|
+|```spring-boot-starter-mobile```|Support for spring-mobile|
+|```spring-boot-starter-redis```|Support for the REDIS key-value data store, including spring-redis.|
+|```spring-boot-starter-remote-shell```|Support for CRaSH.|
+|```spring-boot-starter-security```|Support for spring-security.|
+|```spring-boot-starter-social-facebook```|Support for spring-social-facebook.|
+|```spring-boot-starter-social-linkedin```|Support for spring-social-linkedin.|
+|```spring-boot-starter-social-twitter```|Support for spring-social-twitter.|
+|```spring-boot-starter-test```|Support for common test dependencies, including JUnit, Hamcrest and Mockito along with the spring-test module.|
+|```spring-boot-starter-thymeleaf``|Support for the Thymeleaf templating engine, including integration with Spring.|
+|```spring-boot-starter-velocity```|Support for the Velocity templating engine|
+|```spring-boot-starter-web```|Support for full-stack web development, including Tomcat and spring-webmvc.|
+|```spring-boot-starter-websocket```|Support for WebSocket development.|
+|```spring-boot-starter-ws```|Support for Spring Web Services|
+
+애플리케이션 스타터에 추가적으로, 다음의 스타터들을 추가하면 [출시준비](#스프링부트 액츄에터: 출시준비 기능들) 기능을 사용할 수 있게 된다.
+
+#### 테이블 13.2. 스프링부트 출시준비 스타터
+|Name|Description|
+|----|-----------|
+|```spring-boot-starter-actuator```|Adds production ready features such as metrics and monitoring.|
+|```spring-boot-starter-remote-shell```|Adds remote ssh shell support.|
+
+마지막으로, 스프링부트는 원하는 특정한 기술 페이셋Facet으로 변경하거나 제외하고자 할 때 사용할 수 있는 몇몇 스타터들을 포함하고 있다.
+
+#### 테이블 13.3. 스프링부트 기술 스타터
+|Name|Description|
+|----|-----------|
+|```spring-boot-starter-jetty```|Imports the Jetty HTTP engine (to be used as an alternative to Tomcat)|
+|```spring-boot-starter-log4j```|Support the Log4J logging framework|
+|```spring-boot-starter-logging```|Import Spring Boot’s default logging framework (Logback).|
+|```spring-boot-starter-tomcat```|Import Spring Boot’s default HTTP engine (Tomcat).|
+|```spring-boot-starter-undertow```|Imports the Undertow HTTP engine (to be used as an alternative to Tomcat)|
+
+> 팁: 깃헙에 있는 ```spring-boot-starter``` 모듈에서 [README 파일](https://github.com/spring-projects/spring-boot/tree/master/spring-boot-starters/README.adoc)을 살펴보면, 추가적으로 커뮤니티에서 제공하는 스타터 POM들을 볼 수 있다.
+
 
 ## 14. 코드 구조<a name="코드 구조"></a>
 ### 14.1. 'default' 패키지 이용
