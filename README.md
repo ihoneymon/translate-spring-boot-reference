@@ -1056,11 +1056,48 @@ $ java -jar target/myproject-0.0.1-SNAPSHOT.jar
     </plugins>
 </build>
 ```
-> 노트: 스프링부트 스타터 부모 POM을 사용하고 있는 상황에서, 플러그인 추가가 필요할 때, 부모에 정의되어 있는 설정을 변경하려하지 않는한 추가적인 설정을 할 필요는 없다.
+> 노트: 스프링부트 스타터 부모 POM을 사용하고 있는 상황에서, 플러그인 추가가 필요할 때, 부모에 정의되어 있는 설정을 변경하려하지 않는한 추가적인 설정을 할 필요는 없다. -> 플러그인 설정도 스타터 부모 POM에 설정이 되어 있으니 따로 추가하지 않아도 된다.
 
 ### 13.2. 그레들<a name="그레들"></a>
+그레들 사용자는 ```dependencies``` 섹션에 "starter POM"들을 바로 추가할 수 있다. 메이븐과는 달리 설정에서 "최상이 부모super parent"를 설정에 추가할 필요가 없다.
+```
+apply plugin: 'java'
+
+repositories { jcenter() }
+dependencies {
+    compile("org.springframework.boot:spring-boot-starter-web:1.2.0.BUILD-SNAPSHOT")
+}
+```
+
+또한 [spring-boot-gradle-plugin](#스프링부트 그레들 플러그인)은 실행가능한 jar를 생성하는 태스크들을 제공하고 소스를 바탕으로 프로젝트를 실행하는 것이 가능하다. 거기다가 ```ResolutionStrategy```을 추가하여 [의존성의 버전넘버를 생략하는 것](#버전 없이 의존성 정의)도 가능하다:
+```
+buildscript {
+    repositories { jcenter() }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.2.0.BUILD-SNAPSHOT")
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'spring-boot'
+
+repositories { jcenter() }
+dependencies {
+    compile("org.springframework.boot:spring-boot-starter-web")
+    testCompile("org.springframework.boot:spring-boot-starter-test")
+}
+```
+
 ### 13.3. 앤트<a name="앤트"></a>
+스프링부트 프로젝트는 아파치 앤트를 이용해서도 빌드가 가능하다. 그러나 특별한 지원이나 플러그인을 제공하지는 않는다. 앤트 스크립트는 아이피Ivy 의존성 관리 시스템을 사용하여 starter POM들을 추가한다.
+
+(74.8 앤트를 이용해서 실행가능한 아카이브 빌드)[#앤트를 이용해서 실행가능한 아카이브 빌드]을 보면 "어떻게 하지?"에 관한 보다 상세한 안내를 받을 수 있다.
+
 ### 13.4. 스프링부트 스타터 POM 목록<a name="스프링부트 스타터 POMs"></a>
+
+
+#### 표 13.1. 스프링부트 애플리케이션 스타터들
+
 ## 14. 코드 구조<a name="코드 구조"></a>
 ### 14.1. 'default' 패키지 이용
 ### 14.2. 메인 애플리케이션 클래스 위치
@@ -1267,7 +1304,7 @@ $ java -jar target/myproject-0.0.1-SNAPSHOT.jar
 ### 59.2. 실행가능한 jar 와 war 파일 패키징
 ## 60. 스프링부트 그레들 플러그인<a name="스프링부트 그레들 플러그인"></a>
 ### 60.1. 플러그인 추가
-### 60.2. 버전 없이 의존성 정의
+### 60.2. 버전 없이 의존성 정의<a name="버전 없이 의존성 정의"></a>
 #### 60.2.1. 버전 관리 변경
 ### 60.3. 기본적인 배제 원칙
 ### 60.4. 실행가능한 jar 와 war 파일 패키징
@@ -1374,7 +1411,7 @@ $ java -jar target/myproject-0.0.1-SNAPSHOT.jar
 ### 74.5. 배제를 통한 실행할 수 없는 JAR 생성
 ### 74.6. 메이븐을 이용해서 스프링부트 애플리케이션 원격 디버그 시작
 ### 74.7. 그레들을 이용해서 스프링부트 애플리케이션 원격 디버그 시작
-### 74.8. 앤트를 이용해서 실행가능한 아카이브 빌드
+### 74.8. 앤트를 이용해서 실행가능한 아카이브 빌드<a name="앤트를 이용해서 실행가능한 아카이브 빌드"></a>
 ## 75. 전통적 배포
 ### 75.1. 배포가능한 war 파일 생성
 ### 75.2. 오래된 서블릿 컨테이너에 배포가능한 war 파일 생성
