@@ -57,7 +57,7 @@ Copies of this document may be made for your own use and for distribution to oth
 ### 13.2. 그레들
 ### 13.3. 앤트
 ### 13.4. 스프링부트 스타터 POM 목록
-## 14. 코드 구조
+## 14. 코드 구성하기
 ### 14.1. 'default' 패키지 이용
 ### 14.2. 메인 애플리케이션 클래스 위치
 ## 15. 설정 클래스들
@@ -434,7 +434,7 @@ Copies of this document may be made for your own use and for distribution to oth
 ## 4. 스프링부트 작동
 정말 스프링부트를 시작할 준비가 되어있는가? [우리가 여러분을 도울 것이다.](#스프링부트 사용)
 * **빌드 시스템**: [메이븐](#메이븐) | [그레들](#그레들) | [앤트](#앤트) | [스프링부트 스타터 POMs](#스프링부트 스타터)
-* 좋은 연습거리: [코드 구조](#코드 구조) | [@Configuration](#설정@Congiruation 클래스들) | [@EnableAutoConfiguration](#자동설정(Auto-configuration)) | [Beans and Dependency Inject](#스프링 빈과 의존성 주입)
+* 좋은 연습거리: [코드 구성하기](#코드 구성하기) | [@Configuration](#설정@Congiruation 클래스들) | [@EnableAutoConfiguration](#자동설정(Auto-configuration)) | [Beans and Dependency Inject](#스프링 빈과 의존성 주입)
 * 코드 실행: [IDE](#IDE에서 실행) | [패키징된 애플리케이션 실행](#패키징된 애플리케이션 실행) | [메이븐](#메이븐 플러그인 이용) | [그레들](#그레들 플러그인 이용)
 * 애플리케이션 패키징: [출시를 위한 애플리케이션 패키징](#출시를 위한 애플리케이션 패키징)
 * 스프링부트 CLI: [스프링부트 CLI](#스프링부트 CLI)
@@ -1159,10 +1159,59 @@ dependencies {
 
 > 팁: 깃헙에 있는 ```spring-boot-starter``` 모듈에서 [README 파일](https://github.com/spring-projects/spring-boot/tree/master/spring-boot-starters/README.adoc)을 살펴보면, 추가적으로 커뮤니티에서 제공하는 스타터 POM들을 볼 수 있다.
 
+## 14. 코드 구성하기<a name="코드 구성하기"></a>
+스프링부트는 동작하는 데 별다른 코드 레이아웃을 요구하지는 않지만, 도움이 되는 몇가지 연습할 수 있는 것들이 있다.
 
-## 14. 코드 구조<a name="코드 구조"></a>
 ### 14.1. 'default' 패키지 이용
+"기본 패키지default package"에 있는 것으로 간주되는 패키지 선언을 포함하지 않는 클래스를 위치해 있는 경우, "기본 패키지"의 사용은 권장되지 않는 피해야하는 사항이다. ```@ComponentScan``` 혹은 ```@EntityScan``` 애노테이션을 사용하는 스프링부트 애플리케이션에 포함되어 있는 모든 jar들의 클래스를 읽는 과정에서 문제가 발생할 수 있다.
+
+> 팁: 우리는 자바가 권장하는 패키지 작명관례와 도메인명을 역순으로 사용하는 것을 권장한다. 
+
 ### 14.2. 메인 애플리케이션 클래스 위치
+일반적으로 메인 애플리케이션 클래스는 다른 클래스들보다 최상위 패키지에 위치하는 것을 권장한다. ```@EnableAutoConfiguration``` 애노테이션은 메인 클래스에 선언되는 경우가 일반적인데, 이는 명시적인 아이템들을 대상으로 하는 기본 "검색 패키지"를 선언하는 것이기도 하다. 예를 들어, 애플리케이션에서 JPA를 사용하고 있다면, ```@EnableAutoConfiguration``` 애노테이션 선언된 클래스의 패키지는 ```@Entity``` 항목들을 검색하여 사용할 것이다.
+
+```@ComponentScan``` 애노테이션을 루트 패키지에서 사용하면 ```basePackage``` 속성을 선언없이 사용가능하다.
+
+여기 기본적인 계층이 있다:
+```
+com
+ +- example
+     +- myproject
+         +- Application.java
+         |
+         +- domain
+         |   +- Customer.java
+         |   +- CustomerRepository.java
+         |
+         +- service
+         |   +- CustomerService.java
+         |
+         +- web
+             +- CustomerController.java
+```
+
+```Application.java``` 파일에는 ```main```메서드와 ```@Configuration```가 선언되어 있다.  
+
+```java
+package com.example.myproject;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+@EnableAutoConfiguration
+@ComponentScan
+public class Application {
+
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
+
+}
+
+```
 ## 15. 설정@Congiruation 클래스들<a name="설정@Congiruation 클래스들"></a>
 ### 15.1. 추가된 설정 클래스들 불러오기
 ### 15.2. XML 설정 불러오기
