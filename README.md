@@ -228,7 +228,7 @@ Copies of this document may be made for your own use and for distribution to oth
 ## 47. 프로세스 모니터링
 ### 47.1. 설정 확장
 ### 47.2. 작성
-## 48. 다음 읽을거리
+## 48. 다음 읽을거리  
 
 # VI. 클라우드 배포
 ## 49. Cloud Foundry
@@ -1212,10 +1212,20 @@ public class Application {
 }
 
 ```
+
 ## 15. 설정@Congiruation 클래스들<a name="설정@Congiruation 클래스들"></a>
+**스프링부트는 자바 기반의 설정을 선호한다.** 또한 XML과 함께 사용하더라도  ```@Configuration```이 선언되어 있는 클래스에서 ```SpringApplication.run()```을 호출하는 것이 가능하다. 항상 클래스에 ```main```메서드를 정의해두면 주요 ```@Configuration```의 좋은 후보군이 된다.
+
+> 팁: 많은 스프링설정 예제들이 XML 설정을 사용하여 배포된다. 가능하다면 동등한 자바 기반의 설정으로 사용하자. ```enable*``` 애노테이션으로 검색을 하면 좋은 시작점이 될 것이다.
+
 ### 15.1. 추가된 설정 클래스들 불러오기
+모든 설정을 ```@Configuration```이 선언되어 있는 단일 클래스에 몰아 넣을 필요는 없다. ```@Import``` 애노테이션을 통해서 추가적으로 설정클래스를 사용할 수 있다. 혹은, ```@ComponentScan```을 사용하여 ```@Configuration``` 클래스들을 포함한 모든 스프링 컴포넌트를 자동으로 등록가능하다. 
+
 ### 15.2. XML 설정 불러오기
+혹시라도 무조건 XML 기반의 설정을 사용해야겠다 하더라도, 우리는 ```@Configuration``` 클래스에서 시작하기를 권장한다. ```@ImportResource``` 애노테이션을 사용하여 XML 설정 파일을 읽어들여서 사용가능하다.
+
 ## 16. 자동설정(Auto-configuration)<a name="자동설정(Auto-configuration)"></a>
+
 ### 16.1. 점진적으로 자동설정을 대체
 ### 16.2. 특정한 자동설정을 비활성화
 ## 17. 스프링 빈과 의존성 주입<a name="스프링 빈과 의존성 주입"></a>
