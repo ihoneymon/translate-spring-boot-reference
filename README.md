@@ -1225,9 +1225,33 @@ public class Application {
 혹시라도 무조건 XML 기반의 설정을 사용해야겠다 하더라도, 우리는 ```@Configuration``` 클래스에서 시작하기를 권장한다. ```@ImportResource``` 애노테이션을 사용하여 XML 설정 파일을 읽어들여서 사용가능하다.
 
 ## 16. 자동설정(Auto-configuration)<a name="자동설정(Auto-configuration)"></a>
+스프링부트 자동설정은 사용자가 추가한 jar 의존성을 기반으로 하여 스프링 애플리케이션을 자동으로 설정하려 한다. 예를 들어, 클래스패스상에 ```HSQLDB```가 있다면 데이터베이스 커넥션 빈들을 수동으로 설정하지 않아도, 이미 인-메모리 데이터베이스에 대해서 자동으로 설정되어 있을 것이다.
+
+자동설정을 하도록 선택하려면 ```@Configuration``` 클래스에 ```@EnableAutoConfiguration``` 애노테이션을 추가하면 된다.
+
+> 팁: 지금까지 ```@EnableAutoConfiguration``` 애노테이션만 추가해본 적이 없다면, 기본 ```@Configuration``` 클래스에 해당 애노테이션을 추가하기를 권장한다.
 
 ### 16.1. 점진적으로 자동설정을 대체
-### 16.2. 특정한 자동설정을 비활성화
+자동설정은 확장성이 없다, 특정 시점이 되면 자동설정의 특정 부분들을 대체하는 설정을 정의해야 한다. 예를 들어, ```DataSource```빈을 추가하고자 할 때, 기본 내장형 데이터베이스의 지원은 걷어내야 한다.
+
+현재 어떤 자동설정이 적용되었는지, 왜 사용되었는지를 찾아보고자 한다면 애플리케이션을 실행하면서 ```-debug``` 스위치를 함께 실행하면 된다. 이렇게 하면 콘솔을 통해 자동설정 보고서가 출력된다.
+```
+./gradlew bootrun -debug
+```
+
+### 16.2. 특정한 자동설정 비활성화
+사용할 필요가 없는 특정 자동설정 클래스들을 찾았다면, ```@EnableAutoConfiguration``` 의 제외속성exclude attribute을 사용하여 그것들을 비활성화 할 수 있다.
+```java
+import org.springframework.boot.autoconfigure.*;
+import org.springframework.boot.autoconfigure.jdbc.*;
+import org.springframework.context.annotation.*;
+
+@Configuration
+@EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class})
+public class MyConfiguration {
+}
+```
+
 ## 17. 스프링 빈과 의존성 주입<a name="스프링 빈과 의존성 주입"></a>
 ## 18. ```@SpringBootApplication```애노테이션 사용
 ## 19. 애플리케이션 실행
