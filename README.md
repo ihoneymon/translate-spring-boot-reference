@@ -1132,7 +1132,7 @@ dependencies {
 |```spring-boot-starter-social-linkedin```|Support for spring-social-linkedin.|
 |```spring-boot-starter-social-twitter```|Support for spring-social-twitter.|
 |```spring-boot-starter-test```|Support for common test dependencies, including JUnit, Hamcrest and Mockito along with the spring-test module.|
-|```spring-boot-starter-thymeleaf``|Support for the Thymeleaf templating engine, including integration with Spring.|
+|```spring-boot-starter-thymeleaf```|Support for the Thymeleaf templating engine, including integration with Spring.|
 |```spring-boot-starter-velocity```|Support for the Velocity templating engine|
 |```spring-boot-starter-web```|Support for full-stack web development, including Tomcat and spring-webmvc.|
 |```spring-boot-starter-websocket```|Support for WebSocket development.|
