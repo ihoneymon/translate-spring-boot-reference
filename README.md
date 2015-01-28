@@ -1253,6 +1253,34 @@ public class MyConfiguration {
 ```
 
 ## 17. 스프링 빈과 의존성 주입<a name="스프링 빈과 의존성 주입"></a>
+자유롭게 표준 스프링 프레임워크 기술을 사용하여 자유롭게 빈을 정의하고 그것들의 의존성을 주입받을 것이다. 간단히 정리하면, 우리는 ```@ComponentScan```을 사용하여 빈을 검색하고 이와 연계하여 ```@Autowired``` 생성자 주입 등을 활용하고 있다.
+
+위에서 제안한 대로 코드를 구성(최상위 패키지에 애플리케이션 클래스 위치)했다면, ```@ComponentScan```에 인자를 추가하지 않고 사용할 수 있다. 모든 애플리케이션 컴포넌트들(```@Component```, ```@Service```, ```@Repository```, ```@Controller``` 등)이 스프링 빈으로 자동 등록될 것이다.
+
+다음에서 예로 들고 있는 ```@Service``` 빈은 생성자 주입을 이용해서 ```RiskAssessor``` 빈을 제공받고 있다.
+```java
+package com.example.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class DatabaseAccountService implements AccountService {
+
+    private final RiskAssessor riskAssessor;
+
+    @Autowired
+    public DatabaseAccountService(RiskAssessor riskAssessor) {
+        this.riskAssessor = riskAssessor;
+    }
+
+    // ...
+
+}
+```
+
+> 팁: 생성자 주입이 어떻게 사용되는지 따라가다보면 ```riskAssessor``` 필드에 ```final```이 선언되어 있는데, 이후에는 변경되지 않을 것이라는 표시다.
+
 ## 18. ```@SpringBootApplication```애노테이션 사용
 ## 19. 애플리케이션 실행
 ### 19.1. IDE에서 실행<a name="IDE에서 실행"></a>
