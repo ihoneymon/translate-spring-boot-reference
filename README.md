@@ -1282,6 +1282,25 @@ public class DatabaseAccountService implements AccountService {
 > 팁: 생성자 주입이 어떻게 사용되는지 따라가다보면 ```riskAssessor``` 필드에 ```final```이 선언되어 있는데, 이후에는 변경되지 않을 것이라는 표시다.
 
 ## 18. ```@SpringBootApplication```애노테이션 사용
+많은 스프링부트 개발자들이 그들의 메인 클래스에 ```@Configuration```, ```@EnableAutoConfiguration``` 과 ```@ComponentScan``` 애노테이션을 선언하고 있다. 이 애노테이션들은 함께 쓰이는 것이 잦은 편이기에(위에서 [좋은 연습예제](#코드 구성하기)를 따라서 해봤다면), 스프링부트에서 제공하는 ```@SpringBootApplication``` 으로 대체할 수도 있다.
+
+```@SpringBootApplication``` 애노테이션은 ```@Configuration```, ```@EnableAutoConfiguration``` 과 ```@ComponentScan```의 기본속성을 사용한 것과 동일하다:
+```java
+package com.example.myproject;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication // same as @Configuration @EnableAutoConfiguration @ComponentScan
+public class Application {
+
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
+
+}
+```
+
 ## 19. 애플리케이션 실행
 ### 19.1. IDE에서 실행<a name="IDE에서 실행"></a>
 ### 19.2. 패키징된 애플리케이션 실행<a name="패키징된 애플리케이션 실행"></a>
