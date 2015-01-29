@@ -1302,11 +1302,63 @@ public class Application {
 ```
 
 ## 19. 애플리케이션 실행
+jar로 압축하고 내장된 HTTP 서버를 사용하면서 얻게되는 가장 큰 이득은 다른 것들과는 상관없이 독립적으로 실행할 수 있다는 것이다. 스프링부트 애플리케이션을 디버깅하는 것은 쉽다. 별도의 IDE 플러그인이나 확장이 필요하지 않다.
+
+> 노트: 이 섹션은 jar로 압축된 경우에 한정적이지만, 애플리케이션을 war 패키지로 압축한다면 사용하는 서버나 IDE 문서를 참조해야 한다.
+
 ### 19.1. IDE에서 실행<a name="IDE에서 실행"></a>
+스프링부트 애플리케이션은 IDE에서 간단한 자바 애플리케이션처럼 실행할 수 있다. 그러나, 처음에는 프로젝트를 불러와야 한다. 불러오는 과정은 IDE와 빌드 시스템에 따라 다양하다. 대부분의 IDE는 메이븐 프로젝트로 바로 불러올 수 있다, 이클립스 사용자를 예로 들면 파일 메뉴에서 ```import -> Existing Maven Project```로 선택할 수 있다.
+
+혹시나 IDE에서 프로젝트를 바로 불러올 수 없다면, 빌드 플러그인을 사용하여 IDE 메타태그를 생성할 수 있다. 메이븐에는 [이클립스](http://maven.apache.org/plugins/maven-eclipse-plugin/)와 [IDEA](http://maven.apache.org/plugins/maven-idea-plugin/)를 포함하고 있다; 그레들은 보다 [다양한 IDE들](http://www.gradle.org/docs/current/userguide/ide_support.html)을 지원한다.
+
+> 팁: 웹 애플리케이션을 실행하다 보면 종종 "Port already in use" 라는 에러를 접하게 될 것이다. STS 사용자는 ```Run`` 보다 ```Relaunch``` 버튼을 사용하여 이미 존재하는 인스턴스를 종료하도록 할 수 있다.
+
 ### 19.2. 패키징된 애플리케이션 실행<a name="패키징된 애플리케이션 실행"></a>
+만약 스프링부트 메이븐과 그레들 플러그인을 사용하여 생성한 실행가능한 jar는 ```java -jar```를 사용하여 애플리케이션을 실행할 수 있다. 예를 들어:
+
+```
+$ java -jar target/myproject-0.0.1-SNAPSHOT.jar
+```
+
+또한 압축된 애플리케이션은 원격 디버깅 지원이 가능하도록 설정하여 실행하는 것도 가능하다. 다음과 같이 패키지 애플리케이션에 디버거를 추가할 수 있다:
+
+```
+$ java -Xdebug -Xrunjdwp:server=y,transport=dt_socket,address=8000,suspend=n \
+       -jar target/myproject-0.0.1-SNAPSHOT.jar
+```
+
 ### 19.3. 메이븐 플러그인 이용<a name="메이븐 플러그인 이용"></a>
+스프링부트 메이븐 플러그인에 포함되어 있는 ```run``` 골은 빠르게 컴파일하고 애플리케이션을 실행할 수 있다. 애플리케이션은 분해도에서 실행되며 인스턴스 "핫" 리로드를 위해서 리소스를 수정할 수 있다.
+
+```
+$ mvn spring-boot:run
+```
+
+유용한 운영체제 환경 변수:
+
+```
+$ export MAVEN_OPTS=-Xmx1024m -XX:MaxPermSize=128M -Djava.security.egd=file:/dev/./urandom
+```
+("egd" 설정은 톰캣이 구동되는 과정에서 세션키를 위한 엔트로피 자원을 재빨리 제공하여 구동속도를 향상시킨다.)
+
 ### 19.4. 그레들 플러그인 이용<a name="그레들 플러그인 이용"></a>
+스프링부트 그레들 플러그인 또한 애플리케이션을 실행할 때 ```run``` 골을 분해도처럼 사용한다.
+
+```
+$ gradle bootRun
+```
+
+유용한 운영체제 환경변수:
+```
+$ export JAVA_OPTS=-Xmx1024m -XX:MaxPermSize=128M -Djava.security.egd=file:/dev/./urandom
+```
+
 ### 19.5. 핫스와핑
+스프링부트 애플리케이션은 순수한 자바 애플리케이션이며, JVM 핫스와핑hot-swapping 은 
+바깥의 영역에서 진행된다. JVM 핫스와핑은 어느정도 대체가능한 바이트코드로 제한되며, 보다 나은 해결책으로 [Spring loaded](https://github.com/spring-projects/spring-loaded) 프로젝트 혹은 [JRebel](http://zeroturnaround.com/software/jrebel/)을 사용할 수 있다.
+
+보다 세부적인 내용에 대해서는  [핫스와핑 "어떻게 하지"](#핫스와핑)를 살펴보자.
+
 ## 20. 출시를 위한 애플리케이션 패키징<a name="출시를 위한 애플리케이션 패키징"></a>
 ## 21. 다음 읽을거리
 
