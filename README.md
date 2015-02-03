@@ -1368,14 +1368,117 @@ $ export JAVA_OPTS=-Xmx1024m -XX:MaxPermSize=128M -Djava.security.egd=file:/dev/
 좋은 예제를 따라서 연습하면서 스프링부트를 어떻게 사용해야하는지를 이해하는데 충분했을 것이라 생각한다. 이제는 [스프링부트 기능](#스프링부트 기능)에서 보다 깊이있게 배워볼 것이나 이를 넘기고 스프링부트의 "[출시준비](#스프링부트 액츄에터: 출시준비 기능들)" 측면을 읽어도 된다.
 
 # IV. 스프링부트 기능<a name="스프링부트 기능"></a>
+이 섹션은 스프링부트의 상세한 부분으로 뛰어든다. 여기서 사용하려 하고 변경하려고 하는 핵심 기능들에 관하여 배우게 된다. 혹시나 준비되지 않았다면, [II. "시작"](#시작) 그리고 [III. "스프링부트 사용"](#스프링부트 사용) 섹션을 읽어두면 기본적인 배경지식을 갖출 수 있을 것이다. 
+
 ## 22. 스프링애플리케이션<a name="스프링애플리케이션"></a>
+```SpringApplication``` 클래스는 ```main()```메서드로부터 시작된 스프링 애플리케이션이 구동을 위한 관례적인 경로를 제공한다. 많은 상황에서 ```SpringApplication.run``` 정적 메서드를 정의하고 있을 것이다.
+
+```java
+public static void main(String[] args) {
+    SpringApplication.run(MySpringConfiguration.class, args);
+}
+```
+
+애플리케이션이 시작할 때 다음과 유사한 형태로 실행될 것이다:
+```
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::   v1.2.0.BUILD-SNAPSHOT
+
+2013-07-31 00:08:16.117  INFO 56603 --- [           main] o.s.b.s.app.SampleApplication            : Starting SampleApplication v0.1.0 on mycomputer with PID 56603 (/apps/myapp.jar started by pwebb)
+2013-07-31 00:08:16.166  INFO 56603 --- [           main] ationConfigEmbeddedWebApplicationContext : Refreshing org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext@6e5a8246: startup date [Wed Jul 31 00:08:16 PDT 2013]; root of context hierarchy
+2014-03-04 13:09:54.912  INFO 41370 --- [           main] .t.TomcatEmbeddedServletContainerFactory : Server initialized with port: 8080
+2014-03-04 13:09:56.501  INFO 41370 --- [           main] o.s.b.s.app.SampleApplication            : Started SampleApplication in 2.992 seconds (JVM running for 3.658)
+```
+
+기본적으로 ```INFO``` 로깅 메시지에서는, 사용자가 실행한 애플리케이션의 구동과 관련된 세부항목들을 보여준다.
+
 ### 22.1. 배너 수정
+구동시 보여주는 배너를 변경하려면 클래스패스 상에 ```banner.txt```를 추가하거나 ```banner.location```에서 파일의 경로를 설정할 수 있다. 일반적이지 않은 인코딩을 사용하는 경우에는 ```banner.encoding```(기본 UTF-8)으로 설정할 수 있다.
+
 ### 22.2. 스프링애플리케이션 수정
-### 22.3. 플루언트 빌더 API
+기본 ```SpringApplication```가 로컬 인스턴스를 대신 생성하는 것을 선호하지 않거나 수정하기를 바랄수도 있다. 예를 들어, 배너를 출력하고 싶지않다면:
+
+```java
+public static void main(String[] args) {
+    SpringApplication app = new SpringApplication(MySpringConfiguration.class);
+    app.setShowBanner(false);
+    app.run(args);
+}
+```
+
+> 노트: ```SpringApplication```으로 전달된 생성인자는 스프링빈을 위한 설정소스다. 대부분의 경우 ```@Configuration```를 참조하지만, XML 설정이나 탐색을 위한 패키지 경로일 수 있다.
+
+```SpringApplication```에 관한 설정은 가능하다면 ```application.properties``` 파일을 사용하자. [23. 외부설정](#외부설정)에서 보다 상세한 내용을 볼 수 있다.
+
+설정 항목들에 대한 완성된 리스트는 [SpringApplication Javadoc](http://docs.spring.io/spring-boot/docs/1.2.0.BUILD-SNAPSHOT/api/org/springframework/boot/SpringApplication.html)에서 볼 수 있다.
+
+### 22.3. 플루언트 빌더 API<a name="플루언트 빌더 API"></a>
+```ApplicationContext``` 계층(부모/자식 관계의 다양한 컨텍스트)에 관한 빌드가 필요하다거나, '플루언트fluent' 빌더 API 사용을 참조한다면, ```SpringApplicationBuilder```를 사용할 수 있다.
+
+```SpringApplicationBuilder```는 다양한 메서드를 연이어 호출할 수 있고 ```parent```와 ```child``` 메서드를 통해서 계층 생성을 허용한다. 
+
+예를 들어:
+```java
+new SpringApplicationBuilder()
+    .showBanner(false)
+    .sources(Parent.class)
+    .child(Application.class)
+    .run(args);
+```
+
+> 노트: ```ApplicationContext``` 계층을 생성할 때 몇가지 제약이 있다면, 예를 들어, 웹 컴포넌트는 자식 컨텍스트를 반드시 포함해야 하며 부모와 자식 컨텍스트 모두 같은 ```Envirionment```를 사용해야 한다. 보다 상세한 내용은 [SpringApplicationBuilder javadoc](http://docs.spring.io/spring-boot/docs/1.2.0.BUILD-SNAPSHOT/api/org/springframework/boot/builder/SpringApplicationBuilder.html)를 살펴보라.
+
 ### 22.4. 애플리케이션 이벤트와 리스너
+[ContextRefreshedEvent](http://docs.spring.io/spring/docs/4.1.3.RELEASE/javadoc-api/org/springframework/context/event/ContextRefreshedEvent.html)와 같은 스프링 프레임워크 이벤트를 사용한다면, ```SpringApplication```은 몇가지 애플리케이션 이벤트를 추가적으로 전송한다. 어떤 이벤트들은 ```ApplicationContext```가 생성되기 이전에 발생하기도 한다.
+
+이벤트 리스너를 등록하는 방법은 여러가지가 있는데, 가장 일반적인 방법은 ```SpringApplication.addListener(...)``` 메서드를 사용하는 것이다.
+
+애플리케이션 이벤트는 애플리케이션이 실행되면서 다음의 순서로 전송된다.
+1. ```ApplicationStartedEvent``` 는 가동되는 순간 전송되지만, 리스너를 등록하고 초기화하는 과정 이전의 과정에 대해서는 제외시킨다.
+2. ```ApplicationEnvrionmentPreparedEvent```는 알고 있는 컨텍스트가 ```Environment```를 사용할 떄 전송된다, 단 이전에 컨텍스트는 생성되어 있어야 한다.
+3. ```ApplicationPreparedEvent```는 갱신이 시작되기 직전에 전송된다, 단 빈 정의는 적재가 완료되어야 한다.
+4. ```ApplicationFailedEvent```는 구동단계에서 예외가 발생했을 때 보낸다.
+
+>팁: 애플리케이션 이벤트를 사용할 필요는 없지만 그것들이 있다는 것을 알아둔다면 편할 것이다. 내부적으로, 스프링부트는 다양한 작업을 다루기 위해 이벤트를 사용한다.
+
 ### 22.5. 웹 환경
+```SpringApplication```은 사용자를 대신하여 ```ApplicationContext``` 유형을 생성한다. 기본적으로, ```AnnotationConfigApplicationContext``` 혹은 ```AnnotationConfigEmbeddedWebApplicationContext```을 사용할 것이고, 웹 애플리케이션을 사용하거나 그렇지 않을 때도 영향을 받게 된다.
+
+'웹 환경web environment' 사용여부를 정의하는 알고리즘은 매우 간단하다(몇몇 클래스에 영향을 끼쳤다). ```setWebEnvironment(boolean webEnvironment)```를 사용할 수 있으며 필요하다면 기본내용을 오버라이드할 수 있다.
+
+```ApplicationContext``` 유형의 제어를 완벽히 하고 싶다면 ```setApplicationContextClass(...)```를 호출하여 사용할 수 있다.
+
+> 팁: ```setWebEnvirionment(false)는 jUnit 테스트에서 ```SpringApplication``` 사용할 때 자주 사용한다.
+
 ### 22.6. 커맨드라인러너 사용
+커멘드라인을 통해 전달받은 인자를 접근하고 싶다거나, ```SpringApplication```에서 특정 모드를 실행해야한다면 ```CommandLineRunner``` 인터페이스를 구현하면 된다. ```run(Stirng..args)``` 메서드는 이 인터페이스를 구현한 모든 스프링빈을 호출할 것이다.
+
+```java
+import org.springframework.boot.*
+import org.springframework.stereotype.*
+
+@Component
+public class MyBean implements CommandLineRunner {
+
+    public void run(String... args) {
+        // Do something...
+    }
+
+}
+```
+
+여러가지 ```CommandLineRunner``` 빈을 특정한 순위에 따라서 호출해야한다면, 추가적으로 ```org.springframework.core.Ordered``` 인터페이스를 구현하거나 ```org.springframework.core.annotation.Order``` 애노테이션을 추가한다.
+
 ### 22.7. 애플리케이션 종료
+각각의 ```SpringApplication``` 은 ```ApplicationContext```가 정상적으로 종료되었는지를 확인하기위해 JVM에 종료 훅Hook을 등록합니다. 모든 기본 스프링 생명주기 콜백(```DisposableBean``` 인터페이스나 ```@PreDestroy``` 애노테이션)을 사용할 수 있다.
+
+추가적으로, ```org.springframework.boot.ExitCodeGenerator``` 인터페이스를 구현한 빈들은 애플리케이션이 종료될 떄 특정 exit code를 반환하기를 원하는 경우 사용한다.
+
 ## 23. 외부설정<a name="외부설정"></a>
 ### 23.1. 커맨드라인 속성 접근
 ### 23.2. 애플리케이션 속성 파일들
