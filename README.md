@@ -1480,18 +1480,252 @@ public class MyBean implements CommandLineRunner {
 추가적으로, ```org.springframework.boot.ExitCodeGenerator``` 인터페이스를 구현한 빈들은 애플리케이션이 종료될 떄 특정 exit code를 반환하기를 원하는 경우 사용한다.
 
 ## 23. 외부설정<a name="외부설정"></a>
+스프링부트는 동일한 애플리케이션으로 다른 환경에서 동작할 수 있도록 설정을 확장하는 것을 허용한다. 프로퍼티스 파일, YAML 파일, environment 변수 그리고 커맨드라인 인자를 통해서 설정을 확장할 수 있다. 속성 값은 ```@Value``` 애노테이션을 사용하여 바로 주입할 수도, 스프링의 ```Environment``` 추상화에 접근하거나 객체를 구축하여 연동할 수 있다.
+
+스프링부트는 값values, 속성properties 들에 대해서 다음과 같은 순위를 고려하여 합리적으로 오버라이딩하는 것을 허용하도록 설계된 매우 세분화된 ```Pr다opertySource``` 순위order를 사용한다. 
+
+> 1. 커맨드라인 인자
+> 2. java:comp/env 의 JNDI 어트리뷰트
+> 3. 자바 시스템 프로퍼티스(System.getProperties)
+> 4. OS 환경 변수
+> 5. ```RandomValuePropertySource```의 ```random.*``` 프로퍼티즈
+> 6. 포장된 jar 외부의 애플리케이션 프로퍼티즈(YAML과 프로파일 변수를 포함한 application.properties)
+> 7. 포장된 jar 내부의 애플리케이션 프로퍼티즈(YAML과 프로파일 변수를 포함한 application.properties)
+> 8. ```@Configuration``` 클래스들의 ```@PropertySource``` 애노테이션
+> 9. 기본 속성(SpringApplication.setDefaultProperties를 사용하여 정의)
+
+구현예제를 제공하자면, ```name```프로퍼티를 사용하는 ```@Component```를 개발하고 있다고 가정하자:
+```java
+import org.springframework.stereotype.*
+import org.springframework.beans.factory.annotation.*
+
+@Component
+public class MyBean {
+
+    @Value("${name}")
+    private String name;
+
+    // ...
+
+}
+```
+
+jar 에 포함된 ```application.properties```에는 합리적인 기본값으로 ```name```을 제공한다. 출시하여 실행하려할 때, ```application.properties```는 jar 테스트를 위해서 외부에서 ```name```을 오버라이드할 수 있게 해준다. 커맨드 라인에서 변경하여 실행할 수 있다(예: ```java -jar app.jar -name="Spring")
+
+```RandomValuePropertySource```는 무작위 값을 주입하는데 매우 유용하다(예: 시크릿을 넣거나 테스트 작성시). integer, long 혹은 string을 제공한다. 예:
+
+```
+my.secret=${random.value}
+my.number=${random.int}
+my.bignumber=${random.long}
+my.number.less.than.ten=${random.int(10)}
+my.number.in.range=${random.int[1024,65536]}
+```
+
+```random.int*``` 문법은 ```OPEN value(,max) CLOSE```에서 ```OPEN, CLOSE```는 어느 문자나 가능하며 ```value, max는 정수다. 만약 ```max```가 있다면 ```value```는 최소값이 되고 ```max```는 최대값이 된다(배타적인).
+
 ### 23.1. 커맨드라인 속성 접근
+기본 ```SpringApplication```은 커맨드라인에서 전달받은 인자('--'으로 시작하는, 예: ```--server.port=9000```)를 ```property```로 변환하여 스프링 ```environment```에 추가한다. 앞에서 언급했듯이, 커맨드라인 프로퍼티즈는 다른 프로퍼티 소스들보다 우선한다. 
+
+만약 커맨드라인 프로퍼티즈를 ```Environment```에 추가하길 바라지 않는 다면 ```SpringApplication.setAddCommandLineProperties(false)```를 사용하여 비활성화할 수 있다.
+
 ### 23.2. 애플리케이션 속성 파일들
+```SpringApplication```은 다음 경로들을 순차적으로 탐색하여 ```application.properties``` 파일로부터 프로퍼티즈들을 읽어들여 스프링 ```Envirionment```에 추가할 것이다:
+
+> 1. 현재 디렉토리에서 ```/config``` 하위디렉토리
+> 2. 현재 디렉토리
+> 3. 클래스패스 상에서 ```/config```패키지
+> 4. 클래스패스 루트
+
+목록은 내림차순으로 정렬되었다(목록 상위에 위치한 것들은 하위 아이템들로 덮어쓰인다).
+> 노트: '.properties' 대신에 [YAML('.yaml') 파일을 사용](#Properties 대신 YAML 사용)할 수 있다.
+
+```applicaiton.properties```를 설정파일 이름으로 선호하지 않는다면 ```spring.config.name``` 환경속성을 정의하여 변경할 수 있다. 혹은 ```spring.config.location``` 환경속성을 사용하여 위치를 명확하게 정의할 수도 있다(콤마 구분자(,)를 사용하여 디렉토리 위치나 파일의 경로를 다수 적용가능하다)
+
+```
+$ java -jar myproject.jar --spring.config.name=myproject
+```
+
+혹은
+
+```
+$ java -jar myproject.jar --spring.config.location=classpath:/default.properties,classpath:/override.properties
+```
+
+만약 ```spring.config.location``` 에 포함된 디렉토리들(혹은 파일들로 등록한 경우)이 ```/```로 끝난다면 적재하기 전에 ```spring.config.name```을 이용하여 뒤에 이름을 붙일 것이다. 기본 탐색 경로는 ```classpath:,classpath:/config,file:,file:config/``` 을 항상 사용하며, ```spring.config.location```의 값을 포함한다. 
+
 ### 23.3. 프로파일 지정 속성들
+```application.properties``` 파일에 추가적으로, 프로퍼티스파일에 프로파일을 지정할 수 있는데 ```application-{profile}.properties``` 형식으로 작명관례를 사용하여 정의하면 된다.
+
 ### 23.4. 속성 플레이스홀더(placeholder)
-### 23.5. Properties 대신 YAML 사용
+```applicaton.properties```의 값들은 ```Environment```가 존재하는 경우 걸러지게 되는데, 그 과정을 이용하여 앞에서 정의한 값을 뒤에서 참조할 수 있다(예, 시스템 프로퍼티스).
+```
+app.name=MyApp
+app.description=${app.name} is a Spring Boot application
+```
+
+> 팁: 스프링부트에 있는 프로퍼티스들을 축약하여 기술적으로 사용할 수 있다. 이와 관련해서는 [64.3. '간략한' 커맨드라인 인자 사용](#'간략한' 커맨드라인 인자 사용)에서 어떻게 사용하는지 상세한 설명을 볼 수 있다.
+
+### 23.5. Properties 대신 YAML 사용<a name="Properties 대신 YAML 사용"></a>
+[YAML](http://yaml.org/)은 JSON에 포함되며 계층적인 설정 데이터를 정의하는데 매우 편리한 문법을 가지고 있다. ```SpringApplication``` 클래스는 클래스패스 상에 [SnakeYAML]()라이브러리를 가지고 있다면 YAML을 지원할 수 있도록 프로퍼티스에서 자동전환한다.
+
+> 노트: ```spring-boot-starter```에서는 자동으로 ```SnakeYAML``` 'starter POM`'를 제공한다.
+
 #### 23.5.1. YAML 읽어오기
+스프링부트는 YAML 문서를 읽어와서 사용하는데 편의를 제공하는 두개의 클래스를 제공한다. ```YamlPropertiesFactoryBean```은 YAML을 ```Properties``` 처럼 읽어오고 ```YamlMapFactoryBean```은 YAML을 ```Map```처럼 읽어온다.
+
+예를 들어, 다음과 같은 YAML 문서가 있다:
+```
+environments:
+    dev:
+        url: http://dev.bar.com
+        name: Developer Setup
+    prod:
+        url: http://foo.bar.com
+        name: My Cool App
+```
+
+위 항목을 properties로 변환하면 다음과 같다:
+```
+environments.dev.url=http://dev.bar.com
+environments.dev.name=Developer Setup
+environments.prod.url=http://foo.bar.com
+environments.prod.name=My Cool App
+```
+
+YAML 목록은 ```[index]``` 참조를 가지는 프로퍼티 키로서 표현된다. YAML 예제:
+```
+my:
+   servers:
+       - dev.bar.com
+       - foo.bar.com
+```
+
+를 properties로 변환하면 다음과 같다:
+```
+my.servers[0]=dev.bar.com
+my.servers[1]=foo.bar.com
+```
+
+properties가 연결되는 것처럼 스프링 ```DataBinder``` 유틸리티를 사용할 수 있다(```@ConfigurationProperties``` 가 어떻게 동작하는지 살펴보라) 대상이 되는 빈에서 ```java.util.List(or Set)``` 속성을 가지고 씨거나 혹은 수정자(setter)를 사용하거나, 변경될 수 있는 값(예를 들어, 위에서 본 프로퍼티스도 유사하게 연결)을 초기화할 수도 있다.
+
+```
+@ConfigurationProperties(prefix="my")
+public class Config {
+    private List<String> servers = new ArrayList<String>();
+
+    public List<String> getServers() {
+        return this.servers;
+    }
+}
+```
 #### 23.5.2. 스프링 환경에서 속성들을 YAML로 노출
+```YamlPropertySourceLoader``` 클래스는 스프링 ```Environment```의 ```PropertySource````처럼 외부의 YAML을 사용할 수 있다. 이는 YAML 속성들에 접근하기 위한 플레이스홀더 문법인 ```@Value``` 애노테이션과 유사한 형태로 사용하는 것을 허용한다.
+
 #### 23.5.3. 다중 프로파일 YAML 문서
+단독 파일로 구성된 YAML 문서에 ```spring.profiles```키로 지정항 다중 프로파일을 저으이하여 사용하는 것이 가능하다. 예를 들어:
+```
+server:
+    address: 192.168.1.100
+---
+spring:
+    profiles: development
+server:
+    address: 127.0.0.1
+---
+spring:
+    profiles: production
+server:
+    address: 192.168.1.120
+```
+
+위의 예에서, ```server.address``` 속성이 ```127.0.0.1```라면 ```development```` 속성이 활성화 상태다. 만약 ```development``` 와 ```production``` 프로파일을 사용할 수 **없다면**, 속성값은 ```192.168.1.100```일 것이다.
+
 #### 23.5.4. YAML 의 단점
+YAML 파일은 ```@PropertySource``` 애노테이션 등으로 불러올 수 없다. 이와 같은 형태로 값을 호출하여 사용해야 프로퍼티스 파일을 사용해야 한다.
+
 ### 23.6. 타입세이프 설정 속성들
+```@Value("${property}")``` 애노테이션을 사용하여 설정 속성을 주입받아 사용하는 것이 번거로운 경우가 있다. 다중 속성을 이용하여 작업하거나 계층 구조의 데이터을 다루게 되는 경우가 그렇다. 스프링부트는 허용된 강력한 타입 빈즈들에서 사용가능한 속성들을 선택할 수 있는 메서드를 제공하고 애플리케이션의 설정에 관해 검증한다. 예를 들어:
+
+```
+@Component
+@ConfigurationProperties(prefix="connection")
+public class ConnectionSettings {
+
+    private String username;
+
+    private InetAddress remoteAddress;
+
+    // ... getters and setters
+
+}
+```
+
+```@EnableConfigurationProperties``` 애노테이션은 ```@Configuration```을 포함한다, ```@ConfigurationProperties```가 선언된 빈은 자동적으로 ```Environment``` 속성이 설정된다. 이런 설정 유형은 ```SpringApplication``` 확장 YAML 설정을 사용할 경우에만 적용된다.
+
+```
+# application.yml
+
+connection:
+    username: admin
+    remoteAddress: 192.168.1.1
+
+# additional configuration as required
+```
+
+```@ConfigurationProperties``` 가 적용된 빈즈는 다음에서 보게되는 빈의 형태로 주입된다.
+
+```java
+@Service
+public class MyService {
+
+    @Autowired
+    private ConnectionSettings connection;
+
+     //...
+
+    @PostConstruct
+    public void openConnection() {
+        Server server = new Server();
+        this.connection.configure(server);
+    }
+
+}
+```
+
+또한 ```@EnableConfigurationProperties``` 애노테이션을 사용하여 프로퍼티스 클래스 목록을 정의한 ```@ConfigurationProperties``` 빈을 간단하게 등록할 수도 있다.
+
+```
+@Configuration
+@EnableConfigurationProperties(ConnectionSettings.class)
+public class MyConfiguration {
+}
+```
+
 #### 23.6.1. 느슨한 연결
+스프링부트는 ```@ConfigurationProperties``` 빈에 대한 ```Envirionment``` 속성연결을 느슨하게 정의하여 사용한다, 또한 ```Environment``` 속성명과 빈의 속성명을 정확하게 맞춰줄 필요도 없다. 일반적인 예로 언더스코어('_') 구분자를 포함하거나(예, ```context_path```는 ```contextPath```에 연결), 그리고 대소문자(예, ```PORT```는 ```port```에 연결) 환경속성들에서 유용하게 적용된다.
+
+스프링은 ```@ConfigurationProperties``` 빈이 바인딩될 때 적절한 형식으로 외부 애플리케이션 속성을 적용하려고 시도한다. 별도유형의 컨버전이 필요하다면 ```ConversionService``` 빈(```conversionService``` 빈 아이디) 혹은 별도의 프로퍼티 에디터를 제공할 수 있다. 
+
 #### 23.6.2. ```@ConfigurationProperties``` 검증
+스프링부트는 외부 설정에 관한 JSR-303(클래스패스 상에 있다면)을 이용한 검증을 제공한다. JSR-303 ```javax.validation``` 제약 어노테이션을 ```@ConfigurationProperties``` 클래스에 추가하면 사용할 수 있다.
+
+```
+@Component
+@ConfigurationProperties(prefix="connection")
+public class ConnectionSettings {
+
+    @NotNull
+    private InetAddress remoteAddress;
+
+    // ... getters and setters
+
+}
+```
+
+또한 ```configurationPropertiesValidator```이라 불리는 빈 정의를 생성하면 커스텀 스프링 ```Validator```를 추가할 수 있다.
+> 팁: ```spring-boot-actuator``` 모듈은 모든 ```@ConfigurationProperties``` 빈들을 탐색할 수 있는 엔드포인트를 포함하고 있다. 간단하게 브라우저에서 ```/configprops```로 접근하거나 이와 동등한 JMX 엔드포인트를 사용할 수 있다. 이와 관련해서는 보다 자세한 사항은 [출시준비 기능](#엔드포인트) 섹션을 살펴보기 바란다.
+
 ## 24. 프로파일<a name="프로파일"></a>
 ### 24.1. 활성프로파일 추가
 ### 24.2. 프로파일 작성방법
@@ -1687,7 +1921,7 @@ public class MyBean implements CommandLineRunner {
 ## 64. 속성 및 설정
 ### 64.1. 스프링애플리케이션의 설정 확장
 ### 64.2. 애플리케이션의 외부 속성 위치 변경
-### 64.3. '간략한' 커맨드라인 인자 사용
+### 64.3. '간략한' 커맨드라인 인자 사용<a name="'간략한' 커맨드라인 인자 사용"></a>
 ### 64.4. 외부 속성을 YAML로 정의
 ### 64.5. 활성 스프링 프로파일 설정
 ### 64.6. 환경 의존적 설정 변경
