@@ -1554,7 +1554,7 @@ $ java -jar myproject.jar --spring.config.location=classpath:/default.properties
 
 만약 ```spring.config.location``` 에 포함된 디렉토리들(혹은 파일들로 등록한 경우)이 ```/```로 끝난다면 적재하기 전에 ```spring.config.name```을 이용하여 뒤에 이름을 붙일 것이다. 기본 탐색 경로는 ```classpath:,classpath:/config,file:,file:config/``` 을 항상 사용하며, ```spring.config.location```의 값을 포함한다. 
 
-### 23.3. 프로파일 지정 속성들
+### 23.3. <a name='프로파일 지정 속성들'>프로파일 지정 속성들</a>
 ```application.properties``` 파일에 추가적으로, 프로퍼티스파일에 프로파일을 지정할 수 있는데 ```application-{profile}.properties``` 형식으로 작명관례를 사용하여 정의하면 된다.
 
 ### 23.4. 속성 플레이스홀더(placeholder)
@@ -1764,10 +1764,14 @@ spring.profiles.include: proddb,prodmq
 > 노트: ```spring.profiles``` 속성을 YAML 문서에 정의할 때 이 문서의 설정을 포함한 부분들을 분리시키는 구분자를 기억할 것이다. 보다 자세한 내용은 [64.6 "환경 의존적 설정 변경"](#환경 의존적 설정 변경)을 살펴보자.
 
 ### 24.2. 프로파일 작성방법
-
+애플리케이션이 실행되기 전에 ```SpringApplication.setAdditionalProfiles(…​)``` 를 호출하여 프로그램적으로 활성프로파일즈를 설정할 수 있다. 이는 스프링의 ```ConfigurableEnvironment``` 인터페이스를 사용해서 활성 프로파일즈 설정이 가능하다.
 
 ### 24.3. 프로파일 상세 설정파일
+프로파일 정의의 변형은 ```application.properties```(혹은 ```application.yml```) 그리고 ```@ConfigurationProperties``` 를 통해서 파일들을 적재하는 경우를 고려해볼 수 있다. 보다 자세한 내용은 [23.3 "프로파일 지정 속성들"](#프로파일 지정 속성들)을 살펴보기 바란다.
+
 ## 25. 로깅<a name="로깅"></a>
+
+
 ### 25.1. 로그 형식
 ### 25.2. 콘솔 출력
 ### 25.3. 파일 출력
