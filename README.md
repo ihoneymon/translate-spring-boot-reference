@@ -1727,8 +1727,45 @@ public class ConnectionSettings {
 > 팁: ```spring-boot-actuator``` 모듈은 모든 ```@ConfigurationProperties``` 빈들을 탐색할 수 있는 엔드포인트를 포함하고 있다. 간단하게 브라우저에서 ```/configprops```로 접근하거나 이와 동등한 JMX 엔드포인트를 사용할 수 있다. 이와 관련해서는 보다 자세한 사항은 [출시준비 기능](#엔드포인트) 섹션을 살펴보기 바란다.
 
 ## 24. 프로파일<a name="프로파일"></a>
+스프링 프로파일즈는 독립된 환경 속에서 명확한 환경 속에서 애플리케이션의 설정을 관리할 수 있도록 분리하는 방법을 제공하고 있다. 어느 ```@Conponent``` 혹은 ```@Configuration``` 이든 ```@Profile```을 지정하여 읽어오는 것을 제한할 수 있다:
+
+```java
+@Configuration
+@Profile("production")
+public class ProductionConfiguration {
+
+    // ...
+
+}
+```
+
+보통의 스프링이 제공하는 방법으로는, ```spring.profiles.active Environment``` 속성을 통해서 프로파일즈를 활성화할 수 있다. 속성에서 지정하는 일반적인 방법으로는, 다음의 예제에서 처럼 ```applicatoin.properties``` 안에 포함시킬 수 있다:
+```
+spring.profiles.active=dev,hsqldb
+```
+
+혹은 커맨드라인에서 ```--spring.profiles.active=dev,hsqldb```와 같이 사용하여 변환을 지정할 수 있다. 
+
 ### 24.1. 활성프로파일 추가
+```spring.profiles.active``` 속성은 다른 프로퍼티즈의 우선순위 정책을 동일하게 따른다. 가장 우선순위가 높은 ```PropertySource```가 승리한다. 이것이 의미하는 것은 ```application.properties```에 지정된 지정된 활성프로파일즈는 커맨드라인 스위치를 사요하면 그것으로 대체된다.
+
+때때로 프로퍼티즈에 정의된 프로필을 다른 것으로 대체하는 것보다 활성 프로파일즈를 **추가** 하는 방법이 유용할 수 있다. ```spring.profiles.include``` 속성을 이용하면 별다른 조건없이 활성프로파일즈를 추가할 수 있다. ```SpringApplication``` 진입점(엔트리포인트)의 설정을 위한 Java API를 프로파일즈를 추가설정할 수 있다(예를 들어, ```spring.profiles.active``` 속성은 최상위에서 활성화된다): ```setAdditionalProfiles()``` 메서드를 살펴보길 바란다.
+
+예를 들어, 애플리케이션의 다음에 있는 프로퍼티즈와 함께 ```--spring.profiles.active=prod``` 스위치를 사용하여 실행하면 ```proddb```와 ```prodmq```가 함께 활성화될 것이다.
+
+```
+---
+my.property: fromyamlfile
+---
+spring.profiles: prod
+spring.profiles.include: proddb,prodmq
+```
+
+> 노트: ```spring.profiles``` 속성을 YAML 문서에 정의할 때 이 문서의 설정을 포함한 부분들을 분리시키는 구분자를 기억할 것이다. 보다 자세한 내용은 [64.6 "환경 의존적 설정 변경"](#환경 의존적 설정 변경)을 살펴보자.
+
 ### 24.2. 프로파일 작성방법
+
+
 ### 24.3. 프로파일 상세 설정파일
 ## 25. 로깅<a name="로깅"></a>
 ### 25.1. 로그 형식
@@ -1924,7 +1961,7 @@ public class ConnectionSettings {
 ### 64.3. '간략한' 커맨드라인 인자 사용<a name="'간략한' 커맨드라인 인자 사용"></a>
 ### 64.4. 외부 속성을 YAML로 정의
 ### 64.5. 활성 스프링 프로파일 설정
-### 64.6. 환경 의존적 설정 변경
+### 64.6. <a href="환경 의존적 설정 변경">환경 의존적 설정 변경</a>
 ### 64.7. 외부 속성들의 빌트인 항목 살펴보기
 ## 65. 내장형 서블릿 컨테이너
 ### 65.1. Servlet, Filter 혹은 ServletContextListener 를 애플리케이션에 추가
