@@ -8,7 +8,7 @@ Phillip Webb, Dave Syer, Josh Long, Stéphane Nicoll, Rob Winch, Andy Wilkinson,
 
 Copyright © 2013-2014
 
-Copies of this document may be made for your own use and for distribution to others, provided that you do not charge any fee for such copies and further provided that each copy contains this Copyright Notice, whether distributed in print or electronically. 
+Copies of this document may be made for your own use and for distribution to others, provided that you do not charge any fee for such copies and further provided that each copy contains this Copyright Notice, whether distributed in print or electronically.
 
 *****
 
@@ -35,7 +35,7 @@ Copies of this document may be made for your own use and for distribution to oth
 #### 10.2.3. OSX Homebrew 설치법
 #### 10.2.4. 커맨드라인 완성
 #### 10.2.5. 스프링 CLI로 빠르게 시작하는 예제
-### 10.3. 이전버전의 스프링부트로부터 업그레이드 
+### 10.3. 이전버전의 스프링부트로부터 업그레이드
 ## 11. 초기 스프링부터 애플리케이션 개발
 ### 11.1. POM 파일 생성
 ### 11.2. classpath 의존성 추가
@@ -116,7 +116,7 @@ Copies of this document may be made for your own use and for distribution to oth
 #### 26.1.3. ```MessageCodesResolver```
 #### 26.1.4. ```Static Content````
 #### 26.1.5. Template engines
-#### 26.1.6. 오류 제어, 웹스피어 
+#### 26.1.6. 오류 제어, 웹스피어
 #### 애플리케이션 서버에서 오류 제어
 ### 26.2. JAX-RS 그리고 Jersey
 ### 26.3. 내장형 서블릿 컨테이너 지원
@@ -154,7 +154,7 @@ Copies of this document may be made for your own use and for distribution to oth
 #### 30.1.2. ActiveMQ 지원
 #### 30.1.3. JNDI ```ConnectionFactory``` 사용
 #### 30.1.4. 메시지 전송
-#### 30.1.5. 메시지 수신 
+#### 30.1.5. 메시지 수신
 ## 31. 이메일 전송
 ## 32. JTA를 이용한 트랜잭션 분산
 ### 32.1. Atomikos 트랜잭션 매니저 사용
@@ -180,7 +180,7 @@ Copies of this document may be made for your own use and for distribution to oth
 ### 36.3. 상황 애노테이션
 #### 36.3.1. 클래스 상황
 #### 36.3.2. 빈Bean 상황
-#### 36.3.3. 리소스 상황 
+#### 36.3.3. 리소스 상황
 #### 36.3.4. 웹 애플리케이션 상황
 #### 36.3.5. SpEL 표현식 상황
 ## 37. 웹소켓
@@ -204,7 +204,7 @@ Copies of this document may be made for your own use and for distribution to oth
 ### 41.5. HTTP 엔드포인트 비활성화
 ### 41.6. 상태 엔드포인트에 대한 무기명 접근 제한
 ## 42. JMX를 통한 모니터링 및 관리
-### 42.1. MBean 이름 변경 
+### 42.1. MBean 이름 변경
 ### 42.2. JMX 엔드포인트 비활성화
 ### 42.3. JMX용 Jolokia를 HTTP를 통해서 사용
 #### 42.3.1. Jolokia 변경
@@ -412,7 +412,7 @@ Copies of this document may be made for your own use and for distribution to oth
 ## 1. 문서에 대해
 스프링부트 참고문서는 [html](http://docs.spring.io/spring-boot/docs/1.2.0.BUILD-SNAPSHOT/reference/html), [pdf](http://docs.spring.io/spring-boot/docs/1.2.0.BUILD-SNAPSHOT/reference/pdf/spring-boot-reference.pdf) 그리고 [epub](http://docs.spring.io/spring-boot/docs/1.2.0.BUILD-SNAPSHOT/reference/epub/spring-boot-reference.epub) 문서로 제공된다. 최신판은 [http://docs.spring.io/spring-boot/docs/current/reference](http://docs.spring.io/spring-boot/docs/current/reference)에서 살펴볼 수 있다.
 
-이 문서의 사본들은 자신이 사용하거나 다른 사람들에게 배포할 수 있으며, 인쇄 또는 전자출판시 사본에 저작권을 포함하고 어떤 수수료도 부과하지 않고 제공해야 한다. 
+이 문서의 사본들은 자신이 사용하거나 다른 사람들에게 배포할 수 있으며, 인쇄 또는 전자출판시 사본에 저작권을 포함하고 어떤 수수료도 부과하지 않고 제공해야 한다.
 
 
 ## 2. 도움 구하기
@@ -442,7 +442,7 @@ Copies of this document may be made for your own use and for distribution to oth
 ## 5. 스프링부트 기능 학습
 스프링부트의 핵심기능에 관한 보다 상세한 내용이 필요한가? [그래서 준비했다!](#스프링부트 기능)
 * 핵심기능: [SpringApplication](#스프링애플리케이션) | [외부설정](#외부설정) | [프로파일](#프로파일) | [로깅](#로깅)
-* 웹 애플리케이션: [MVC](#Spring Web MVC framework) | [내장형 컨테이너](#내장형 서블릿 컨테이너 지원) 
+* 웹 애플리케이션: [MVC](#Spring Web MVC framework) | [내장형 컨테이너](#내장형 서블릿 컨테이너 지원)
 * 데이터 작업: [SQL](#SQL 데이터베이스 작업) | [NoSQL](#NoSQL 기술 작업)
 * 메시징: [살펴보기](#메시징) | [JMS](#JMS)
 * 테스팅: [살펴보기](#테스팅) | [부트애플리케이션](#스프링부트 애플리케이션) | [유틸들](#테스트 유틸리티)
@@ -526,7 +526,7 @@ $ java -version
 ```
 만약 자바 개발이 처음이라면, 혹은 스프링부트를 실험해보고 싶다면 먼저 [스프링부트 CLI](#스프링부트 CLI)를 사용해보고, 그렇지 않다면 '클래식한' 설치 소개를 읽어보자.
 
-> Tip: 스프링부트는 Java 1.6에서도 호환되지만, 가능하다면 최신버전의 자바를 사용하는 것을 고려하길 바란다. 
+> Tip: 스프링부트는 Java 1.6에서도 호환되지만, 가능하다면 최신버전의 자바를 사용하는 것을 고려하길 바란다.
 
 ### 10.1. 자바 개발자를 위한 설치법 소개
 스프링부트는 표준 자바 라이브러리처럼 사용할 수 있다. ```spring-boot-*.jar``` 파일을 클래스패스에 적절하고 추가하면 된다. 스프링부트는 특별한 통합도구를 요구하지 않으며, 여러분은 다른 IDE 혹은 텍스트 에디터를 사용할 수 있다. 그리고 스프링부트 애플리케이션은 특별한 것이 없기 때문에, 여느 자바프로그램처럼 실행하고 디버그할 수 있다.
@@ -706,7 +706,7 @@ $ brew install springboot
 ```
 
 Homebrew는 ```/usr/local/bin```위치에 ```spring```을 설치한다.
-> 노트: 만약 brew 설치버전이 보이지 않는다면 ```brew update```를 실행하여 다시한번 해보자. 
+> 노트: 만약 brew 설치버전이 보이지 않는다면 ```brew update```를 실행하여 다시한번 해보자.
 
 #### 10.2.4. 커맨드라인 자동완성기능
 스프링부트 CLI는 [Bash]()와 [zsh]()에서 사용가능한 커맨드 자동완성기능을 제공한다. 어느 쉘에서든지 ```source```스크립트(```sping```이라 불리는)를 사용하여, 개인이나 전체시스템 배쉬 자동완성기능을 사용할 수 있다. 데비안 시스템에서 사용가능한 전체시스템 스크립트는 ```/shell-completion/bash``` 그리고 새로운 쉘이 실행될 때 디렉토리의 모든 스크립트가 있다. 정석적으로 스크립트를 실행할 때는, GVM을 이용해서 설치한 경우라면:
@@ -744,7 +744,7 @@ $ spring run app.groovy
 Hello world!
 ```
 
-### 10.3. 이전버전의 스프링부트로부터 업그레이드 
+### 10.3. 이전버전의 스프링부트로부터 업그레이드
 이전에 출시한 스프링부트에서 업그레이드된 것들을 살펴보려면 [project wiki](http://github.com/spring-projects/spring-boot/wiki)에서 "출시노트"를 확인하라. 각 출시버전들에서 "신규 그리고 쓸만함" 항목에서 업그레이드에 관한 설명을 찾을 수 있을 것이다.
 
 패키지 매니저 명령어를 이용하여(예를 들어 ```brew upgrade```) 설치된 CLI를 업그레이드하려거나 메뉴얼에 따라 CLI를 설치한 경우라면, [메뉴얼 설치법](#메뉴얼 설치법)을 상기하며 따라하여 오래된 참조링크를 제거하고 ```PATH```환경변수들을 갱신한다.
@@ -1096,7 +1096,7 @@ dependencies {
 ### 13.4. 스프링부트 스타터 POM 목록<a name="스프링부트 스타터 POMs"></a>
 스타터 POM들은 애플리케이션에 포함된 의존성 명세의 편의성을 제공한다. 필요하다면, 스프링과 관련 기술에 관한 모든 것을, 예제 코드를 찾아보고 의존성 명세 복사해서 붙이지 않아도 되는, 한곳에 해결할 수 있는 대형만물상을 가지게 된 것이다. 예를 들어, 스프링과 데이터처리용 JPA를 바탕으로 시작하려 한다면, 프로젝트 의존성에 ```spring-boot-starter-data-jpa``` 만 추가하면,바로 시작할 수 있다.
 
-스타터들은 프로젝트에서 필요로하고 빠르게 실행하고 일관성있고 상황에 따라 관리할 수 의존성들을 바탕으로 구성되어 있다. 
+스타터들은 프로젝트에서 필요로하고 빠르게 실행하고 일관성있고 상황에 따라 관리할 수 의존성들을 바탕으로 구성되어 있다.
 
 #### 이름이 가진 의미
 모든 스타터들은 ```spring-boot-starter-*,``` 라고 하는 작명규칙을 따른다. ```*```은 애플리케이션의 특별한 유형을 정의한다. 이 이름구조는 필요한 스타터를 찾을때 유용하다. 많은 IDE의 메이븐 통합시스템은 이름을 통해서 의존성들을 검색한다. 예를 들어, STS 플러그인이 설치된 이클립스에서, POM에디터에서 ```ctrl-space```를 치고 ```"spring-boot-starter"```라고 입력하면 관련한 목록이 보인다.
@@ -1165,7 +1165,7 @@ dependencies {
 ### 14.1. 'default' 패키지 이용
 "기본 패키지default package"에 있는 것으로 간주되는 패키지 선언을 포함하지 않는 클래스를 위치해 있는 경우, "기본 패키지"의 사용은 권장되지 않는 피해야하는 사항이다. ```@ComponentScan``` 혹은 ```@EntityScan``` 애노테이션을 사용하는 스프링부트 애플리케이션에 포함되어 있는 모든 jar들의 클래스를 읽는 과정에서 문제가 발생할 수 있다.
 
-> 팁: 우리는 자바가 권장하는 패키지 작명관례와 도메인명을 역순으로 사용하는 것을 권장한다. 
+> 팁: 우리는 자바가 권장하는 패키지 작명관례와 도메인명을 역순으로 사용하는 것을 권장한다.
 
 ### 14.2. 메인 애플리케이션 클래스 위치
 일반적으로 메인 애플리케이션 클래스는 다른 클래스들보다 최상위 패키지에 위치하는 것을 권장한다. ```@EnableAutoConfiguration``` 애노테이션은 메인 클래스에 선언되는 경우가 일반적인데, 이는 명시적인 아이템들을 대상으로 하는 기본 "검색 패키지"를 선언하는 것이기도 하다. 예를 들어, 애플리케이션에서 JPA를 사용하고 있다면, ```@EnableAutoConfiguration``` 애노테이션 선언된 클래스의 패키지는 ```@Entity``` 항목들을 검색하여 사용할 것이다.
@@ -1219,7 +1219,7 @@ public class Application {
 > 팁: 많은 스프링설정 예제들이 XML 설정을 사용하여 배포된다. 가능하다면 동등한 자바 기반의 설정으로 사용하자. ```enable*``` 애노테이션으로 검색을 하면 좋은 시작점이 될 것이다.
 
 ### 15.1. 추가된 설정 클래스들 불러오기
-모든 설정을 ```@Configuration```이 선언되어 있는 단일 클래스에 몰아 넣을 필요는 없다. ```@Import``` 애노테이션을 통해서 추가적으로 설정클래스를 사용할 수 있다. 혹은, ```@ComponentScan```을 사용하여 ```@Configuration``` 클래스들을 포함한 모든 스프링 컴포넌트를 자동으로 등록가능하다. 
+모든 설정을 ```@Configuration```이 선언되어 있는 단일 클래스에 몰아 넣을 필요는 없다. ```@Import``` 애노테이션을 통해서 추가적으로 설정클래스를 사용할 수 있다. 혹은, ```@ComponentScan```을 사용하여 ```@Configuration``` 클래스들을 포함한 모든 스프링 컴포넌트를 자동으로 등록가능하다.
 
 ### 15.2. XML 설정 불러오기
 혹시라도 무조건 XML 기반의 설정을 사용해야겠다 하더라도, 우리는 ```@Configuration``` 클래스에서 시작하기를 권장한다. ```@ImportResource``` 애노테이션을 사용하여 XML 설정 파일을 읽어들여서 사용가능하다.
@@ -1354,7 +1354,7 @@ $ export JAVA_OPTS=-Xmx1024m -XX:MaxPermSize=128M -Djava.security.egd=file:/dev/
 ```
 
 ### 19.5. 핫스와핑
-스프링부트 애플리케이션은 순수한 자바 애플리케이션이며, JVM 핫스와핑hot-swapping 은 
+스프링부트 애플리케이션은 순수한 자바 애플리케이션이며, JVM 핫스와핑hot-swapping 은
 바깥의 영역에서 진행된다. JVM 핫스와핑은 어느정도 대체가능한 바이트코드로 제한되며, 보다 나은 해결책으로 [Spring loaded](https://github.com/spring-projects/spring-loaded) 프로젝트 혹은 [JRebel](http://zeroturnaround.com/software/jrebel/)을 사용할 수 있다.
 
 보다 세부적인 내용에 대해서는  [핫스와핑 "어떻게 하지"](#핫스와핑)를 살펴보자.
@@ -1362,13 +1362,13 @@ $ export JAVA_OPTS=-Xmx1024m -XX:MaxPermSize=128M -Djava.security.egd=file:/dev/
 ## 20. 출시를 위한 애플리케이션 패키징<a name="출시를 위한 애플리케이션 패키징"></a>
 실행가능한 jar는 출시 배포를 위해서도 사용가능하다. 그 자체로 실행가능하며, 또한 클라우드 기반의 배포에도 적합하다.
 
-추가적으로 "출시 준비" 기능으로, 상태, 감시 그리고 엔드포인트인 REST 혹은 JMX에 대한 측정이 가능하니. ```spring-boot-actuator```를 추가하는 것을 고려해보라.보다 자세한 내용은 [5부. "스프링부트 액츄에터: 출시준비 기능들"](#스프링부트 액츄에터: 출시준비 기능들)을 읽어보기 바란다. 
+추가적으로 "출시 준비" 기능으로, 상태, 감시 그리고 엔드포인트인 REST 혹은 JMX에 대한 측정이 가능하니. ```spring-boot-actuator```를 추가하는 것을 고려해보라.보다 자세한 내용은 [5부. "스프링부트 액츄에터: 출시준비 기능들"](#스프링부트 액츄에터: 출시준비 기능들)을 읽어보기 바란다.
 
 ## 21. 다음 읽을거리
 좋은 예제를 따라서 연습하면서 스프링부트를 어떻게 사용해야하는지를 이해하는데 충분했을 것이라 생각한다. 이제는 [스프링부트 기능](#스프링부트 기능)에서 보다 깊이있게 배워볼 것이나 이를 넘기고 스프링부트의 "[출시준비](#스프링부트 액츄에터: 출시준비 기능들)" 측면을 읽어도 된다.
 
 # IV. 스프링부트 기능<a name="스프링부트 기능"></a>
-이 섹션은 스프링부트의 상세한 부분으로 뛰어든다. 여기서 사용하려 하고 변경하려고 하는 핵심 기능들에 관하여 배우게 된다. 혹시나 준비되지 않았다면, [II. "시작"](#시작) 그리고 [III. "스프링부트 사용"](#스프링부트 사용) 섹션을 읽어두면 기본적인 배경지식을 갖출 수 있을 것이다. 
+이 섹션은 스프링부트의 상세한 부분으로 뛰어든다. 여기서 사용하려 하고 변경하려고 하는 핵심 기능들에 관하여 배우게 된다. 혹시나 준비되지 않았다면, [II. "시작"](#시작) 그리고 [III. "스프링부트 사용"](#스프링부트 사용) 섹션을 읽어두면 기본적인 배경지식을 갖출 수 있을 것이다.
 
 ## 22. 스프링애플리케이션<a name="스프링애플리케이션"></a>
 ```SpringApplication``` 클래스는 ```main()```메서드로부터 시작된 스프링 애플리케이션이 구동을 위한 관례적인 경로를 제공한다. 많은 상황에서 ```SpringApplication.run``` 정적 메서드를 정의하고 있을 것이다.
@@ -1420,7 +1420,7 @@ public static void main(String[] args) {
 ### 22.3. 플루언트 빌더 API<a name="플루언트 빌더 API"></a>
 ```ApplicationContext``` 계층(부모/자식 관계의 다양한 컨텍스트)에 관한 빌드가 필요하다거나, '플루언트fluent' 빌더 API 사용을 참조한다면, ```SpringApplicationBuilder```를 사용할 수 있다.
 
-```SpringApplicationBuilder```는 다양한 메서드를 연이어 호출할 수 있고 ```parent```와 ```child``` 메서드를 통해서 계층 생성을 허용한다. 
+```SpringApplicationBuilder```는 다양한 메서드를 연이어 호출할 수 있고 ```parent```와 ```child``` 메서드를 통해서 계층 생성을 허용한다.
 
 예를 들어:
 ```java
@@ -1482,7 +1482,7 @@ public class MyBean implements CommandLineRunner {
 ## 23. 외부설정<a name="외부설정"></a>
 스프링부트는 동일한 애플리케이션으로 다른 환경에서 동작할 수 있도록 설정을 확장하는 것을 허용한다. 프로퍼티스 파일, YAML 파일, environment 변수 그리고 커맨드라인 인자를 통해서 설정을 확장할 수 있다. 속성 값은 ```@Value``` 애노테이션을 사용하여 바로 주입할 수도, 스프링의 ```Environment``` 추상화에 접근하거나 객체를 구축하여 연동할 수 있다.
 
-스프링부트는 값values, 속성properties 들에 대해서 다음과 같은 순위를 고려하여 합리적으로 오버라이딩하는 것을 허용하도록 설계된 매우 세분화된 ```Pr다opertySource``` 순위order를 사용한다. 
+스프링부트는 값values, 속성properties 들에 대해서 다음과 같은 순위를 고려하여 합리적으로 오버라이딩하는 것을 허용하도록 설계된 매우 세분화된 ```Pr다opertySource``` 순위order를 사용한다.
 
 > 1. 커맨드라인 인자
 > 2. java:comp/env 의 JNDI 어트리뷰트
@@ -1525,7 +1525,7 @@ my.number.in.range=${random.int[1024,65536]}
 ```random.int*``` 문법은 ```OPEN value(,max) CLOSE```에서 ```OPEN, CLOSE```는 어느 문자나 가능하며 ```value, max는 정수다. 만약 ```max```가 있다면 ```value```는 최소값이 되고 ```max```는 최대값이 된다(배타적인).
 
 ### 23.1. 커맨드라인 속성 접근
-기본 ```SpringApplication```은 커맨드라인에서 전달받은 인자('--'으로 시작하는, 예: ```--server.port=9000```)를 ```property```로 변환하여 스프링 ```environment```에 추가한다. 앞에서 언급했듯이, 커맨드라인 프로퍼티즈는 다른 프로퍼티 소스들보다 우선한다. 
+기본 ```SpringApplication```은 커맨드라인에서 전달받은 인자('--'으로 시작하는, 예: ```--server.port=9000```)를 ```property```로 변환하여 스프링 ```environment```에 추가한다. 앞에서 언급했듯이, 커맨드라인 프로퍼티즈는 다른 프로퍼티 소스들보다 우선한다.
 
 만약 커맨드라인 프로퍼티즈를 ```Environment```에 추가하길 바라지 않는 다면 ```SpringApplication.setAddCommandLineProperties(false)```를 사용하여 비활성화할 수 있다.
 
@@ -1552,7 +1552,7 @@ $ java -jar myproject.jar --spring.config.name=myproject
 $ java -jar myproject.jar --spring.config.location=classpath:/default.properties,classpath:/override.properties
 ```
 
-만약 ```spring.config.location``` 에 포함된 디렉토리들(혹은 파일들로 등록한 경우)이 ```/```로 끝난다면 적재하기 전에 ```spring.config.name```을 이용하여 뒤에 이름을 붙일 것이다. 기본 탐색 경로는 ```classpath:,classpath:/config,file:,file:config/``` 을 항상 사용하며, ```spring.config.location```의 값을 포함한다. 
+만약 ```spring.config.location``` 에 포함된 디렉토리들(혹은 파일들로 등록한 경우)이 ```/```로 끝난다면 적재하기 전에 ```spring.config.name```을 이용하여 뒤에 이름을 붙일 것이다. 기본 탐색 경로는 ```classpath:,classpath:/config,file:,file:config/``` 을 항상 사용하며, ```spring.config.location```의 값을 포함한다.
 
 ### 23.3. <a name='프로파일 지정 속성들'>프로파일 지정 속성들</a>
 ```application.properties``` 파일에 추가적으로, 프로퍼티스파일에 프로파일을 지정할 수 있는데 ```application-{profile}.properties``` 형식으로 작명관례를 사용하여 정의하면 된다.
@@ -1705,7 +1705,7 @@ public class MyConfiguration {
 #### 23.6.1. 느슨한 연결
 스프링부트는 ```@ConfigurationProperties``` 빈에 대한 ```Envirionment``` 속성연결을 느슨하게 정의하여 사용한다, 또한 ```Environment``` 속성명과 빈의 속성명을 정확하게 맞춰줄 필요도 없다. 일반적인 예로 언더스코어('_') 구분자를 포함하거나(예, ```context_path```는 ```contextPath```에 연결), 그리고 대소문자(예, ```PORT```는 ```port```에 연결) 환경속성들에서 유용하게 적용된다.
 
-스프링은 ```@ConfigurationProperties``` 빈이 바인딩될 때 적절한 형식으로 외부 애플리케이션 속성을 적용하려고 시도한다. 별도유형의 컨버전이 필요하다면 ```ConversionService``` 빈(```conversionService``` 빈 아이디) 혹은 별도의 프로퍼티 에디터를 제공할 수 있다. 
+스프링은 ```@ConfigurationProperties``` 빈이 바인딩될 때 적절한 형식으로 외부 애플리케이션 속성을 적용하려고 시도한다. 별도유형의 컨버전이 필요하다면 ```ConversionService``` 빈(```conversionService``` 빈 아이디) 혹은 별도의 프로퍼티 에디터를 제공할 수 있다.
 
 #### 23.6.2. ```@ConfigurationProperties``` 검증
 스프링부트는 외부 설정에 관한 JSR-303(클래스패스 상에 있다면)을 이용한 검증을 제공한다. JSR-303 ```javax.validation``` 제약 어노테이션을 ```@ConfigurationProperties``` 클래스에 추가하면 사용할 수 있다.
@@ -1744,7 +1744,7 @@ public class ProductionConfiguration {
 spring.profiles.active=dev,hsqldb
 ```
 
-혹은 커맨드라인에서 ```--spring.profiles.active=dev,hsqldb```와 같이 사용하여 변환을 지정할 수 있다. 
+혹은 커맨드라인에서 ```--spring.profiles.active=dev,hsqldb```와 같이 사용하여 변환을 지정할 수 있다.
 
 ### 24.1. 활성프로파일 추가
 ```spring.profiles.active``` 속성은 다른 프로퍼티즈의 우선순위 정책을 동일하게 따른다. 가장 우선순위가 높은 ```PropertySource```가 승리한다. 이것이 의미하는 것은 ```application.properties```에 지정된 지정된 활성프로파일즈는 커맨드라인 스위치를 사요하면 그것으로 대체된다.
@@ -1770,13 +1770,77 @@ spring.profiles.include: proddb,prodmq
 프로파일 정의의 변형은 ```application.properties```(혹은 ```application.yml```) 그리고 ```@ConfigurationProperties``` 를 통해서 파일들을 적재하는 경우를 고려해볼 수 있다. 보다 자세한 내용은 [23.3 "프로파일 지정 속성들"](#프로파일 지정 속성들)을 살펴보기 바란다.
 
 ## 25. 로깅<a name="로깅"></a>
+스프링부트는 모든 내부 로깅에 [Commons Logging](http://commons.apache.org/logging)를 사용한다, 그러나 근원적인 로그 구현체를 열어볼 수 있다. 기본 설정들은 [Java Util Logging)(http://docs.oracle.com/javase/7/docs/api/java/util/logging/package-summary.html), [Log4j](http://logging.apache.org/log4j/) 그리고 [Logback](http://logback.qos.ch/)을 제공한다. 각각 콘솔로 출력되고 파일로
+출력된다(10MB 크기가 되면 파일을 새로 생성).
 
+기본적으로, 'Starter POMs'를 사용한다면, Logback을 로깅에 사용할 것이다. 유연한
+ Logback은 Java Util Logging, Commons Logging, Log4j 혹은 SLF4J 를 사용하는 의존적 라이브러리들을 의존적인 라이브러리들도 문제없이 동작하는 것을 보장한다.
+ > 팁:
+ > 자바에서 사용가능한 로깅 프레임워크들은 대부분 지원한다. 목록만 보고서 당혹러워할 이유는 없다. 기본적으로 로깅 의존성을 변경할 필요는 없을 것이며 스프링부트는 기본적으로 잘 되어 있어있다. 
 
 ### 25.1. 로그 형식
+스프링부트의 기본적인 로그 출력은 다음과 같다:
+```
+2014-03-05 10:57:51.112  INFO 45469 --- [           main] org.apache.catalina.core.StandardEngine  : Starting Servlet Engine: Apache Tomcat/7.0.52
+2014-03-05 10:57:51.253  INFO 45469 --- [ost-startStop-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2014-03-05 10:57:51.253  INFO 45469 --- [ost-startStop-1] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 1358 ms
+2014-03-05 10:57:51.698  INFO 45469 --- [ost-startStop-1] o.s.b.c.e.ServletRegistrationBean        : Mapping servlet: 'dispatcherServlet' to [/]
+2014-03-05 10:57:51.702  INFO 45469 --- [ost-startStop-1] o.s.b.c.embedded.FilterRegistrationBean  : Mapping filter: 'hiddenHttpMethodFilter' to: [/*]
+```
+
+출력된 로그에 포함된 정보는 다음과 같다:
+* 날짜와 시간 - 밀리세컨드ms 단위로 꼼꼼하고 쉽게 정렬가능하다.
+* 로그레벨 - ```ERROR```, ```WARN```, ```INFO```, ````DEBUG``` 그리고 ```TRACE```
+* 프로세스 ID
+* ```---``` - 실제 로그메시지가 출력되는 부분을 나누려는 구분자
+* Logger name - 소스 클래스 네임(자주 줄어든다).
+* 로그 메시지
+
 ### 25.2. 콘솔 출력
+기본 로그 설정은 각각의 메시지가 콘솔에 출력된다. 기본적으로 ```ERROR```, ```WARN``` 그리고 ```INFO``` 레벨 메시지가 출력된다. 또한 ```DEBUG``` 레벨 메시지는 애플리케이션을 실행할 때 ```--debug``` 프래그와 함께 실행하면 출력된다.
+```
+$ java -jar myapp.jar --debug
+```
+
+터미널에서 ANSI를 지원한다면, 칼라로 출력되며 가독성을 높여줄 것이다. ```spring.output.ansi.enabled``` 를 정의하여 [제공값](http://docs.spring.io/spring-boot/docs/1.2.0.BUILD-SNAPSHOT/api/org/springframework/boot/ansi/AnsiOutput.Enabled.html)을 덧씌울 수 있다.
+
 ### 25.3. 파일 출력
+기본적으로, 로그파일은 실행환경에 정의된 ```temp``` 디렉토리에 ```spring.log``` 라는 이름으로 기록되며, 10MB 단위로 생성된다. 로그 생성 폴더는 ```logging.path``` 속성(```application.properties``` 를 예로 들자면)을 설정하여 쉽게 변경가능하다. 또한 ```logging.file``` 속성을 이용해서 파일명을 변경하는 것도 가능하다. 
+
+> 노트: 만약 ```logging.file```을 사용한다면, ```loggging.path``` 설정은 적용되지 않는다.
+
+콘솔에 출력되는 것은 ```ERROR```, ```WARN``` 그리고 ```INFO``` 레벨의 메시지가 기본출력된다. 
+
 ### 25.4. 로그 레벨
+
+스프링 ```Environment```(예를 들어 ```applicatoin.properties```)에 ```logging.leve.*=Level```로 정의하고 ```LEVEL```에는 ```TRACE```, ```DEBUG```, ```INFO```, ```WARN```, ```ERROR```, ```FATA```, ```OFF``` 중에서 선택하면 로그 레벨은 모든 지원가능한 로깅 시스템에 적용된다. ```application.properties``` 예제로:
+
+```
+logging.level.org.springframework.web: DEBUG
+logging.level.org.hibernate: ERROR
+```
+
 ### 25.5. 로그 설정 변경
+
+다양한 로깅 시스템은 기본적인 라이브러리를 포함하여 클래스패스 상의 활동상태를 관찰할 수 있다, 또한 클래스패스 루트에 위치한 적절한 설정파일을 제공하면 변경할 수 있으나, 스프링 ```Environment``` ```logging.config``` 속성으로 정의해야한다. (보충하자면, 로깅 시작은 ```ApplicationContext```가 **생성되기 전** 초기화되는 순간부터 시작된다. 스프링 ```@Configuration``` 파일에서 ```@PropertySources``` 에서 로깅을 컨트롤하는 것은 불가능하다. 시스템 프로퍼티즈와 스프링부트의 외부설정 파일을 이용한 것은 잘 동작한다. )
+
+로깅시스템의 부수적인, 다음의 파일들이 있어야 한다:
+| 로깅 시스템 | 설정파일 |
+|------------|----------|
+| Logback | logback.xml |
+| Log4j | log4j.properties 혹은 log4j.xml |
+| JDK(Java Util Logging) | logging.properties |
+
+설정에 필요한 몇몇 속성들은 스프링 ```Envirionment``에서 시스템 프로퍼티스로 변환된다.
+| Spring environment | System property | 설명 |
+|--------------------|-----------------|------|
+| logging.file | LOG_FILE | 정의되어 있다면 기본 로그 설정으로 사용된다. |
+| lggging.path | LOG_PATH | 정의도어 있다면 기본 로그 설정으로 사용된다. |
+| PID | PID | 현재 프로세스 ID(가능하다면 발견한 프로세스 ID를 사용하며 정의되어 있지 않은 경우에는 OS 환경 변수를 사용한다.) **재확인** |
+
+모든 로깅 시스템에 대한 지원은 로깅 시스템의 설정 파일을 분석하여 시스템 프로퍼티스로 변환할 수 있기 때문이다. 예제로 ```spring-boot.jar``` 안에 기본 설정을 살펴보라.
+> 위험: 실행가능한 JAR로 실행했을 때 Java Util Logging을 사용할 때 클래스로딩classloading 에서 문제가 발생한다는 이슈가 있다. 우리는 가능하면 이것을 피하기를 권장한다.
+
 ## 26. 웹 애플리케이션 개발
 ### 26.1. 'Spring Web MVC framework'<a name="Spring Web MVC framework"></a>
 #### 26.1.1. Spring MVC 자동설정
@@ -1784,7 +1848,7 @@ spring.profiles.include: proddb,prodmq
 #### 26.1.3. ```MessageCodesResolver```
 #### 26.1.4. ```Static Content````
 #### 26.1.5. Template engines
-#### 26.1.6. 오류 제어, 웹스피어 
+#### 26.1.6. 오류 제어, 웹스피어
 #### 애플리케이션 서버에서 오류 제어
 ### 26.2. JAX-RS 그리고 Jersey
 ### 26.3. 내장형 서블릿 컨테이너 지원<a name="내장형 서블릿 컨테이너 지원"></a>
@@ -1822,7 +1886,7 @@ spring.profiles.include: proddb,prodmq
 #### 30.1.2. ActiveMQ 지원
 #### 30.1.3. JNDI ```ConnectionFactory``` 사용
 #### 30.1.4. 메시지 전송
-#### 30.1.5. 메시지 수신 
+#### 30.1.5. 메시지 수신
 ## 31. 이메일 전송
 ## 32. JTA를 이용한 트랜잭션 분산
 ### 32.1. Atomikos 트랜잭션 매니저 사용
@@ -1848,7 +1912,7 @@ spring.profiles.include: proddb,prodmq
 ### 36.3. 컨디션 애노테이션 @Condition<a name="컨디션 애노테이션 @Condition"></a>
 #### 36.3.1. 클래스 상황
 #### 36.3.2. 빈Bean 상황
-#### 36.3.3. 리소스 상황 
+#### 36.3.3. 리소스 상황
 #### 36.3.4. 웹 애플리케이션 상황
 #### 36.3.5. SpEL 표현식 상황
 ## 37. 웹소켓
@@ -1872,7 +1936,7 @@ spring.profiles.include: proddb,prodmq
 ### 41.5. HTTP 엔드포인트 비활성화
 ### 41.6. 상태 엔드포인트에 대한 무기명 접근 제한
 ## 42. JMX를 통한 모니터링 및 관리<a name="JMX를 통한 모니터링 및 관리"></a>
-### 42.1. MBean 이름 변경 
+### 42.1. MBean 이름 변경
 ### 42.2. JMX 엔드포인트 비활성화.
 ### 42.3. JMX용 Jolokia를 HTTP를 통해서 사용
 #### 42.3.1. Jolokia 변경
