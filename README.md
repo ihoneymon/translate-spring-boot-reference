@@ -1983,17 +1983,60 @@ public FilterRegistrationBean myFilter() {
 #### 웹스피어 애플리케이션 서버에서 오류 제어
 > 패쓰!!
 
-
 ### 26.2. JAX-RS 그리고 Jersey
-### 26.3. 내장형 서블릿 컨테이너 지원<a name="내장형 서블릿 컨테이너 지원"></a>
+REST 엔드포인트르 위해서 JAX-RS 프로그래밍 모델을 참조하여 스프링MVC를 대체할 구현체를 찾고 있다면, 애플리케이션 컨텍스트에 등록되는 ```@Bean``` 처럼 ```Servlet```과 ```Filter```를 등록하면 Jersy 1.x 와 Apache Celtix에서도 잘 동작할 것이다. Jersey 2.x 는 스프링을 지원하기에 스프링부트 스타터에 자동설정을 제공하고 있다. 
+
+Jersey 2.x 을 시작할 때 ```spring-boot-starter-jersey``` 스타터에 대한 의존성을 추가하고 ```ResourceConfig``` 형태의 ```@Bean```이 하나 필요하며 여기에 모든 엔드포인트를 등록하면 된다:
+
+```
+@Component
+public class JerseyConfig extends ResourceConfig {
+    public JerseyConfig() {
+        register(Endpoint.class);
+    }
+}
+```
+
+등록된 모든 엔드포인트에는 HTTP 자원 애노테이션 종류인 ```@Component```(예: ```@GET```) 가 선언되어야 한다.
+
+```
+@Component
+@Path("/hello")
+public class Endpoint {
+
+    @GET
+    public String message() {
+        return "Hello";
+    }
+
+}
+```
+
+```EndPoint```는 ```@Autowired``` 의존성 과 ```@Value``` 를 이용하여 외부설정을 주입하는 등 스프링```@Component```처럼 스프링이 생명주기를 관리한다. Jersy 서블릿은 기본적으로 ```'/*'``` 와 매핑되어 등록된다. 매핑을 변경하고 싶다면 ```ResourceConfig```에 ```@ApplicationPath```를 추가하면 된다. 
+
+Jersey는 기본적으로 ```@Bean``` 형태의 "jerseyServletRegistration"이란 이름의 ```ServletRegistrationBean``` 서블릿을 생성한다. 비활성화하거나 동일한 이름의 빈을 오버라이드 하여 생성할 수 있다. 서블릿으로 하는 설정대신 필터를 사용할 수 있다. ```spring.jersey.type=filter```("jerseyFilterRegistration"을 오버라이드 하거나 ```@Bean```을 대체). 서블릿이 가지고 있는 ```@Order```에 대해서는 ```spring.jersey.filter.order```으로 설정할 수 있다. 서블릿과 필터 등록을 할 때 프로퍼티즈에 ```spring.jersey.init.*``` 을 선언하여 초기화 파라메터를 전달할 수 있다.
+
+[jersey 예제](http://github.com/spring-projects/spring-boot/tree/master/spring-boot-samples/spring-boot-sample-jersey)를 보면서 어떻게 설정할 지 살펴볼 수 있을 것이다. [Jersey 1.x 예제](http://github.com/spring-projects/spring-boot/tree/master/spring-boot-samples/spring-boot-sample-jersey1)도 있다. Jersey 1.x 예제 노트에는 스프링부트 메이븐 플러그인을 이용해서 몇몇 Jersey jars를 압축해제하여 JAX-RS 구현체를 스캔하도록 설정하는 것을 설명한다(```Filter``` 등록을 스캔하는 방법의 예제를 살펴볼 수 있다). 내장된 Jars 패키지 안에서 JAX-RS 리소스들도 살펴볼 수 있다.
+
+### 26.3. <a name="내장형 서블릿 컨테이너 지원">내장형 서블릿 컨테이너 지원</a>
+스프링부트는 내장형 톰캣Tomcat, 제티Jetty, 그리고 언더토우Undertow 서버를 지원한다. 대부분의 개발자들은 '스타터Starter POM'을 포함시키는 것으로 모든 설정이 되어 있어 쉽게 사용할 수 있다. 내장된 서버의 기본 HTTP Request 접근포트는 **8080** 이다.
+
 #### 26.3.1. 서블릿 그리고 필터
+내장형 서블릿 컨테이너를 사용할 때 스프링빈으로 서블릿과 필터를 등록할 수 있다. 설정을 하는 동안 ```application.properties```에서 필요한 값들을 참조할 수 있다.
+
+기본적으로, 단독 서블릿인 경우 컨텍스트는 ```/```에 매핑된다. 다중 서블릿을 사용하는 경우에는 빈의 이름을 경로접두사로 사용할 것이다. 필터는 ```/*```로 매핑된다.
+
+관례적인 매핑으로는 유연함에 부족함을 느낀다면 완벽한 제어를 위해서 ```ServletRegistrationBean``` 그리고 ```FilterRegsitrationBean``` 클래스를 사용할 수 있다. ```ServletContextInitializer``` 인터페이스를 직접 구현하여 등록할 수도 있다.
+
 #### 26.3.2. ```EmbeddedWebApplicationContext```
+
+스프링부트는 내장형 서블릿 컨테이너를 지원하기 위해 ```ApplicationContext```의 새로운 형태를 사용한다. ```EmbbeddedWebApplicationContext```는 
 #### 26.3.3. 내장형 서블릿 컨테이너 변경
 #### 변경 작성방법
 #### ```ConfigurableEmbeddedServletContainer``` 직접 변경
 #### 26.3.4. JSP 제약사항
 ## 27. 보안
-## 28. SQL 데이터베이스 작업<a name="SQL 데이터베이스 작업"></a>
+## 28. <a name="SQL 데이터베이스 작업">SQL 데이터베이스 작업</a>
 ### 28.1. 데이터베이스 설정
 #### 28.1.1. 내장형 데이터베이스 지원
 #### 28.1.2. 외부 데이터베이스 연결
