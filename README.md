@@ -2031,11 +2031,70 @@ Jersey는 기본적으로 ```@Bean``` 형태의 "jerseyServletRegistration"이�
 #### 26.3.2. ```EmbeddedWebApplicationContext```
 
 스프링부트는 내장형 서블릿 컨테이너를 지원하기 위해 ```ApplicationContext```의 새로운 형태를 사용한다. ```EmbbeddedWebApplicationContext```는 
+
 #### 26.3.3. 내장형 서블릿 컨테이너 변경
-#### 변경 작성방법
+공통 서블릿 컨테이너 설정은 스프링 ```Environment``` 프로퍼티즈를 사용하여 설정할 수 있다. ```application.properties``` 파일에 정의한 프로퍼티즈를 사용한다. 
+
+공통 서버 설정에 포함된 내용은:
+* ```server.port``` - HTTP 요청 수용 포트
+* ```server.address``` - 연결된 인터페이스 주소
+* ```server.sessionTimeout``` - 세션 타임아웃
+
+전체목록은 [ServerProperties](http://github.com/spring-projects/spring-boot/tree/master/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/web/ServerProperties.java) 클래스를 살펴보자.
+
+#### 프로그래밍으로 변경하기
+내장 서블릿 컨테이너의 설정을 프로그램적으로 설정할 필요가 있을 경우에는 ```EmbeddedServletContainerCustomizer``` 인터페이스를 구현한 스프링빈을 등록해야한다. ```EmbeddedServletContainerCustomizer```는 변경가능한 다양한 세터 메서드를 가지고 있는 ```ConfigurableEmbeddedServletContainer``` 에 대한 접근을 제공한다.
+
+```
+import org.springframework.boot.context.embedded.*;
+import org.springframework.stereotype.Component;
+
+@Component
+public class CustomizationBean implements EmbeddedServletContainerCustomizer {
+
+    @Override
+    public void customize(ConfigurableEmbeddedServletContainer container) {
+        container.setPort(9000);
+    }
+
+}
+```
+
 #### ```ConfigurableEmbeddedServletContainer``` 직접 변경
+만약 설정기술이 너무 제한적이라면, ```TomcatEmbeddedServletContainerFactory```, ```JettyEmbeddedServletContainerFactory``` 혹은 ```UndertowEmbeddedServletContainerFactory``` 빈을 등록하는 방법도 있다.
+
+```
+@Bean
+public EmbeddedServletContainerFactory servletContainer() {
+    TomcatEmbeddedServletContainerFactory factory = new TomcatEmbeddedServletContainerFactory();
+    factory.setPort(9000);
+    factory.setSessionTimeout(10, TimeUnit.MINUTES);
+    factory.addErrorPages(new ErrorPage(HttpStatus.404, "/notfound.html");
+    return factory;
+}
+```
+
+세터들은 많은 설정옵션들을 제공한다. 여러 protected 메서드 'hooks'는 보다 다양한 이국적인 기능들을 제공한다. 보다 자세한 내용은 소스코드 문서를 살펴보라.
+
 #### 26.3.4. JSP 제약사항
+스프링부트를 실행할 때 내장 서블릿 컨테이너를 사용한다면(실행가능한 압축패키지라면), JSP 지원이 제약되는 경우가 있다.
+* 톰캣에서 'war' 패키징을 사용한다면, 실행가능한 war로 동작한다면, 표준 컨테이너에 배포한다면 별다른 문제는 없을 것이다(제한은 없다, 톰캣을 포함해서). 실행가능한 jar 는 톰캣에서 하드코드 파일패턴 때문에 동작하지 않는다. 
+* 제티는 내장 컨테이너에서 JSP를 지원하지 않는다.
+* 언더토우는 JSP를 지원하지 않는다.
+
 ## 27. 보안
+스프링시큐리티는 웹 애플리케이션의 모든 HTTP 엔드포인트들에 대한 '기초'적인 인증을 기본적인 보안을 처리한다. 웹 애플리케이션에 메서드-레벨의 보안을 추가하려면 ```@EnableGlobalMethodSecurity``` 를 설정에 추가하면 된다. 추가적인 정보는 [Spring Security Referecne](http://docs.spring.io/spring-security/site/docs/3.2.5.RELEASE/reference/htmlsingle#jc-method) 에서 찾아볼 수 있다.
+
+기본 ```AuthenticationManager```는 단독 사용자를 가진다('user' 사용자명과 난수 비밀번호가 애플리케이션을 시작하면 **INFO** 레벨로 출력된다).
+
+```
+Using default security password: 78fa095d-3f4c-48b1-ad50-e24c31d5cf35
+```
+
+제공되는 ```security.user.password``` 프로퍼티즈를 이용하여 비밀번호를 변경할 수 있다. 이것 외에 [SecurityProperties](http://github.com/spring-projects/spring-boot/tree/master/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/SecurityProperties.java) 의 다른 유용한 프로퍼티즈들로 확장가능하다(프로퍼티즈 접두어는 "security").
+
+기본적인 보안 설정은 ```SecurityAutoConfiguration```에 구현되어 있고 임포트되어 있는 클래스들(웹보안을 위한 ```SpringBootWebSecurityConfiguration``` 과 인증설정을 위한 ```AuthenticationManagerConfiguration```)
+
 ## 28. <a name="SQL 데이터베이스 작업">SQL 데이터베이스 작업</a>
 ### 28.1. 데이터베이스 설정
 #### 28.1.1. 내장형 데이터베이스 지원
