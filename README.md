@@ -2093,7 +2093,7 @@ Using default security password: 78fa095d-3f4c-48b1-ad50-e24c31d5cf35
 
 제공되는 ```security.user.password``` 프로퍼티즈를 이용하여 비밀번호를 변경할 수 있다. 이것 외에 [SecurityProperties](http://github.com/spring-projects/spring-boot/tree/master/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/SecurityProperties.java) 의 다른 유용한 프로퍼티즈들로 확장가능하다(프로퍼티즈 접두어는 "security").
 
-기본적인 보안 설정은 ```SecurityAutoConfiguration```에 구현되어 있고 임포트되어 있는 클래스들(웹보안을 위한 ```SpringBootWebSecurityConfiguration``` 과 인증설정을 위한 ```AuthenticationManagerConfiguration```)
+기본적인 보안 설정은 ```SecurityAutoConfiguration```의 구현체와 그 안에 임포트되어 있는 클래스들(웹보안을 위한 ```SpringBootWebSecurityConfiguration``` 과 비-웹 애플리케이션과 관련된 인증설정을 위한 ```AuthenticationManagerConfiguration```)이 있다. ```@EnableWebSecurity``` 와 빈을 추가하는 것으로 웹 애플리케이션의 
 
 ## 28. <a name="SQL 데이터베이스 작업">SQL 데이터베이스 작업</a>
 ### 28.1. 데이터베이스 설정
