@@ -2096,15 +2096,182 @@ Using default security password: 78fa095d-3f4c-48b1-ad50-e24c31d5cf35
 기본적인 보안 설정은 ```SecurityAutoConfiguration```의 구현체와 그 안에 임포트되어 있는 클래스들(웹보안을 위한 ```SpringBootWebSecurityConfiguration``` 과 비-웹 애플리케이션과 관련된 인증설정을 위한 ```AuthenticationManagerConfiguration```)이 있다. ```@EnableWebSecurity``` 와 빈을 추가하는 것으로 웹 애플리케이션의 
 
 ## 28. <a name="SQL 데이터베이스 작업">SQL 데이터베이스 작업</a>
+스프링 프레임워크는 SQL 데이터베이스에서 동작하는 넓은 지원을 제공한다. ```JdbcTemplate```를 사용하여 바로 JDBC에 접속하는 것부터 '객체 관계 매핑' 기술의 하이버네이트까지 폭넓게 지원한다. 스프링 데이터는 인터페이스로부터 바로 ```Repository``` 구현체를 생성하고 메서드명으로부터 쿼리를 생성하는 관례를 사용할 수 있는 수준의 추가적인 기능성을 제공한다. 
+
 ### 28.1. 데이터베이스 설정
+자바의 ```javax.sql.DataSource``` 인터페이스는 데이터베이스 연결을 위한 표준 메서드를 제공한다. 기본적으로 데이터소스는 데이터베이스 연결을 생성하는 자격들을 얻는데 ```URL```을 사용한다.
+
 #### 28.1.1. 내장형 데이터베이스 지원
+인-메모리 내장형 데이터베이스를 사용하면 애플리케이션을 개발하는데 편리하다. 당연히, 인-메모리 데이터베이스는 영속적인 저장소를 제공하지 않는다. 애플리케이션을 시작할 때와 애플리케이션을 종료할 때 데이터를 옮기기 위해 데이터베이스를 필요로 할 것이다.
+> 팁: 어떻게 하는지는 [어떻게 데이터베이스를 초기화하는지 섹션](#데이터베이스 초기화)에 정리되어 있다.
+
+스프링부트는 내장형 [H2](http://www.h2database.com/), [HSQL](http://hsqldb.org/)와 [Derby](http://db.apache.org/derby/) 데이터베이스를 자동설정할 수 있다. 특별히 연결 URL을 제공할 필요가 없다면, 사용하길 원하는 내장된 데이터베이스 의존성을 빌드에 포함시키면 된다.
+
+예를 들어, 기본적인 POM 의존성은 다음과 같다:
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-data-jpa</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.hsqldb</groupId>
+    <artifactId>hsqldb</artifactId>
+    <scope>runtime</scope>
+</dependency>
+```
+
+> 노트: 자동설정을 위해 내장된 데이터베이스를 위한 ```spring-jdbc``` 의존성이 필요하다. ```spring-boot-starter-data-jpa``` 에 의해 자동으로 추가된다.
+
 #### 28.1.2. 외부 데이터베이스 연결
+출시 데이터베이스 연결에는 ```DataSource```의 풀링 사용을 자동으로 설정할 수 있다. 여기 지정 구현체를 선택하는 알고리듬이 있다.
+* 성능과 동시성을 위한 톰캣 풀링 ```DataSource``` 설정은, 언제든지 선택할 수 있다.
+* HikariCP라면 사용가능하다.
+* Commons DBCP라면 사용가지만, 출시 시에 사용하는 것은 권장하지 않는다.
+* 마지막으로 Commons DBCP2는 사용가능하다.
+
+만약 ```spring-boot-starter-jdbc```혹은 ``` spring-boot-starter-data-jpa``` 'starter POMs'를 사용한다면 자동적으로 ```tomcat-jdbc```에 관한 의존성이 자동으로 추가된다.
+> 노트: 추가적인 커넥션 풀은 수동으로 설정해야 가능하다. 만약 ```DataSource``` 빈을 정의한다면, 자동설정은 동작하지 않는다.
+
+데이터소스 설정은 외부 설정 프로퍼티즈의 ```spring.datasource.*```에 의해 조정된다. 예를 들어, 다음 섹션에서 다음과 같이 ```application.properties```를 정의할 것이다:
+```
+spring.datasource.url=jdbc:mysql://localhost/test
+spring.datasource.username=dbuser
+spring.datasource.password=dbpass
+spring.datasource.driver-class-name=com.mysql.jdbc.Driver
+```
+
+[DataSourceProperties](http://github.com/spring-projects/spring-boot/tree/master/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/jdbc/DataSourceProperties.java)를 보면 보다 자세한 제공옵션들을 확인할 수 있다.
+> 팁: 굳이 driver-class-name 을 정의할 필요는 없다. 스프링부트는 url로 부터 대부분의 데이터베이스를 알아낼 수 있다.
+
+> 노트: ```DataSource``` 풀링을 만들기 위해 ```Driver``` 클래스를 필요로 할수 있다, 그 때는 무언가를 하기 전에 체크를 한다. 예를 들어, ```spring.datasource.driverClassName=com.mysql.jdbc.Driver```를 설정하면 클래스는 적재가능해진다.
+
 #### 28.1.3. JNDI 데이터베이스 연결
+스프링부터 애플리케이션을 애플리케이션 서버에 배포하려할 때 데이터베이스에 대한 설정과 관리를 애플리케이션 빌트-인 기능들과 접근에 JNDI를 사용하고 싶을 수도 있다.
+
+```spring.datasource.jndi-name``` 속성은 지정된 JNDI 위치에 ```DataSource```에 접근하기 위한 ```spring.datasource.url```, ```spring.datasource.username```과 ```spring.datasource.password``` 프로퍼티즈를 대신할 수 있다. 예를 들어, 다음과 같이 ```application.properties```를 보면 어떻게 ```DataSource```를 정의하여 JBoss AS에 접근할 수 있는지 알 수 있다.
+```
+spring.datasource.jndi-name=java:jboss/datasource/customers
+```
+
 ### 28.2. JdbcTemplate 사용
+스프링의 ```JdbcTemplate``` 와 ```NamedParameterJdbcTemplate``` 클래스들은 자동설정되어 있으며 ```@Autowired```를 이용해서 빈에 바로 주입할 수 있다.
+```
+@Component
+public class MyBean {
+
+    private final JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    public MyBean(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
+    // ...
+
+}
+```
+
 ### 28.3. JPA 그리고 'Spring Data'
+자바 영속 API(Java Persistence API)는 객체와 데이터베이스의 관계를 연결하는 표준기술이다. ```spring-boot-stater-data-jpa``` POM이 빠르게 시작할 수 있는 방법을 제공한다. 주요 의존성은 다음과 같다.
+* 하이버네이트Hibernate - JPA 구현체 중에서 많이 사용되고 있음
+* Spring Data JPA -  JPA 기반의 저장소들을 쉽게 사용할 수 있도록 만들어줌
+* Spring ORMs - 스프링 프레임워크에서 핵심 ORM을 지원함
+
+> 팁: 여기서 JPA 혹은 Spring Data 에 대해서는 상세히 다루지는 않는다. [spring.io](http://spring.io/)에서 [JPA로 데이터에 접근하기'Accessing Data with JPA'](http://spring.io/guides/gs/accessing-data-jpa/)와 [Spring Data JPA](http://projects.spring.io/spring-data-jpa/)와 [Hibernate](http://hibernate.org/orm/documentation/) 참고문서를 살펴보기 바란다.
+
 #### 28.3.1. 엔티티 클래스
+JPA 'Entity' 클래스는 ```persistence.xml``` 파일에 정의한다. 스프링부트는 이 파일을 필요로 하지 않으며 대신에 'Entity Scanning'을 사용한다. 기본적으로 메인설정클래스(```@EnableAutoConfiguration```  혹은 ```@SpringBootApplication``` 어노테이션이 있는 클래스)가 있는 패키지를 기준으로 모든 패키지를 검색한다.
+
+```@Entity```, ```@Embeddable``` 혹은 ```@MappedSuperClass``` 어노테이드된 클래스들이 대상이 된다. 일반적인 엔티티 클래스는 다음과 유사한 모습을 가진다.
+
+```java
+package com.example.myapp.domain;
+
+import java.io.Serializable;
+import javax.persistence.*;
+
+@Entity
+public class City implements Serializable {
+
+    @Id
+    @GeneratedValue
+    private Long id;
+
+    @Column(nullable = false)
+    private String name;
+
+    @Column(nullable = false)
+    private String state;
+
+    // ... additional members, often include @OneToMany mappings
+
+    protected City() {
+        // no-args constructor required by JPA spec
+        // this one is protected since it shouldn't be used directly
+    }
+
+    public City(String name, String state) {
+        this.name = name;
+        this.country = country;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public String getState() {
+        return this.state;
+    }
+
+    // ... etc
+
+}
+```
+
+> 팁: ```@EntityScan``` 어노테이션을 사용하면 엔티티 스캔위치를 변경할 수 있다. 이와 관련된 내용은 [섹션 68.4. 스프링 설정으로 부터 @Entity 정의 분리](#스프링 설정으로 부터 @Entity 정의 분리)를 보면 어떻게 하는지 알 수 있을 것이다.
+
 #### 28.3.2. Spring Data JPA 레파지토리
+Spring Data JPA 레파지토리는 데이터에 대한 접근을 정의할 수 있는 인터페이스들이다. JPA 쿼리는 메서드의 이름으로부터 자동으로 쿼리를 생성한다. 예를 들어, ```CityRepository``` 인터페이스에 ```findAllByState(String state)``` 메서드가 정의되어 있다면 state를 주고 모든 도시를 검색할 것이다. 
+
+보다 복잡한 쿼리는 Spring Data의 [Query](http://docs.spring.io/spring-data/jpa/docs/current/api/org/springframework/data/jpa/repository/Query.html) 어노테이션을 메서드에 어노테이드하여 사용할 수 있다.
+
+스프링 데이터 레파지토리는 [```Repository```](http://docs.spring.io/spring-data/commons/docs/current/api/org/springframework/data/repository/Repository.html) 혹은 [```CrudRepository```](http://docs.spring.io/spring-data/commons/docs/current/api/org/springframework/data/repository/CrudRepository.html)를 확장한다. 만약에 자동설정을 사용한다면, 레파지토리는 (```@EnableAutoConfiguration``` 혹은 ```@SpringBootApplication``` 중 하나가 선언되어 있는)메인설정클래스가 있는 패키지부터 아래로 검색을 할 것이다.
+
+여기 전형적인 스프링 데이터 레파지토리가 있다:
+```
+package com.example.myapp.domain;
+
+import org.springframework.data.domain.*;
+import org.springframework.data.repository.*;
+
+public interface CityRepository extends Repository<City, Long> {
+
+    Page<City> findAll(Pageable pageable);
+
+    City findByNameAndCountryAllIgnoringCase(String name, String country);
+
+}
+```
+
+> 팁: 우리는 Spring Data JPA의 표면을 거의 긁어냈다.<작가주>이 표현은... 모르겠음. @_@)</작가주> 보다 자세한 내용은 [참조 문서](http://projects.spring.io/spring-data-jpa/)를 확인하라.
+
 #### 28.3.3. JPA 데이터베이스 생성 및 삭제
+기본적으로, JPA  데이터베이스는 내장된 데이터베이스(H2, HSQL 혹은 Derby)를 사용할 경우 자동적으로 생성된다. ```spring.jpa.*``` 프로퍼티즈를 사용한 JPA  설정을 통해 보다 명확하게 설정할 수 있다. 예를 들어, 테이블을 생성하고 제거하려면 다음과 같이 ```application.properties```에 추가할 수 있다.
+
+```
+spring.jpa.hibernate.ddl-auto=create-drop
+```
+
+> 노트: 이에 해당하는 하이버네이트의 내부 속성명은 ```hibernate.hbm2ddl.auto```이다(어떤 일이 벌어지는 지 기억하면 보다 이롭다). ```spring.jpa.properties.*```(접두사는 엔티티 매니저에 추가되기 전에 제거된다)를 사용하여 하이버네이트의 기존 프로퍼티즈를 설정할 수 있다. 예:
+
+```
+spring.jpa.properties.hibernate.globally_quoted_identifiers=true
+```
+
+하이버네이트 엔티티 매니저에 ```hibernate.globally_quoted_identifiers```가 전달된다.
+
+```ApplicationContext```가 시작할 때까지 기본적으로 DDL 실행(혹은 유효성 검사)은 지연된다. 하이버네이트 자동설정이 활성화되어 있다면 ```spring.jpa.generate-ddl``` 플래그를 사용하지 않는데 왜냐하면 ddl-auto 설정의 우선순위가 낮기 때문이다.
+
 ## 29. NoSQL 기술 작업<a name="NoSQL 기술 작업"></a>
 ### 29.1. 레디스Redis
 #### 29.1.1. 레디스 연결
@@ -2299,13 +2466,13 @@ Using default security password: 78fa095d-3f4c-48b1-ad50-e24c31d5cf35
 ### 68.1. 데이터소스 설정
 ### 68.2. 복수 데이터소스 설정
 ### 68.3. 스프링 데이터 레파지토리 사용
-### 68.4. 스프링 설정으로 부터 ```@Entity``` 정의 분리
+### 68.4. <a name="스프링 설정으로 부터 @Entity 정의 분리">스프링 설정으로 부터 ```@Entity``` 정의 분리</a>
 ### 68.5. JPA 속성 설정
 ### 68.6. ```EntityManagerFactory``` 변경
 ### 68.7. 복수 엔티티매니저 사용
 ### 68.8. 전통적인 ```persistence.xml```  사용
 ### 68.9. 스프링데이터 JPA와 몽고 레파지토리 사용
-## 69. 데이터베이스 초기화
+## 69. <a name="데이터베이스 초기화">데이터베이스 초기화</a>
 ### 69.1. JPA 사용하여 데이터베이스 초기화
 ### 69.2. Hibernate를 사용하여 데이터베이스 초기화
 ### 69.3. Spring JDBC를 사용하여 데이터베이스 초기화
