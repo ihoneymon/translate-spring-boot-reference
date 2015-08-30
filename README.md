@@ -2336,8 +2336,11 @@ spring.jpa.properties.hibernate.globally_quoted_identifiers=true
 스프링 프레임워크는 [rich WebSocket support](http://docs.spring.io/spring/docs/4.1.3.RELEASE/spring-framework-reference/htmlsingle/#websocket)를 ```spring-boot-starter-websocket``` 모듈을 통해 쉽게 접근할 수 있도록 제공한다.
 
 ## 38. 다음 읽을거리
+다른 항목들에 대한 보다 깊이 살펴보길 바란다면 [Spring Boot API 문서](http://docs.spring.io/spring-boot/docs/1.2.0.BUILD-SNAPSHOT/api)이나 [소스코드](http://github.com/spring-projects/spring-boot/tree/master)를 바로 살펴보길 바란다. 만약 특정된 궁금증을 가지고 있다면 ['어떻게How-to' 가이드](#'어떻게How-to' 가이드)를 살펴보기 바란다.
 
-# V. 스프링부트 액츄에터: 출시준비 기능들<a name="스프링부트 액츄에터: 출시준비 기능들"></a>
+스프링부트의 핵심 기능들에 대해서 충분히 숙지했다면, [스프링부트 액츄에터: 출시준비 기능들](#스프링부트 액츄에터: 출시준비 기능들)으로 이동하도록 하자.
+
+# V. <a name="스프링부트 액츄에터: 출시준비 기능들">스프링부트 액츄에터: 출시준비 기능들</a>
 ## 39. 사용가능한 출시준비 기능들
 ## 40. 엔드포인트<a name="엔드포인트"></a>
 ### 40.1. 엔드포인트 변경<a name="엔드포인트 변경"></a>
@@ -2434,7 +2437,7 @@ spring.jpa.properties.hibernate.globally_quoted_identifiers=true
 ### 61.4. repackage 구현 예제
 ## 62. 다음 읽을 거리
 
-# IX. '어떻게How-to' 가이드<a name="'어떻게How-to' 가이드"></a>
+# IX. <a name="'어떻게How-to' 가이드">'어떻게How-to' 가이드</a>
 혹시 우리가 대비하지 못한 부분들에서 문제들이 발생한다면 [스택오버플로우](http://stackoverflow.com/tags/spring-boot)에서 이미 누군가가 작성한 답변을 확인할 수도 있다: 이곳은 새로운 질문을 올리기에도 좋은 곳이다(```spring-boot``` 태그를 사용하자).
 
 # 63. 스프링부트 애플리케이션
