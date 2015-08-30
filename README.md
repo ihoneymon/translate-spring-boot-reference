@@ -2291,6 +2291,11 @@ spring.jpa.properties.hibernate.globally_quoted_identifiers=true
 #### 30.1.4. 메시지 전송
 #### 30.1.5. 메시지 수신
 ## 31. 이메일 전송
+스프링 프레임워크는 ```JavaMailSender``` 인터페이스를 이용하여 메일발송을 쉽게 추상화할 수 있는 기능을 제공하고 스프링부트는 스타터 모듈을 통해 쉬운 자동설정을 제공한다.
+> 팁: 어떻게 ```JavaMailSender```를 사용하는지 자세한 내용을 알고 싶다면 [참조 문서](http://docs.spring.io/spring/docs/4.1.3.RELEASE/spring-framework-reference/htmlsingle/#mail)를 클릭해보자.
+
+만약 ```spring.mail.host``` 그리고 관련된 라이브러리들(```spring-boot-starter-mail```에 기본설정된)은 가능하다면, ```JavaMailSender```가 존재하지 않는다면 그것을 만들것이다. 센더는 ```spring.mail``` 네임스페이스를 통해 설정변경이 가능하니, 보다 자세한 부분들은 [MailProperties](http://github.com/spring-projects/spring-boot/tree/master/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/mail/MailProperties.java)를 살펴보자.
+
 ## 32. JTA를 이용한 트랜잭션 분산
 ### 32.1. Atomikos 트랜잭션 매니저 사용
 ### 32.2. Bitronix 트랜잭션 매니저 사용
