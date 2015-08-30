@@ -2082,7 +2082,7 @@ public EmbeddedServletContainerFactory servletContainer() {
 * 제티는 내장 컨테이너에서 JSP를 지원하지 않는다.
 * 언더토우는 JSP를 지원하지 않는다.
 
-## 27. 보안
+## 27. <a name="보안">보안</a>
 스프링시큐리티는 웹 애플리케이션의 모든 HTTP 엔드포인트들에 대한 '기초'적인 인증을 기본적인 보안을 처리한다. 웹 애플리케이션에 메서드-레벨의 보안을 추가하려면 ```@EnableGlobalMethodSecurity``` 를 설정에 추가하면 된다. 추가적인 정보는 [Spring Security Reference](http://docs.spring.io/spring-security/site/docs/3.2.5.RELEASE/reference/htmlsingle#jc-method) 에서 찾아볼 수 있다.
 
 기본 ```AuthenticationManager```는 단독 사용자를 가진다('user' 사용자명과 난수 비밀번호가 애플리케이션을 시작하면 **INFO** 레벨로 출력된다).
@@ -2363,12 +2363,88 @@ spring.jpa.properties.hibernate.globally_quoted_identifiers=true
 ### 42.3. JMX용 Jolokia를 HTTP를 통해서 사용
 #### 42.3.1. Jolokia 변경
 #### 42.3.1. Jolokia 비활성화
-## 43. 리모트쉘을 사용하여 모니터링 및 관리<a name="리모트쉘을 사용하여 모니터링 및 관리"></a>
+
+## 43. <a name="리모트쉘을 사용하여 모니터링 및 관리">리모트쉘을 사용하여 모니터링 및 관리</a>
+스프링부트는 'CRaSH'라고 불리는 자바 쉘을 제공한다. CRaSH를 이용해서 애플리케이션 안에서 ```ssh``` 혹은 ```telnet``` 을 사용할 수 있다. 리모트쉘을 사용하려면 ```spring-boot-starter-remote-shell``` 의존성을 추가하면 된다:
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-remote-shell</artifactId>
+</dependency>
+```
+
+> 팁: 텔넷 접근을 활성화하려면 ```org.crsh:crsh.shell.telnet``` 의존성이 추가적으로 필요하다. 
+
 ### 43.1. 리모트쉘 연결
+리모트쉘의 기본 연결포트는 ```2000```번이다. 기본설정된 사용자명은 ```user``` 이고 기본 패스워드는 불규칙하게 생성되어 로그출력으로 노출된다. 만약 스프링시큐리티를 애플리케이션에 사용한다면, 쉘은 기본설정에 의해 (같은 설정)[#보안]을 사용할 것이다. 그렇지 않다면 다음과 같은 메시지와 함께 간단한 인증절차를 제공할 것이다:
+
+```
+Using default password for shell access: ec03e16c-4cf4-49ee-b745-7c8255c1dd7e
+```
+
+리눅스와 OSX 사용자는 ```ssh```를 사용하여 리모트쉘에 접근할 수 있으며, 윈도우 사용자는 [PuTTY](http://www.putty.org/)를 다운로드 받고 설치할 수 있다.
+
+```
+$ ssh -p 2000 user@localhost
+
+user@localhost's password:
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::  (v1.2.0.BUILD-SNAPSHOT) on myhost
+```
+
+```help```를 입력하면 명령어 목록을 볼 수 있다. 스프링부트는 ```metrics```, ```beans```, ```autoconfig``` 그리고 ```endpoint``` 명령을 제공한다.
+
 #### 43.1.1. 리모트쉘 자격credentials
+```shell.auth.simple.user.name``` 와 ```shell.auth.simple.user.password``` 속성을 사용하여 연결인증 정보를 변경할 수 있다. 또한 스프링시큐리티의 ```AuthenticationManager```를 사용하여 로그인 정책을 제어할 수 있다. 자세한 사항은  [CrshAutoConfiguration](http://docs.spring.io/spring-boot/docs/1.2.0.BUILD-SNAPSHOT/api/org/springframework/boot/actuate/autoconfigure/CrshAutoConfiguration.html) and [ShellProperties](http://docs.spring.io/spring-boot/docs/1.2.0.BUILD-SNAPSHOT/api/org/springframework/boot/actuate/autoconfigure/ShellProperties.html) Javadoc을 살펴보자.
+
 ### 43.2. 리모트쉘 확장
+리모트쉘은 흥미로운 부분들을 확장가능하다.
+
 #### 43.2.1. 리모트쉘 명령어
+리모트쉘은 그루비나 자바를 사용하여 쉘 명령어를 추가할 수 있다(보다 자세한 사항은 CRaSH 문서를 보자). 기본적으로 스프링부트는 다음의 위치에서 명령어들을 검색한다.
+* ```classpath*:/commands/**```
+* ```classpath*:/crash/commands/**```
+
+> 팁: ```shell.commandPathPatterns``` 속성을 통해서 검색설정을 변경할 수 있다.
+
+여기 ```src/main/resources/commands/hello.groovy``` 를 읽어오는 간단하게 'Hello world' 명령이 있다.
+
+```groovy
+package commands
+
+import org.crsh.cli.Usage
+import org.crsh.cli.Command
+
+class hello {
+
+    @Usage("Say Hello")
+    @Command
+    def main(InvocationContext context) {
+        return "Hello"
+    }
+
+}
+```
+
+스프링부트는 명령으로 접근할 수 있는 ```InvocationContext``` 의 속성들을 추가할 수 있다.
+
+| 속성명 | 설명 |
+|--------|------|
+|```spring.boot.version```|The version of Spring Boot|
+|```spring.version``` | The version of the core Spring Framework|
+|```spring.beanfactory``` | Access to the Spring BeanFactory |
+|```spring.environment``` | Access to the Spring Environment |
+
 #### 43.2.2. 리모트쉘 플러그인
+새로운 명령을 추가하듯, CRaSH 쉘 기능들을 확장하는 것도 가능하다. ```org.crsh.plugin.CRaSHPlugin```을 확장한 모든 스프링뷘은 쉘에 자동으로 등록된다.
+
+보다 자세한 정보는 [CRaSH reference documentation](http://www.crashub.org/) 을 통해서 확인하길 바란다.
+
 ## 44. 측정
 ### 44.1. 데이터소스 측정
 ### 44.2. 측정 기록
