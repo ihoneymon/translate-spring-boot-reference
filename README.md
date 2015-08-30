@@ -2302,7 +2302,10 @@ spring.jpa.properties.hibernate.globally_quoted_identifiers=true
 ### 32.3. Java EE 에서 관리하는 트랜잭션 매니저 사용
 ### 32.4. XA 그리고 non-XA JMS 연결 혼합
 ### 32.5. 대안적인 내장형 트른잭션 매니저 지원
+
 ## 33. 스프링 통합
+스프링통합Spring Integration은 메시징 추상화와 HTTP, TCP 등의 전송수단 들을 제공한다. 만약 스프링통합을 클래스패스 상에서 사용하기 위해서는 ```@EnableIntegration``` 애노테이션을 이용하여 초기화한다. 'spring-integration-jmx'가 클래스패스에 있을 경우 메시징 프로세싱 분석은 JMX를 통해 제공될 것이다. 보다 자세한 사항은 [IntegrationAutoConfig](http://github.com/spring-projects/spring-boot/tree/master/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/integration/IntegrationAutoConfiguration.java)를 살펴보자.
+
 ## 34. JMX를 통해서 모니터링과 관리
 ## 35. 테스팅<a name="테스팅"></a>
 ### 35.1. 테스트 스코프 의존성
