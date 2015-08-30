@@ -2083,7 +2083,7 @@ public EmbeddedServletContainerFactory servletContainer() {
 * 언더토우는 JSP를 지원하지 않는다.
 
 ## 27. 보안
-스프링시큐리티는 웹 애플리케이션의 모든 HTTP 엔드포인트들에 대한 '기초'적인 인증을 기본적인 보안을 처리한다. 웹 애플리케이션에 메서드-레벨의 보안을 추가하려면 ```@EnableGlobalMethodSecurity``` 를 설정에 추가하면 된다. 추가적인 정보는 [Spring Security Referecne](http://docs.spring.io/spring-security/site/docs/3.2.5.RELEASE/reference/htmlsingle#jc-method) 에서 찾아볼 수 있다.
+스프링시큐리티는 웹 애플리케이션의 모든 HTTP 엔드포인트들에 대한 '기초'적인 인증을 기본적인 보안을 처리한다. 웹 애플리케이션에 메서드-레벨의 보안을 추가하려면 ```@EnableGlobalMethodSecurity``` 를 설정에 추가하면 된다. 추가적인 정보는 [Spring Security Reference](http://docs.spring.io/spring-security/site/docs/3.2.5.RELEASE/reference/htmlsingle#jc-method) 에서 찾아볼 수 있다.
 
 기본 ```AuthenticationManager```는 단독 사용자를 가진다('user' 사용자명과 난수 비밀번호가 애플리케이션을 시작하면 **INFO** 레벨로 출력된다).
 
