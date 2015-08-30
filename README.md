@@ -2331,6 +2331,10 @@ spring.jpa.properties.hibernate.globally_quoted_identifiers=true
 #### 36.3.4. 웹 애플리케이션 상황
 #### 36.3.5. SpEL 표현식 상황
 ## 37. 웹소켓
+스프링부트는 내장형 톰캣(7과 8) 그리고 내장형 Jetty 9에 대한 웹소켓 자동설정을 제공한다. 만약 war 파일을 단독 컨테이너에 배포할 경우, 스프링부트는 컨테이너가 웹소켓을 지원하는 설정을 제공하는지 확인한다.
+
+스프링 프레임워크는 [rich WebSocket support](http://docs.spring.io/spring/docs/4.1.3.RELEASE/spring-framework-reference/htmlsingle/#websocket)를 ```spring-boot-starter-websocket``` 모듈을 통해 쉽게 접근할 수 있도록 제공한다.
+
 ## 38. 다음 읽을거리
 
 # V. 스프링부트 액츄에터: 출시준비 기능들<a name="스프링부트 액츄에터: 출시준비 기능들"></a>
