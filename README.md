@@ -2587,8 +2587,8 @@ public class MyService {
 
 ## 47. 프로세스 모니터링<a name="프로세스 모니터링"></a>
 스프링 액추에이터는 프로세스 모니터링에 파일들을 생성하는 유용한 클래스들을 찾아볼 수 있다:
-* ```ApplicationPidFileWriter``` 애플리케이션의 PID 파일을 생성한다(기본적으로 ```application.pid```에 정의된 파일명을 애플리케이션 디렉토리에 생성한다).
-* ```EmbeddedServerPortFileWriter``` 내장 서버의 포함한 파일을 생성한다(기본적으로 ```application.port```라는 이름의 파일을 애플리케이션 디렉토리에 생성).
+* ```ApplicationPidFileWriter``` 애플리케이션의 PID 파일을 생성한다(기본적으로  ```application.pid``` 파일을 애플리케이션 디렉토리에 생성한다).
+* ```EmbeddedServerPortFileWriter``` 내장 서버의 포함한 파일을 생성한다(기본적으로 ```application.port``` 파일을 애플리케이션 디렉토리에 생성).
 
 이 writer들은 기본적으로 활성화되지 않지만 아래에 설명된 방법들 중 하나로 활성화할 수 있다.
 
@@ -2604,8 +2604,11 @@ org.springframework.boot.actuate.system.EmbeddedServerPortFileWriter
 ```SpringApplication.addListeners(…​)``` 메서드로 호출하여 리스너를 활성화하고 ```Writer``` object를 전달하면 된다. 이 방법은 ```Writer``` 생성자를 이용해서 파일명과 경로를 변경하는 것이 가능하다.
 
 ## 48. 다음 읽을거리
+만약 이번 장에서 다뤄진 개념들을 좀 더 살펴보고자 한다면 액츄에이터 [예제 애플리케이션](https://github.com/spring-projects/spring-boot/tree/master/spring-boot-samples)들을 살펴보라. 거기에 더해서 [Graphite](http://graphite.wikidot.com/) 같은 그래프 도구에 대해서도 읽어보십시오.
 
-# VI. 클라우드 배포
+혹은, 계속 읽는다면, '[클라우드 배포](#클라우드 배포)' 혹은 스프링부트의 [빌드툴 플러그인](#빌드툴 플러그인)를 심도있게 다루는 부분으로 넘어갈 수도 있다.
+
+# VI. 클라우드 배포<a name="클라우드 배포"></a>
 ## 49. Cloud Foundry<a name="Cloud Foundry"></a>
 ### 49.1. 서비스 연결
 ## 50. Heroku<a name="Heroku"></a>
@@ -2632,7 +2635,7 @@ org.springframework.boot.actuate.system.EmbeddedServerPortFileWriter
 ## 57. 그루비 빈즈 DSL을 통해서 애플리케이션 개발
 ## 58. 다음 읽을거리
 
-# VIII. 빌드툴 플러그인
+# VIII. 빌드툴 플러그인<a name="빌드툴 플러그인"></a>
 ## 59. 스프링부트 메이븐 플러그인<a name="스프링부트 메이븐 플러그인"></a>
 ### 59.1. 플러그인 추가
 ### 59.2. 실행가능한 jar 와 war 파일 패키징
