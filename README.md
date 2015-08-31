@@ -2529,20 +2529,24 @@ public class MyService {
 ### 44.3. <a name="공개 측정 추가">공개 측정 추가</a>
 ```PublicMetrics``` 구현체 빈을 추가 등록해놓으면, 측정 엔드포인트가 호출될때마다 계산되는 추가 측정요소를 추가할 수 있다. 기본적으로, 모든 빈들은 엔드포인트에 의해 수집된다. ```MetricsEndpoint```을 정의하여 쉽게 변경할 수 있다.
 
-### 44.4. <a name="측정 레파지토리">측정 레파지토리</a>
+### 44.4. <a name="측정 레파지토리"></a>측정 레파지토리
 측정 서비스 구현체는 항상 [MetricRepository](http://github.com/spring-projects/spring-boot/tree/master/spring-boot-actuator/src/main/java/org/springframework/boot/actuate/metrics/repository/MetricRepository.java)와 연결된다. ```MetricRepository```는 측정정보를 저장하고 반환한다. 스프링 부트는 ```InMemoryMetricRepository``` 와 ```RedisMetricRepository```를 제공한다(기본은 in-memory repository다) 그러나 우리가 작성한 것도 사용가능하다. ```MetricRepository``` 인터페이스는 ```MetricReader``` 와 ```MetricWriter``` 인터페이스 보다 높은 위치에 있다. 보다 자세한 내용은 [Javadoc](http://docs.spring.io/spring-boot/docs/1.2.0.BUILD-SNAPSHOT/api/org/springframework/boot/actuate/metrics/repository/MetricRepository.html)을 살펴보자.
 
 ```MetricRepository```를 통해 앱의 백엔드로 바로 저장하는 것을 아무도 제지하지 않지만, 기본으로 ```InMemoryMetricRepository```(힙heap 사용이 꺼려진다면 ```Map``` 인스턴스를 수정할 수 있다) 사용을 권장하고 규칙으로 잡을 내보내는 백엔드 저장소를 선호한다. 다른 방법으로는 측정치를 메모리에 버퍼링을 통해 얻고 배치나 네트워크 통신량이 감소하는 때에 내보내는 것이다. 스프링 부트는 ```Exporter``` 인터페이스를 제공하고 그것에서 시작하는 기본적인 구현체들을 제공한다.
 
-### 44.5. <a name="Coda Hale 측정">Coda Hale 측정</a>
+### 44.5. <a name="Coda Hale 측정"></a>Coda Hale 측정
 [Coda Hale 'Metrics' 라이브러리](http://metrics.codahale.com/)의 사용자는 스프링부트 측정이 ```com.codahale.metrics.MetricRegistry```으로 출판한 것들을 자동으로 찾아낼 것이다. 기본 ```com.codahale.metrics.MetricRegistry``` 스프링빈은 ```com.codahale.metrics:metrics-core``` 의존성을 정의하면 생성된다. 변경이 필요하다면 ```@Bean``` 인스턴스를 추가등록할 수 있다.
 
 사용자는 적절한 형태로 자신의 측정에 대한 이름을 덥두어로 Coda Hale metrics 을 만들 수 있다(예: ```histogram.*```, ```meter.*```). 
 
-### 44.6. <a name="메시지 채널 통합">메시지 채널 통합</a>
+### 44.6. <a name="메시지 채널 통합"></a>메시지 채널 통합
 만약에 '스프링 메시징' jar 파일이 클래스패스 상에 있다면 ```metricsChannel```이라 불리는 ```MessageChannel```이 자동으로 생성된다(이미 존재하지 않는다면). 모든 측정 업데이트 이벤트는 채널을 통해 'messages'를 출판Publishing하여 추가한다. 클라이언트에서는 이 채널을 구독Subscribe하여 분석이나 액션을 추가할 수 있다. 
 
-## 45. <a name="감시auditing">감시auditing</a>
+## 45. <a name="감시auditing"></a>감시auditing
+스프링부트 액추에이터는 스프링 시큐리티의 동작('인증 성공', '실패' 그리고 기본적인 '접근 거부')에서 발생하는 이벤트 들을 유연하게 감시할 수 있다. 이것은 리포팅에 매우 유용하며 인증 실패를 기반으로 한 잠금해제 정책을 구현할 수 있다.
+
+또한 비즈니스 이벤트를 위한 감시 서비스 사용을 고려할 수 있다. 컴포넌트 안에 ```AuditEventRepository```를 주입하거나 스프링의 ```ApplicationEventPublisher```을 통해서 ```AuditApplicationEvent``` 를 간단하게 발급할 수 있다(```ApplicationEventPublisherAware``` 사용).
+
 ## 46. 추적Tracing<a name="추적Tracing"></a>
 ### 46.1. 추적 변경
 ## 47. 프로세스 모니터링
