@@ -2440,19 +2440,109 @@ class hello {
 |```spring.beanfactory``` | Access to the Spring BeanFactory |
 |```spring.environment``` | Access to the Spring Environment |
 
-#### 43.2.2. 리모트쉘 플러그인
+#### 43.2.2. <a name="리모트쉘 플러그인">리모트쉘 플러그인</a>
 새로운 명령을 추가하듯, CRaSH 쉘 기능들을 확장하는 것도 가능하다. ```org.crsh.plugin.CRaSHPlugin```을 확장한 모든 스프링뷘은 쉘에 자동으로 등록된다.
 
 보다 자세한 정보는 [CRaSH reference documentation](http://www.crashub.org/) 을 통해서 확인하길 바란다.
 
-## 44. 측정
-### 44.1. 데이터소스 측정
-### 44.2. 측정 기록
-### 44.3. 공개 측정 추가
-### 44.4. 측정 레파지토리
-### 44.5. Coda Hale 측정
-### 44.6. 메시지 채널 통합
-## 45. 감시auditing<a name="감시auditing"></a>
+## 44. <a name="측정">측정</a>
+스프링부트 액추에이터는 'gauge'와 'counter' 측정 서비스를 제공한다. 'gauge'는 single value를 기록하고 'counter'는 delta(증가 혹은 감소)를 기록한다. 스프링부트 액추에이터는 또한 앞의 두 메카니즘이 기록하지 못하는 측정치를 확장구현할 수 있는 [PublicMetrics](http://github.com/spring-projects/spring-boot/tree/master/spring-boot-actuator/src/main/java/org/springframework/boot/actuate/endpoint/PublicMetrics.java) 인터페이스를 제공한다. 그 참고적인 예로 [SystemPublicMetrics](http://github.com/spring-projects/spring-boot/tree/master/spring-boot-actuator/src/main/java/org/springframework/boot/actuate/endpoint/SystemPublicMetrics.java)가 있다.
+
+HTTP 요청은 자동으로 기록되어 측정되어, ```metrics``` 엔드포인트를 치면 다음과 유사한 내용을 확인할 수 있다:
+```
+{
+    "counter.status.200.root": 20,
+    "counter.status.200.metrics": 3,
+    "counter.status.200.star-star": 5,
+    "counter.status.401.root": 4,
+    "gauge.response.star-star": 6,
+    "gauge.response.root": 2,
+    "gauge.response.metrics": 3,
+    "classes": 5808,
+    "classes.loaded": 5808,
+    "classes.unloaded": 0,
+    "heap": 3728384,
+    "heap.committed": 986624,
+    "heap.init": 262144,
+    "heap.used": 52765,
+    "mem": 986624,
+    "mem.free": 933858,
+    "processors": 8,
+    "threads": 15,
+    "threads.daemon": 11,
+    "threads.peak": 15,
+    "uptime": 494836,
+    "instance.uptime": 489782,
+    "datasource.primary.active": 5,
+    "datasource.primary.usage": 0.25
+}
+```
+
+HTTP 측정을 통해서 ```memory```, ```heap```, ```class loading```, ```processor``` and ```thread pool```에 관한 기본적인 정보를 볼 수 있다. 이 인스턴스의 루트(```/```) 그리고 ```/metrics``` 는 ```HTTTP 200``` 3번에서 20번 응답한다. 또한 ```root``` URL 에 대해서는 ```HTTP 401(인증되지 않음)```은 4번 반환한다. 더블 아스트릭스(star-start)는 스프링MVC 의 ```/**```(일반적인 정적 리소스)에 대응한다.
+
+```guage```는 요청에 대한 최근 응답을 보여준다. 그래서 ```root```는 가장최근 ```2ms```의 것을, ```/metrics```는 가장최근 ```3ms```의 것을 응답한다.
+
+> 설명: 이 예는 실제로 ```/metrics``` URL에 대해서 HTTP 를 통해 엔드포인트에 접근했을 때, ```metrics``` 응답을 설명한 것이다.
+
+### 44.1. <a name="데이터소스 측정">데이터소스 측정</a>
+다음의 측정은 애플리케이션에 정의되어있는 ```DataSource``` 설정을 탐색한다.
+* 최대 커넥션 수(```datasource.xxx.max```)
+* 최소 커넥션 수(```datasource.xxx.min```)
+* 활동 커넥션 수(```datasource.xxx.active```)
+* 커넥션 풀에서 현재 사용중인 상태(```datasource.xxx.usage```)
+
+```datasource``` 을 접두어로 선언된 모든 데이터 소스 측정을 제공한다. 접두어는 각각의 데이터소스을 구분지을 수 있다:
+* 만약 데이터소스가 primary 데이터 소스(한개만 사용하거나 여러 개 중에 ```@Primary``` 애노테이션으로 표기한)가 있다면, 접두어는 ```datasource.primary```가 될 것이다.
+* ```dataSource```로 끝나는 빈이름을 가진 경우, 접두어는 빈의 이름에서 ```datasource```를 제거한 이름을 가진다(예: ```batchDataSource```의 경우 ```datasource.batch```)가 될 것이다.
+* 그 외의 경우에는, 빈의 이름을 사용한다.
+
+```DataSourcePublicMetrics``` 사용자 정의 버전으로 빈을 등록하여 일부 또는 모든 기본값을 대체할 수 있다. 기본적으로 스프링부트는 지원가능한 모든 데이터소스에 대한 메타데이터를 제공한다. 지원대상 외의 좋아하는 데이터소스를 지원하는 ```DataSourcePoolMetadataProvider``` 빈을 추가할 수도 있다. 예로 ```DataSourcePoolMetadataProvidersConfiguration```를 살펴보라.
+
+### 44.2. <a name="측정 기록">측정 기록</a>
+[CounterService](http://github.com/spring-projects/spring-boot/tree/master/spring-boot-actuator/src/main/java/org/springframework/boot/actuate/metrics/CounterService.java)와 [GaugeService](http://github.com/spring-projects/spring-boot/tree/master/spring-boot-actuator/src/main/java/org/springframework/boot/actuate/metrics/GaugeService.java)의 측정기록을 빈에서 사용하기 위해 주입할 수 있다. ```CounterService``` 는 ```increment```, ```decrement``` 와 ```reset``` 메서드를 확장할 수 있다; ```GaugeService 는 ```submit``` 메서드를 제공한다.
+
+여기 메서드가 호출된 횟수를 카운트하는 간단한 예제가 있다
+```java
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.actuate.metrics.CounterService;
+import org.springframework.stereotype.Service;
+
+@Service
+public class MyService {
+
+    private final CounterService counterService;
+
+    @Autowired
+    public MyService(CounterService counterService) {
+        this.counterService = counterService;
+    }
+
+    public void exampleMethod() {
+        this.counterService.increment("services.system.myservice.invoked");
+    }
+
+}
+```
+
+> 팁: 측정명은 어떤 문자열로도 사용가능하지만 저장/그래프 기술을 선택할 때 가이드라인에 따르기 바란다. Graphite를 위한 가이드라인이 좋은 편인데 [Matt Aimonetti's Blog](http://matt.aimonetti.net/posts/2013/06/26/practical-guide-to-graphite-monitoring/)에서 살펴볼 수 있다.
+
+### 44.3. <a name="공개 측정 추가">공개 측정 추가</a>
+```PublicMetrics``` 구현체 빈을 추가 등록해놓으면, 측정 엔드포인트가 호출될때마다 계산되는 추가 측정요소를 추가할 수 있다. 기본적으로, 모든 빈들은 엔드포인트에 의해 수집된다. ```MetricsEndpoint```을 정의하여 쉽게 변경할 수 있다.
+
+### 44.4. <a name="측정 레파지토리">측정 레파지토리</a>
+측정 서비스 구현체는 항상 [MetricRepository](http://github.com/spring-projects/spring-boot/tree/master/spring-boot-actuator/src/main/java/org/springframework/boot/actuate/metrics/repository/MetricRepository.java)와 연결된다. ```MetricRepository```는 측정정보를 저장하고 반환한다. 스프링 부트는 ```InMemoryMetricRepository``` 와 ```RedisMetricRepository```를 제공한다(기본은 in-memory repository다) 그러나 우리가 작성한 것도 사용가능하다. ```MetricRepository``` 인터페이스는 ```MetricReader``` 와 ```MetricWriter``` 인터페이스 보다 높은 위치에 있다. 보다 자세한 내용은 [Javadoc](http://docs.spring.io/spring-boot/docs/1.2.0.BUILD-SNAPSHOT/api/org/springframework/boot/actuate/metrics/repository/MetricRepository.html)을 살펴보자.
+
+```MetricRepository```를 통해 앱의 백엔드로 바로 저장하는 것을 아무도 제지하지 않지만, 기본으로 ```InMemoryMetricRepository```(힙heap 사용이 꺼려진다면 ```Map``` 인스턴스를 수정할 수 있다) 사용을 권장하고 규칙으로 잡을 내보내는 백엔드 저장소를 선호한다. 다른 방법으로는 측정치를 메모리에 버퍼링을 통해 얻고 배치나 네트워크 통신량이 감소하는 때에 내보내는 것이다. 스프링 부트는 ```Exporter``` 인터페이스를 제공하고 그것에서 시작하는 기본적인 구현체들을 제공한다.
+
+### 44.5. <a name="Coda Hale 측정">Coda Hale 측정</a>
+[Coda Hale 'Metrics' 라이브러리](http://metrics.codahale.com/)의 사용자는 스프링부트 측정이 ```com.codahale.metrics.MetricRegistry```으로 출판한 것들을 자동으로 찾아낼 것이다. 기본 ```com.codahale.metrics.MetricRegistry``` 스프링빈은 ```com.codahale.metrics:metrics-core``` 의존성을 정의하면 생성된다. 변경이 필요하다면 ```@Bean``` 인스턴스를 추가등록할 수 있다.
+
+사용자는 적절한 형태로 자신의 측정에 대한 이름을 덥두어로 Coda Hale metrics 을 만들 수 있다(예: ```histogram.*```, ```meter.*```). 
+
+### 44.6. <a name="메시지 채널 통합">메시지 채널 통합</a>
+만약에 '스프링 메시징' jar 파일이 클래스패스 상에 있다면 ```metricsChannel```이라 불리는 ```MessageChannel```이 자동으로 생성된다(이미 존재하지 않는다면). 모든 측정 업데이트 이벤트는 채널을 통해 'messages'를 출판Publishing하여 추가한다. 클라이언트에서는 이 채널을 구독Subscribe하여 분석이나 액션을 추가할 수 있다. 
+
+## 45. <a name="감시auditing">감시auditing</a>
 ## 46. 추적Tracing<a name="추적Tracing"></a>
 ### 46.1. 추적 변경
 ## 47. 프로세스 모니터링
