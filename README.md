@@ -12,7 +12,7 @@ Copies of this document may be made for your own use and for distribution to oth
 
 *****
 
-# I. 스프링부트 문서
+# I. [스프링부트 문서](#스프링부트-문서)
 ## 1. 문서에 대해
 ## 2. 도움 구하기
 ## 3. 첫걸음
@@ -406,7 +406,7 @@ Copies of this document may be made for your own use and for distribution to oth
 
 *****
 
-# I. 스프링부트 문서
+# I. <a name="스프링부트 문서"></a>스프링부트 문서
 이 섹션은 스프링부트 참고문서에 관해 간략하게 살펴본다. 문서의 나머지 부분들에 대한 지도라고 생각하자. 이 참고 가이드를 한줄한줄 열정적으로 읽을 수도 있고, 흥미가 없다면 지나쳐도 된다.
 
 ## 1. 문서에 대해
@@ -2098,10 +2098,10 @@ Using default security password: 78fa095d-3f4c-48b1-ad50-e24c31d5cf35
 ## 28. <a name="SQL 데이터베이스 작업">SQL 데이터베이스 작업</a>
 스프링 프레임워크는 SQL 데이터베이스에서 동작하는 넓은 지원을 제공한다. ```JdbcTemplate```를 사용하여 바로 JDBC에 접속하는 것부터 '객체 관계 매핑' 기술의 하이버네이트까지 폭넓게 지원한다. 스프링 데이터는 인터페이스로부터 바로 ```Repository``` 구현체를 생성하고 메서드명으로부터 쿼리를 생성하는 관례를 사용할 수 있는 수준의 추가적인 기능성을 제공한다. 
 
-### 28.1. 데이터베이스 설정
+### 28.1. <a name="데이터베이스 설정">데이터베이스 설정</a>
 자바의 ```javax.sql.DataSource``` 인터페이스는 데이터베이스 연결을 위한 표준 메서드를 제공한다. 기본적으로 데이터소스는 데이터베이스 연결을 생성하는 자격들을 얻는데 ```URL```을 사용한다.
 
-#### 28.1.1. 내장형 데이터베이스 지원
+#### 28.1.1. <a name="내장형 데이터베이스 지원">내장형 데이터베이스 지원</a>
 인-메모리 내장형 데이터베이스를 사용하면 애플리케이션을 개발하는데 편리하다. 당연히, 인-메모리 데이터베이스는 영속적인 저장소를 제공하지 않는다. 애플리케이션을 시작할 때와 애플리케이션을 종료할 때 데이터를 옮기기 위해 데이터베이스를 필요로 할 것이다.
 > 팁: 어떻게 하는지는 [어떻게 데이터베이스를 초기화하는지 섹션](#데이터베이스 초기화)에 정리되어 있다.
 
@@ -2122,7 +2122,7 @@ Using default security password: 78fa095d-3f4c-48b1-ad50-e24c31d5cf35
 
 > 노트: 자동설정을 위해 내장된 데이터베이스를 위한 ```spring-jdbc``` 의존성이 필요하다. ```spring-boot-starter-data-jpa``` 에 의해 자동으로 추가된다.
 
-#### 28.1.2. 외부 데이터베이스 연결
+#### 28.1.2. <a name="외부 데이터베이스 연결">외부 데이터베이스 연결</a>
 출시 데이터베이스 연결에는 ```DataSource```의 풀링 사용을 자동으로 설정할 수 있다. 여기 지정 구현체를 선택하는 알고리듬이 있다.
 * 성능과 동시성을 위한 톰캣 풀링 ```DataSource``` 설정은, 언제든지 선택할 수 있다.
 * HikariCP라면 사용가능하다.
@@ -2145,7 +2145,7 @@ spring.datasource.driver-class-name=com.mysql.jdbc.Driver
 
 > 노트: ```DataSource``` 풀링을 만들기 위해 ```Driver``` 클래스를 필요로 할수 있다, 그 때는 무언가를 하기 전에 체크를 한다. 예를 들어, ```spring.datasource.driverClassName=com.mysql.jdbc.Driver```를 설정하면 클래스는 적재가능해진다.
 
-#### 28.1.3. JNDI 데이터베이스 연결
+#### 28.1.3. <a name="JNDI 데이터베이스 연결">JNDI 데이터베이스 연결</a>
 스프링부터 애플리케이션을 애플리케이션 서버에 배포하려할 때 데이터베이스에 대한 설정과 관리를 애플리케이션 빌트-인 기능들과 접근에 JNDI를 사용하고 싶을 수도 있다.
 
 ```spring.datasource.jndi-name``` 속성은 지정된 JNDI 위치에 ```DataSource```에 접근하기 위한 ```spring.datasource.url```, ```spring.datasource.username```과 ```spring.datasource.password``` 프로퍼티즈를 대신할 수 있다. 예를 들어, 다음과 같이 ```application.properties```를 보면 어떻게 ```DataSource```를 정의하여 JBoss AS에 접근할 수 있는지 알 수 있다.
@@ -2153,7 +2153,7 @@ spring.datasource.driver-class-name=com.mysql.jdbc.Driver
 spring.datasource.jndi-name=java:jboss/datasource/customers
 ```
 
-### 28.2. JdbcTemplate 사용
+### 28.2. <a name="JdbcTemplate 사용">JdbcTemplate 사용</a>
 스프링의 ```JdbcTemplate``` 와 ```NamedParameterJdbcTemplate``` 클래스들은 자동설정되어 있으며 ```@Autowired```를 이용해서 빈에 바로 주입할 수 있다.
 ```
 @Component
@@ -2171,7 +2171,7 @@ public class MyBean {
 }
 ```
 
-### 28.3. JPA 그리고 'Spring Data'
+### 28.3. <a name="JPA 그리고 'Spring Data'">JPA 그리고 'Spring Data'</a>
 자바 영속 API(Java Persistence API)는 객체와 데이터베이스의 관계를 연결하는 표준기술이다. ```spring-boot-stater-data-jpa``` POM이 빠르게 시작할 수 있는 방법을 제공한다. 주요 의존성은 다음과 같다.
 * 하이버네이트Hibernate - JPA 구현체 중에서 많이 사용되고 있음
 * Spring Data JPA -  JPA 기반의 저장소들을 쉽게 사용할 수 있도록 만들어줌
@@ -2179,7 +2179,7 @@ public class MyBean {
 
 > 팁: 여기서 JPA 혹은 Spring Data 에 대해서는 상세히 다루지는 않는다. [spring.io](http://spring.io/)에서 [JPA로 데이터에 접근하기'Accessing Data with JPA'](http://spring.io/guides/gs/accessing-data-jpa/)와 [Spring Data JPA](http://projects.spring.io/spring-data-jpa/)와 [Hibernate](http://hibernate.org/orm/documentation/) 참고문서를 살펴보기 바란다.
 
-#### 28.3.1. 엔티티 클래스
+#### 28.3.1. <a name="엔티티 클래스">엔티티 클래스</a>
 JPA 'Entity' 클래스는 ```persistence.xml``` 파일에 정의한다. 스프링부트는 이 파일을 필요로 하지 않으며 대신에 'Entity Scanning'을 사용한다. 기본적으로 메인설정클래스(```@EnableAutoConfiguration```  혹은 ```@SpringBootApplication``` 어노테이션이 있는 클래스)가 있는 패키지를 기준으로 모든 패키지를 검색한다.
 
 ```@Entity```, ```@Embeddable``` 혹은 ```@MappedSuperClass``` 어노테이드된 클래스들이 대상이 된다. 일반적인 엔티티 클래스는 다음과 유사한 모습을 가진다.
@@ -2230,7 +2230,7 @@ public class City implements Serializable {
 
 > 팁: ```@EntityScan``` 어노테이션을 사용하면 엔티티 스캔위치를 변경할 수 있다. 이와 관련된 내용은 [섹션 68.4. 스프링 설정으로 부터 @Entity 정의 분리](#스프링 설정으로 부터 @Entity 정의 분리)를 보면 어떻게 하는지 알 수 있을 것이다.
 
-#### 28.3.2. Spring Data JPA 레파지토리
+#### 28.3.2. <a name="Spring Data JPA 레파지토리">Spring Data JPA 레파지토리</a>
 Spring Data JPA 레파지토리는 데이터에 대한 접근을 정의할 수 있는 인터페이스들이다. JPA 쿼리는 메서드의 이름으로부터 자동으로 쿼리를 생성한다. 예를 들어, ```CityRepository``` 인터페이스에 ```findAllByState(String state)``` 메서드가 정의되어 있다면 state를 주고 모든 도시를 검색할 것이다. 
 
 보다 복잡한 쿼리는 Spring Data의 [Query](http://docs.spring.io/spring-data/jpa/docs/current/api/org/springframework/data/jpa/repository/Query.html) 어노테이션을 메서드에 어노테이드하여 사용할 수 있다.
@@ -2255,7 +2255,7 @@ public interface CityRepository extends Repository<City, Long> {
 
 > 팁: 우리는 Spring Data JPA의 표면을 거의 긁어냈다.<작가주>이 표현은... 모르겠음. @_@)</작가주> 보다 자세한 내용은 [참조 문서](http://projects.spring.io/spring-data-jpa/)를 확인하라.
 
-#### 28.3.3. JPA 데이터베이스 생성 및 삭제
+#### 28.3.3. <a name="JPA 데이터베이스 생성 및 삭제">JPA 데이터베이스 생성 및 삭제</a>
 기본적으로, JPA  데이터베이스는 내장된 데이터베이스(H2, HSQL 혹은 Derby)를 사용할 경우 자동적으로 생성된다. ```spring.jpa.*``` 프로퍼티즈를 사용한 JPA  설정을 통해 보다 명확하게 설정할 수 있다. 예를 들어, 테이블을 생성하고 제거하려면 다음과 같이 ```application.properties```에 추가할 수 있다.
 
 ```
@@ -2272,25 +2272,25 @@ spring.jpa.properties.hibernate.globally_quoted_identifiers=true
 
 ```ApplicationContext```가 시작할 때까지 기본적으로 DDL 실행(혹은 유효성 검사)은 지연된다. 하이버네이트 자동설정이 활성화되어 있다면 ```spring.jpa.generate-ddl``` 플래그를 사용하지 않는데 왜냐하면 ddl-auto 설정의 우선순위가 낮기 때문이다.
 
-## 29. NoSQL 기술 작업<a name="NoSQL 기술 작업"></a>
-### 29.1. 레디스Redis
-#### 29.1.1. 레디스 연결
-### 29.2. 몽고DBMongoDB
-#### 29.2.1. 몽고DB 연결
-#### 29.2.2. ```MongoTemplate```
-#### 29.2.3. Spring Data 몽고DB 레파지토리
-### 29.3. Gemfire
-### 29.4. Solr
-#### 29.4.1. Solr 연결
-#### 29.4.2. Spring Data Elasticsearch 레파지토리
-## 30. 메시징<a name="메시징"></a>
-### 30.1. JMS<a name="JMS"></a>
-#### 30.1.1. HornetQ 지원
-#### 30.1.2. ActiveMQ 지원
+## 29. <a name="NoSQL 기술 작업">NoSQL 기술 작업</a>
+### 29.1. <a name="레디스Redis">레디스Redis</a>
+#### 29.1.1. <a name="레디스 연결">레디스 연결</a>
+### 29.2. <a name="몽고DBMongoDB">몽고DBMongoDB</a>
+#### 29.2.1. <a name="몽고DB 연결">몽고DB 연결</a>
+#### 29.2.2. ```<a name="MongoTemplate">MongoTemplate</a>```
+#### 29.2.3. <a name="Spring Data 몽고DB 레파지토리">Spring Data 몽고DB 레파지토리</a>
+### 29.3. <a name="Gemfire">Gemfire</a>
+### 29.4. <a name="Solr">Solr</a>
+#### 29.4.1. <a name="Solr 연결">Solr 연결</a>
+#### 29.4.2. <a name="Spring Data Elasticsearch 레파지토리">Spring Data Elasticsearch 레파지토리</a>
+## 30. <a name="메시징">메시징</a>
+### 30.1. <a name="JMS">JMS</a>
+#### 30.1.1. <a name="HornetQ 지원">HornetQ 지원</a>
+#### 30.1.2. <a name="ActiveMQ 지원">ActiveMQ 지원<a/>
 #### 30.1.3. JNDI ```ConnectionFactory``` 사용
-#### 30.1.4. 메시지 전송
-#### 30.1.5. 메시지 수신
-## 31. 이메일 전송
+#### 30.1.4. <a name="메시지 전송">메시지 전송</a>
+#### 30.1.5. <a name="메시지 수신">메시지 수신</a>
+## 31. <a name="이메일 전송">이메일 전송</a>
 스프링 프레임워크는 ```JavaMailSender``` 인터페이스를 이용하여 메일발송을 쉽게 추상화할 수 있는 기능을 제공하고 스프링부트는 스타터 모듈을 통해 쉬운 자동설정을 제공한다.
 > 팁: 어떻게 ```JavaMailSender```를 사용하는지 자세한 내용을 알고 싶다면 [참조 문서](http://docs.spring.io/spring/docs/4.1.3.RELEASE/spring-framework-reference/htmlsingle/#mail)를 클릭해보자.
 
@@ -2375,7 +2375,7 @@ spring.jpa.properties.hibernate.globally_quoted_identifiers=true
 
 > 팁: 텔넷 접근을 활성화하려면 ```org.crsh:crsh.shell.telnet``` 의존성이 추가적으로 필요하다. 
 
-### 43.1. 리모트쉘 연결
+### 43.1. <a name="리모트쉘 연결">리모트쉘 연결</a>
 리모트쉘의 기본 연결포트는 ```2000```번이다. 기본설정된 사용자명은 ```user``` 이고 기본 패스워드는 불규칙하게 생성되어 로그출력으로 노출된다. 만약 스프링시큐리티를 애플리케이션에 사용한다면, 쉘은 기본설정에 의해 (같은 설정)[#보안]을 사용할 것이다. 그렇지 않다면 다음과 같은 메시지와 함께 간단한 인증절차를 제공할 것이다:
 
 ```
@@ -2399,13 +2399,13 @@ user@localhost's password:
 
 ```help```를 입력하면 명령어 목록을 볼 수 있다. 스프링부트는 ```metrics```, ```beans```, ```autoconfig``` 그리고 ```endpoint``` 명령을 제공한다.
 
-#### 43.1.1. 리모트쉘 자격credentials
+#### 43.1.1. <a name="리모트쉘 자격credentials">리모트쉘 자격credentials</a>
 ```shell.auth.simple.user.name``` 와 ```shell.auth.simple.user.password``` 속성을 사용하여 연결인증 정보를 변경할 수 있다. 또한 스프링시큐리티의 ```AuthenticationManager```를 사용하여 로그인 정책을 제어할 수 있다. 자세한 사항은  [CrshAutoConfiguration](http://docs.spring.io/spring-boot/docs/1.2.0.BUILD-SNAPSHOT/api/org/springframework/boot/actuate/autoconfigure/CrshAutoConfiguration.html) and [ShellProperties](http://docs.spring.io/spring-boot/docs/1.2.0.BUILD-SNAPSHOT/api/org/springframework/boot/actuate/autoconfigure/ShellProperties.html) Javadoc을 살펴보자.
 
-### 43.2. 리모트쉘 확장
+### 43.2. <a name="리모트쉘 확장">리모트쉘 확장</a>
 리모트쉘은 흥미로운 부분들을 확장가능하다.
 
-#### 43.2.1. 리모트쉘 명령어
+#### 43.2.1. <a name="리모트쉘 명령어">리모트쉘 명령어</a>
 리모트쉘은 그루비나 자바를 사용하여 쉘 명령어를 추가할 수 있다(보다 자세한 사항은 CRaSH 문서를 보자). 기본적으로 스프링부트는 다음의 위치에서 명령어들을 검색한다.
 * ```classpath*:/commands/**```
 * ```classpath*:/crash/commands/**```
