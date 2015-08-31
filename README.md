@@ -2585,9 +2585,24 @@ public class MyService {
 
 기본적으로 ```InMemoryTraceRepository```을 사용하면 최근 100개 이벤트를 저장한다. 이 부분을 확장하고자 한다면 ```InMemoryTraceRepository``` 인스턴스를 정의할 수 있다. 또한 필요하다면 ```TraceRepository```을 구현하는 방법도 선택할 수 있다.
 
-## 47. 프로세스 모니터링
-### 47.1. 설정 확장
-### 47.2. 작성
+## 47. 프로세스 모니터링<a name="프로세스 모니터링"></a>
+스프링 액추에이터는 프로세스 모니터링에 파일들을 생성하는 유용한 클래스들을 찾아볼 수 있다:
+* ```ApplicationPidFileWriter``` 애플리케이션의 PID 파일을 생성한다(기본적으로 ```application.pid```에 정의된 파일명을 애플리케이션 디렉토리에 생성한다).
+* ```EmbeddedServerPortFileWriter``` 내장 서버의 포함한 파일을 생성한다(기본적으로 ```application.port```라는 이름의 파일을 애플리케이션 디렉토리에 생성).
+
+이 writer들은 기본적으로 활성화되지 않지만 아래에 설명된 방법들 중 하나로 활성화할 수 있다.
+
+### 47.1. 설정 확장<a name="설정 확장"></a>
+```META-INF/spring.factories``` 파일을 두면 리스너들을 활성화한다:
+```
+org.springframework.context.ApplicationListener=\
+org.springframework.boot.actuate.system.ApplicationPidFileWriter,
+org.springframework.boot.actuate.system.EmbeddedServerPortFileWriter
+```
+
+### 47.2. 작성<a name="작성"></a>
+```SpringApplication.addListeners(…​)``` 메서드로 호출하여 리스너를 활성화하고 ```Writer``` object를 전달하면 된다. 이 방법은 ```Writer``` 생성자를 이용해서 파일명과 경로를 변경하는 것이 가능하다.
+
 ## 48. 다음 읽을거리
 
 # VI. 클라우드 배포
