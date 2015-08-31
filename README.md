@@ -12,7 +12,7 @@ Copies of this document may be made for your own use and for distribution to oth
 
 *****
 
-# I. [스프링부트 문서](#스프링부트-문서)
+# I. 스프링부트 문서
 ## 1. 문서에 대해
 ## 2. 도움 구하기
 ## 3. 첫걸음
@@ -406,7 +406,7 @@ Copies of this document may be made for your own use and for distribution to oth
 
 *****
 
-# I. <a name="스프링부트 문서"></a>스프링부트 문서
+# I. <a name="i-스프링부트-문서"></a>스프링부트 문서
 이 섹션은 스프링부트 참고문서에 관해 간략하게 살펴본다. 문서의 나머지 부분들에 대한 지도라고 생각하자. 이 참고 가이드를 한줄한줄 열정적으로 읽을 수도 있고, 흥미가 없다면 지나쳐도 된다.
 
 ## 1. 문서에 대해
