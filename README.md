@@ -2548,7 +2548,43 @@ public class MyService {
 또한 비즈니스 이벤트를 위한 감시 서비스 사용을 고려할 수 있다. 컴포넌트 안에 ```AuditEventRepository```를 주입하거나 스프링의 ```ApplicationEventPublisher```을 통해서 ```AuditApplicationEvent``` 를 간단하게 발급할 수 있다(```ApplicationEventPublisherAware``` 사용).
 
 ## 46. 추적Tracing<a name="추적Tracing"></a>
-### 46.1. 추적 변경
+추적은 모든 HTTP 요청에 대해서 자동적으로 활성화된다. ```trace``` 엔드포인트로 볼 수 있으며 최근 요청들에 대해 기본적인 정보를 제공한다.
+```json
+[{
+    "timestamp": 1394343677415,
+    "info": {
+        "method": "GET",
+        "path": "/trace",
+        "headers": {
+            "request": {
+                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+                "Connection": "keep-alive",
+                "Accept-Encoding": "gzip, deflate",
+                "User-Agent": "Mozilla/5.0 Gecko/Firefox",
+                "Accept-Language": "en-US,en;q=0.5",
+                "Cookie": "_ga=GA1.1.827067509.1390890128; ..."
+                "Authorization": "Basic ...",
+                "Host": "localhost:8080"
+            },
+            "response": {
+                "Strict-Transport-Security": "max-age=31536000 ; includeSubDomains",
+                "X-Application-Context": "application:8080",
+                "Content-Type": "application/json;charset=UTF-8",
+                "status": "200"
+            }
+        }
+    }
+},{
+    "timestamp": 1394343684465,
+    ...
+}]
+```
+
+### 46.1. 추적 변경<a name="추적 변경"></a>
+추가적으로 이벤트들에 대한 추적이 필요하다면 스프링 빈 안에 [TraceRepository](http://github.com/spring-projects/spring-boot/tree/master/spring-boot-actuator/src/main/java/org/springframework/boot/actuate/trace/TraceRepository.java) 를 주입하면 된다. ```add``` 메서드에 싱글 ```Map``` 구조를 전달하면 JSON으로 컨버팅되고 로그도 남는다.
+
+기본적으로 ```InMemoryTraceRepository```을 사용하면 최근 100개 이벤트를 저장한다. 이 부분을 확장하고자 한다면 ```InMemoryTraceRepository``` 인스턴스를 정의할 수 있다. 또한 필요하다면 ```TraceRepository```을 구현하는 방법도 선택할 수 있다.
+
 ## 47. 프로세스 모니터링
 ### 47.1. 설정 확장
 ### 47.2. 작성
