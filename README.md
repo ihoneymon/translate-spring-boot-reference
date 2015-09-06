@@ -2444,13 +2444,94 @@ public class MyBean {
 
 > 팁: Spring Data Elasticsearch에 대한 보다 자세한 사항은, [참고문서](http://docs.spring.io/spring-data/elasticsearch/docs/)를 살펴보기 바란다.
 
-## 30. <a name="메시징">메시징</a>
-### 30.1. <a name="JMS">JMS</a>
-#### 30.1.1. <a name="HornetQ 지원">HornetQ 지원</a>
-#### 30.1.2. <a name="ActiveMQ 지원">ActiveMQ 지원<a/>
+## 30. 메시징<a name="메시징"></a>
+스프링 프레임워크는 메시징 시스템 통합을 위한 광버무이한 지원을 제공한다; 간단하게는 ```JmsTemplate```를 이용하여 JMS API를 간단하게 이요할 수 있는 것부터 비동기적으로 메시지를 수신하는 인프라스트럭처를 완성할 수 있다. 스프링 AMQP 는 'Advanced Message Queuing Protocol' 과 유사한 기능셋을 제공하고 부트는 ```RabbitTemplate``` 와 RabbitMQ를 위한 자동설정 옵션을 제공한다. 또한 스프링 웹소켓에서 기본적으로 STOMP 메시징을 지원하며 스프링부트는 starter와 자동설정을 제공한다(스프링 프레임워크 참고문서의 [적절한 섹션](http://docs.spring.io/spring/docs/4.1.3.RELEASE/spring-framework-reference/htmlsingle/#jms)을 살펴보라). 스프링부트는 메시지 송수신을 위해 필요한 인프라를 자동구성한다.
+
+### 30.1. JMS<a name="JMS"></a>
+```javax.jms.ConnectionFactory``` 인터페이스는 JMS 브로커와 상호작용을 위한 ```javax.jms.Connection``` 를 만들기 위한 표준 메서드를 제공한다. 스프링이 JMS으로 동작하기 위해서는 ```ConnectionFactory```가 필요한데, 바로 생성할 필요없이 대신 더 높은 수준의 메시징 추상화에 의존할 수 있다.
+
+#### 30.1.1. HornetQ 지원<a name="HornetQ 지원"></a>
+스프링부트는 클래스패스 상에서 HornetQ가 탐색되었을 때 ```ConnectionFactory```를 자동설정할 수 있다. 만약 브로커broker가 존재한다면, 자동설정된 내장된 브로커가 구동된다(모드 속성이 명시적으로 설정되어 있지 않은 경우). 지원되는 모드는 ```embedded```(내장된 브로커는 명시적으로 필요하며 클래스패스 상에서 찾을 수 없는 경우 에러가 발생한다), 그리고 ```native```는 ```netty``` 전송 프로토콜을 사용하여 브로커에 연결한다. 레터가 설정되어 있다면, 스프링부트는 ```ConnectionFactory```를 설정하여 기본설정에 따라 로컬 머신에서 실행되고 있는 브로커에 연결한다. 
+
+> 노트:
+```spring-boot-starter-hornetq```를 사용하면 기존에 존재하는 HornetQ 인스턴스 연결에 필요한 의존성 뿐만 아니라 스프링 인프라스트럭처는 JMS 와 통합이 가능해진다. ```org.hornetq:hornetq-jms-server``` 을 애플리케이션에 추가하고 내장 모드를 사용하면 된다.
+
+HornetQ 설정은 ```spring.hornetq.*``` 확장 설정 속성에 의해 제어된다. 예를 들어, ```application.properties``` 에 다음과 같이 정의를 한다면:
+
+```
+spring.hornetq.mode=native
+spring.hornetq.host=192.168.1.210
+spring.hornetq.port=9876
+```
+
+내장된 브로커라면, 영속화 활성을 선택한다면, 목적지 목록을 만드는 것이 가능하다. 콤마로 구분된 목록을 정의하여 기본옵션의 브로커들을 생성한다; ```org.hornetq.jms.server.config.JMSQueueConfiguration``` 혹은 ``` org.hornetq.jms.server.config.TopicConfiguration``` 타입의 나은 큐와 토픽에 관한 설정을 빈으로 정의한다
+
+지원사항에 대한 자세한 내용은 [HornetQProperties](http://github.com/spring-projects/spring-boot/tree/master/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/jms/hornetq/HornetQProperties.java)를 살펴보기 바란다.
+
+JNDI 룩럽은 전혀 관여하지 않으며 목적지(destination)는 HornetQ 구성에서 '이름' 속성 또는 구성을 통해 제공되는 이름을 사용하거나, 자신의 이름을 통해 해결한다.
+
+#### 30.1.2. ActiveMQ 지원<a name="ActiveMQ 지원"><a/>
+스프링부트는 클래스패스 상에서 ActiveMQ가 탐색되었을 때 ```ConnectionFactory```를 자동설정할 수 있다. 만약 브로커broker가 존재한다면, 자동설정된 내장 브로커가 구동된다(어떤 브로커 URL도 지정된 설정이 없다면).
+
+ActiveMQ 설정은 ```spring.activemq.*``` 확장 설정 프로퍼티즈를 토해서 제어할 수 있다. 예를 들어, ```application.properties``` 에 다음과 같이 설정하면:
+```
+spring.activemq.broker-url=tcp://192.168.1.210:9876
+spring.activemq.user=admin
+spring.activemq.password=secret
+```
+
+설정과 관련된 지원사항을 보다 자세히 살펴보려면 [ActiveMQProperties](http://github.com/spring-projects/spring-boot/tree/master/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/jms/activemq/ActiveMQProperties.java)를 살펴보기 바란다.
+
+기본적으로, ActiveMQ는 목적지가 정의해야하는데 목적지가 정의되지 않았다면, 목적지는 제공된 이름을 기준으로 처리된다.
+
 #### 30.1.3. JNDI ```ConnectionFactory``` 사용
-#### 30.1.4. <a name="메시지 전송">메시지 전송</a>
-#### 30.1.5. <a name="메시지 수신">메시지 수신</a>
+애플리케이션 서버에서 스프링부트 애플리케이션을 실행하고 있는 경우 JMS ```ConnectionFactory```를 사용하여 JNDI를 검색한다. 기본위치인 ```java:/JmsXA``` 와 ```java:/XAConnectionFactory```를 점검할 것이다. 위치를 변경해야할 경우가 있다면 ```spring.jms.jndi-name``` 속성을 사용하면 된다.
+
+```
+spring.jms.jndi-name=java:/MyConnectionFactory
+```
+
+#### 30.1.4. 메시지 전송<a name="메시지 전송"></a>
+스프링의 ```JmsTemplate```는 자동설정되며 다음과 같이 빈에 직접 autowired 할 수 있다.
+```java
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jms.core.JmsTemplate;
+import org.springframework.stereotype.Component;
+
+@Component
+public class MyBean {
+
+    private final JmsTemplate jmsTemplate;
+
+    @Autowired
+    public MyBean(JmsTemplate jmsTemplate) {
+        this.jmsTemplate = jmsTemplate;
+    }
+
+    // ...
+
+}
+```
+
+> 노트: 
+[JmsMessagingTemplate](http://docs.spring.io/spring/docs/4.1.3.RELEASE/javadoc-api/org/springframework/jms/core/JmsMessagingTemplate.html)(스프링 4.1에 추가)는 비슷한 방법으로 주입가능하다.
+
+#### 30.1.5. 메시지 수신<a name="메시지 수신"></a>
+JMS 인프라스트럭처가 존재한다면, ```@JmsListener```를 통해 리스너 엔드포인트를 정의할 수 있다. ```JmsListenerContainerFactory``` 가 정의된 것이 없다면, 자동적으로 1개가 설정된다.
+
+```someQueue``` 목적지를 리스너 엔드포인트로 하는 컴포넌트를 생성해보자.
+
+```java
+@Component
+public class MyBean {
+
+    @JmsListener(destination = "someQueue")
+    public void processMessage(String content) { ... }
+
+}
+```
+
+보다 자세한 항목은 [EnableJms](http://docs.spring.io/spring/docs/4.1.3.RELEASE/javadoc-api/org/springframework/jms/annotation/EnableJms.html) Javadoc을 확인하자.
 
 ## 31. <a name="이메일 전송">이메일 전송</a>
 스프링 프레임워크는 ```JavaMailSender``` 인터페이스를 이용하여 메일발송을 쉽게 추상화할 수 있는 기능을 제공하고 스프링부트는 스타터 모듈을 통해 쉬운 자동설정을 제공한다.
