@@ -148,6 +148,9 @@ Copies of this document may be made for your own use and for distribution to oth
 ### 29.4. Solr
 #### 29.4.1. Solr 연결
 #### 29.4.2. Spring Data Elasticsearch 레파지토리
+### 29.5. Elasticsearch
+#### 29.5.1. Elasticsearch 연결
+#### 29.5.2. 스프링 데이터 Elasticsearch 레파지토리
 ## 30. 메시징
 ### 30.1. JMS
 #### 30.1.1. HornetQ 지원
@@ -2272,17 +2275,175 @@ spring.jpa.properties.hibernate.globally_quoted_identifiers=true
 
 ```ApplicationContext```가 시작할 때까지 기본적으로 DDL 실행(혹은 유효성 검사)은 지연된다. 하이버네이트 자동설정이 활성화되어 있다면 ```spring.jpa.generate-ddl``` 플래그를 사용하지 않는데 왜냐하면 ddl-auto 설정의 우선순위가 낮기 때문이다.
 
-## 29. <a name="NoSQL 기술 작업">NoSQL 기술 작업</a>
-### 29.1. <a name="레디스Redis">레디스Redis</a>
-#### 29.1.1. <a name="레디스 연결">레디스 연결</a>
-### 29.2. <a name="몽고DBMongoDB">몽고DBMongoDB</a>
-#### 29.2.1. <a name="몽고DB 연결">몽고DB 연결</a>
-#### 29.2.2. ```<a name="MongoTemplate">MongoTemplate</a>```
+## 29. NoSQL 기술 작업<a name="NoSQL 기술 작업"></a>
+스프링 데이터는 [MongoDB](http://projects.spring.io/spring-data-mongodb/), [Neo4J](http://projects.spring.io/spring-data-neo4j/), [Elasticsearch](https://github.com/spring-projects/spring-data-elasticsearch/), [Solr](http://projects.spring.io/spring-data-solr/), [Redis](http://projects.spring.io/spring-data-redis/), [Gemfire](http://projects.spring.io/spring-data-gemfire/), [Couchbase](http://projects.spring.io/spring-data-couchbase/) 그리고 [Cassandra](http://projects.spring.io/spring-data-cassandra/) 등을 포함한 다양한 NoSQL 기술에 접근할 수 있도록 돕는 프로젝트들을 추가할 수 있다.
+스프링부트는 Redis, MongoDB, Elasticsearch, Solr 그리고 Gemfire 를 위한 자동설정을 지원한다. 다른 프로젝트들을 사용할 수도 있지만 필요하다면 설정을 변경할 수도 있다. [projects.spring.io/spring-data](http://projects.spring.io/spring-data)에 나와있는 참조문서들을 살펴보기 바란다. 
+
+### 29.1. 레디스Redis<a name="레디스Redis"></a>
+[Redis](http://redis.io/)는 캐시, 메시지 브로커 그리고 풍부한 기능을 가진 key-value 를 저장한다. 스프링부트는 [jedis](https://github.com/xetorthio/jedis/)와 [Spring Data Redis](https://github.com/spring-projects/spring-data-redis)에서 제공하는 추상화된 기초적인 자동설정을 제공한다. ```spring-boot-starter-redis```을 'Starter POM'을 이용하면 손쉽게 의존성을 추가할 수 있다.
+
+#### 29.1.1. 레디스 연결<a name="레디스 연결"></a>
+다른 스프링 빈들에 자동설정된 ```RedisConnectionFactory```, ```StringRedisTemplate``` 혹은 vanilla ```RedisTemplate``` 인스턴스를 주입할 수 있다. 기본적으로 인스턴스들은 ```localhost:6379```를 사용하여 Redis 서버에 연결한다.
+```java
+@Component
+public class MyBean {
+
+    private StringRedisTemplate template;
+
+    @Autowired
+    public MyBean(StringRedisTemplate template) {
+        this.template = template;
+    }
+
+    // ...
+
+}
+```
+
+자동구성된 형태의 ```@Bean```을 추가할 경우 기본값을 대체할 것이다(```RedisTemplate```의 경우를 제외하고 그것의 타입이 아니라 'redisTemplate' 이름에 기초하여 제외한다). 만약 ```commons-pool2```이 클래스패스에 있다면 기본적으로 pooled 커넥션 팩토리를 가지게 될 것이다.
+
+### 29.2. 몽고DB MongoDB<a name="몽고DBMongoDB"></a>
+[몽고DB](http://www.mongodb.com/)는 전통적인 테이블 기반의 관계형 데이터를 대신하여 JSON과 유사한 구조를 가진 오픈소스 NoSQL 문서 데이터베이스다. 스프링부트는 ```spring-boot-starter-data-mongodb``` 'Starter POM'을 추가하면 몽고DB에서 동작하는 다양한 편의를 제공한다.
+
+#### 29.2.1. 몽고DB 연결<a name="몽고DB 연결"></a>
+스프링 빈에 자동설정된 ```com.mongodb.Mongo``` 인스턴스를 주입할 수 있다. 기본적으로 인스턴스는 몽고DB 서버에서 사용하는 URL ```mongodb://localhost/test``` 으로 연결될 것이다:
+
+```java
+import com.mongodb.Mongo;
+
+@Component
+public class MyBean {
+
+    private final Mongo mongo;
+
+    @Autowired
+    public MyBean(Mongo mongo) {
+        this.mongo = mongo;
+    }
+
+    // ...
+
+}
+```
+
+```spring.data.mongodb.uri``` 속성을 설정하여 ```url```을 변경하거나 ```host/port```를 정의할 수도 있다. 예를 들어, ```application.properties```에 다음과 같이 정의할 수 있다:
+```
+spring.data.mongodb.host=mongoserver
+spring.data.mongodb.port=27017
+```
+
+> 팁: ```spring.data.mongodb.port```를 정의하지 않으면 ```27017```을 기본으로 사용한다. 간단히 위의 예제에서 이 라인을 삭제하면 된다.
+
+MongoDB의 연결 설정을 완전히 제어하려는 경우, 별도의 ```Mongo @Bean```을 선언하면 된다.
+
+#### 29.2.2. ```MongoTemplate```<a name="MongoTemplate"></a>
+스프링 데이터 몽고는 스프링의 ```JdbcTemplate```와 유사하게 설계된 [MongoTemplate](http://docs.spring.io/spring-data/mongodb/docs/current/api/org/springframework/data/mongodb/core/MongoTemplate.html) 클래스를 제공한다. 스프링부트의 자동설정된 ```JdbcTemplate``` 빈처럼 간단하게 주입할 수 있다.
+
+```java
+@Component
+public class MyBean {
+
+    private final MongoTemplate mongoTemplate;
+
+    @Autowired
+    public MyBean(MongoTemplate mongoTemplate) {
+        this.mongoTemplate = mongoTemplate;
+    }
+
+    // ...
+
+}
+```
+
+보다 자세한 내용은 ```MongoOperations``` Javadoc을 살펴보자.
+
 #### 29.2.3. <a name="Spring Data 몽고DB 레파지토리">Spring Data 몽고DB 레파지토리</a>
+스프링 데이터는 MongoDB를 지원하는 레파지토리를 포함하고 있다. 앞서 거론했던 JPA 레파지토리처럼, 메서드 네임을 바탕으로 하여 자동적으로 쿼리를 생성하는 기본 처리방식을 가지고 있다.
+
+사실, 스프링 데이터 JPA와 스프링 데이터 MongoDB는 같은 공통 인프라스트럭처를 공유한다. 그래서 앞에서 다른 JPA 예제를, ```City```는 JPA ```@Entity```에서 몽고 데이터 클래스가 되었다, 동작 방식은 같다:
+```java
+package com.example.myapp.domain;
+
+import org.springframework.data.domain.*;
+import org.springframework.data.repository.*;
+
+public interface CityRepository extends Repository<City, Long> {
+
+    Page<City> findAll(Pageable pageable);
+
+    City findByNameAndCountryAllIgnoringCase(String name, String country);
+
+}
+```
+
+>팁: 
+스프링 데이터 MongoDB에 관해 보다 자세히 살펴보려면, 리치 객체 매핑기술을 포함하여, [참고문서](http://projects.spring.io/spring-data-mongodb/)를 살펴보기 바란다.
+
 ### 29.3. <a name="Gemfire">Gemfire</a>
+[Spring Data Gemfire](https://github.com/spring-projects/spring-data-gemfire)는 [Pivotal Gemfire](http://www.gopivotal.com/big-data/pivotal-gemfire#details) 데이터 관리 플랫픔 접근하기 편리한 스프링에 친화적인 도구들을 제공한다. 편리하게 사용하기 위해서는 ```spring-boot-starter-data-gemfire``` 'Starter POM' 의존성을 추가해야한다. 현재는 Gemfire를 위한 자동설정을 제공하지는 않지만, [@EnableGemfireRepositories](https://github.com/spring-projects/spring-data-gemfire/blob/master/src/main/java/org/springframework/data/gemfire/repository/config/EnableGemfireRepositories.java) 애노테이션만 사용하면 스프링 데이터 레파지토리를 활성화할 수 있다.
+
 ### 29.4. <a name="Solr">Solr</a>
+[Apache Solr](http://lucene.apache.org/solr/)는 검색엔진이다. 스프링부트는 [Spring Data Solr](https://github.com/spring-projects/spring-data-solr)에서 제공하는 solr 클라이언트 라이브러리와 추상화 되어 있는 기본적인 자동설정을 제공한다. ```spring-boot-starter-data-solr``` 'Starter POM' 의존성만 추가하면 쉽게 사용할 수 있다.
+
 #### 29.4.1. <a name="Solr 연결">Solr 연결</a>
+자동설정된 ```SolrServer``` 인스턴스를 다른 스프링 빈에 주입할 수 있다. 서버에 대한 기본적인 연결설정은 ```localhost:8993/solr```을 사용한다.
+
+```
+@Component
+public class MyBean {
+
+    private SolrServer solr;
+
+    @Autowired
+    public MyBean(SolrServer solr) {
+        this.solr = solr;
+    }
+
+    // ...
+
+}
+```
+
+만약에 ```SolrServer``` 타입의 ```@Bean```을 추가하면 그 빈으로 대체된다.
+
 #### 29.4.2. <a name="Spring Data Elasticsearch 레파지토리">Spring Data Elasticsearch 레파지토리</a>
+스프링 데이터는 Apache Solr을 위한 레파지토리 지원을 포함하고 있다. 앞서 거론했던 JPA 레파지토리처럼, 메서드 네임을 바탕으로 하여 자동적으로 쿼리를 생성하는 기본 처리방식을 가지고 있다.
+
+사실, Spring Data JPA와 Spring Data Solr은 같은 공통 인프라스트럭처를 공유하고 있다. 그래서 앞서 다룬 JPA 예제에서 ```City```는 JPA ```@Entity```에서 ```SolrDocument``` 클래스가 되었다. 동작 방식은 같다.
+
+> 팁
+Spring Data Solr에 대한 보다 자세한 내용은 [참고문서]http://projects.spring.io/spring-data-solr/)를 살펴보기 바란다.
+
+### 29.5. Elasticsearch<a name="Elasticsearch"></a>
+[엘라스틱서치 Elastic Search](http://www.elasticsearch.org/)는 오픈소스, 분산, 실시간 검색 및 분석 엔진이다. 스프링 부트는 엘라스틱서치를 위한 기본적인 자동설정과 [Spring Data Elasticsearch](https://github.com/spring-projects/spring-data-elasticsearch)이 제공하는 추상화를 제공한다. ```spring-boot-starter-data-elasticsearch``` 'Starter POM'을 추가하면 의존성을 손쉽게 추가할 수 있다.
+
+#### 29.5.1. Elasticsearch 연결<a name="Elasticsearch 연결"></a>
+자동설정된 ```ElasticsearchTemplate``` 이나 엘라스틱서치 ```Client``` 인스턴스를 다른 스프링빈에 주입할 수 있다. 기본적인 인스턴스는 로컬 인메모리 서버에 접속된다(엘라스틱서치 텀즈 안에 ```NodeClient``` ), 그러나 ```spring.data.elasticsearch.clusterNodes``` 에 콤마로 구분된 'host:port' 목록을 설정하면 원격지 서버로 변경할 수 있다.
+```java
+@Component
+public class MyBean {
+
+    private ElasticsearchTemplate template;
+
+    @Autowired
+    public MyBean(ElasticsearchTemplate template) {
+        this.template = template;
+    }
+
+    // ...
+
+}
+```
+
+```ElasticsearchTemplate``` 타입의 ```@Bean```을 추가하면 기본을 대체하게 된다.
+
+#### 29.5.2. 스프링 데이터 Elasticsearch 레파지토리<a name="스프링 데이터 Elasticsearch 레파지토리"></a>
+스프링 데이터는 엘라스틱서치 지원을 위한 레파지토리를 포함한다. 앞서 살펴봤던 JPA 레파지터리처럼, 기본적인 쿼리 생성박식은 메서드명을 기반으로 하여 자동생성한다.
+
+사실, Spring Data JPA 와 Spring Data Elasticsearch 는 공통 인프라스트럭처를 공유한다, 그래서 JPA에서 예제로 사용했던 ```City```를 ```@Entity``` 대신 엘라스틱서치 ```@Document``` 클래스로 대체하면 된다, 같은 방법으로 동작한다.
+
+> 팁: Spring Data Elasticsearch에 대한 보다 자세한 사항은, [참고문서](http://docs.spring.io/spring-data/elasticsearch/docs/)를 살펴보기 바란다.
+
 ## 30. <a name="메시징">메시징</a>
 ### 30.1. <a name="JMS">JMS</a>
 #### 30.1.1. <a name="HornetQ 지원">HornetQ 지원</a>
@@ -2290,6 +2451,7 @@ spring.jpa.properties.hibernate.globally_quoted_identifiers=true
 #### 30.1.3. JNDI ```ConnectionFactory``` 사용
 #### 30.1.4. <a name="메시지 전송">메시지 전송</a>
 #### 30.1.5. <a name="메시지 수신">메시지 수신</a>
+
 ## 31. <a name="이메일 전송">이메일 전송</a>
 스프링 프레임워크는 ```JavaMailSender``` 인터페이스를 이용하여 메일발송을 쉽게 추상화할 수 있는 기능을 제공하고 스프링부트는 스타터 모듈을 통해 쉬운 자동설정을 제공한다.
 > 팁: 어떻게 ```JavaMailSender```를 사용하는지 자세한 내용을 알고 싶다면 [참조 문서](http://docs.spring.io/spring/docs/4.1.3.RELEASE/spring-framework-reference/htmlsingle/#mail)를 클릭해보자.
