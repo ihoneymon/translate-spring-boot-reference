@@ -2540,11 +2540,56 @@ public class MyBean {
 만약 ```spring.mail.host``` 그리고 관련된 라이브러리들(```spring-boot-starter-mail```에 기본설정된)은 가능하다면, ```JavaMailSender```가 존재하지 않는다면 그것을 만들것이다. 센더는 ```spring.mail``` 네임스페이스를 통해 설정변경이 가능하니, 보다 자세한 부분들은 [MailProperties](http://github.com/spring-projects/spring-boot/tree/master/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/mail/MailProperties.java)를 살펴보자.
 
 ## 32. JTA를 이용한 트랜잭션 분산
+스프리부트는 [Atomkos](http://www.atomikos.com/) 혹은 [Bitronix](http://docs.codehaus.org/display/BTM/Home) 등의 내장된 트랜잭션 매니저를 사용하여 다양한 XA 자원에 대응하는 분산 JTA 트랜잭션을 지원한다. JTA 트랜잭션은 안정적인 Java EE 애플리케이션 서버에 배포되었을 때 사용되기도 한다.
+
+JTA 환경이 탐색되었을 떄, 스프링의 ```JtaTransactionManager```는 트랜잭션 관리를 시작한다. 자동설정된 JMS, DataSource 그리고 JPA 빈은 XA 트랜잭션을 지원하도록 향상될 것이다. 스프링의 표준같은 ```@Transactional```을 통해 분산된 트랜잭션을 사용할 수 있다. 만약 JTA 환경을 로컬 트랜잭션에 대해서 사용하길 원한다면 ```spring.jta.enabled``` 속성을 ```false```로 설정하여 JTA 자동설정을 비활성화할 수 있다.
+
 ### 32.1. Atomikos 트랜잭션 매니저 사용
+Atomikos 는 스프링부트 애플리케이션에 내장시킬 수 있는 인기있는 오픈소스 트랜잭션 관리자다. ```spring-boot-starter-jta-atomikos``` Starter POM을 사용하여 Atomikos 라이브러리들을 사용할 수 있다. 스프링부트는 Atomikos를 자동설정하고 ```depends-on``` 설정은 스프링빈을 위한 정확한 기동과 정지 순위를 제공한다.
+
+기본적으로 Atomikos 트랜잭션 로그는 애플리케이션 홈디렉토리(애플리케이션 jar 파일이 위치한 디렉토리)에서 ```transaction-logs``` 폴더에 작성한다. ```application.properties``` 파일에 ```spring.jta.log-dir``` 속성을 저으이하여 디렉토리를 변경할 수 있다. ```spring.jta```으로 시작하는 속성들을 통해 Atomikos ```UserTransactionServiceIml```를 변경할 수 있다. 자세한 사항은 [AtomikosProperties](http://docs.spring.io/spring-boot/docs/1.2.0.BUILD-SNAPSHOT/api/org/springframework/boot/jta/atomikos/AtomikosProperties.html)을 살펴보기 바란다.
+
+> 노트:
+다중 트랜잭션 관리는 같은 리소스 매니저들을 제어할 수 있는 것이 확실해야 한다. 각각의 Atomikos 인스턴스는 유일한 ID로 설정되어야 한다. 이 기본 ID는 Atomikos가 실행되는 머신의 IP주소를 사용한다. 제품의 유일성이 불확실하다면, 각 애플리케이션의 인스턴스에 ```spring.jta.transaction-manager-id``` 속성으로 설정할 수 있다. 
+
 ### 32.2. Bitronix 트랜잭션 매니저 사용
+Bitronix 는 JTA 트랜잭션 매니저 구현체로 인기있는 오픈소스 중 하나다. ```spring-boot-starter-jta-bitronix``` Starter POM을 통해 프로젝트에 Bitronix의 의존성을 추가할 수 있다. Atomikos 와 마찬가지로, 스프링부트는 자동적으로 Bitronix를 설정하고 빈의 기동과 정지 순위에 따라 후속 조치를 취한다.
+
+기본 Bitronix 트랜잭션 로그 파일(```part1.btm``` 과 ```part2.btm```)은 애플리케이션 홈 디렉토리에 ```transaction-logs``` 폴더에 작성한다. ```spring.jta.log-dir``` 속성을 통해서 디렉토리를 변경할 수 있다. ```spring.jta```로 시장하는 속성들은 ```bitronix.tm.Configuration``` 빈과 연결되니, 변경하는 것이 가능하다. 자세한 내용은 [Bitronix 문서](http://btm.codehaus.org/api/2.0.1/bitronix/tm/Configuration.html)
+를 살펴보기 바란다.
+
+> 노트:
+다중 트랜잭션 관리는 같은 리소스 매니저들을 제어할 수 있는 것이 확실해야 한다. 각각의 Bitronix 인스턴스는 유일한 ID로 설정되어야 한다. 이 기본 ID는 Bitronix가 실행되는 머신의 IP주소를 사용한다. 제품의 유일성이 불확실하다면, 각 애플리케이션의 인스턴스에 ```spring.jta.transaction-manager-id``` 속성으로 설정할 수 있다. 
+
 ### 32.3. Java EE 에서 관리하는 트랜잭션 매니저 사용
+만약 스프링부트 애플리케이션을 ```war``` 혹은 ```ear``` 로 압축하고 Java EE 애플리케이션 서버에 배포한다면, 애플리케이션 서버에서 제공하는 트랜잭션 매니저를 사용할 수 있다. 스프링 부트는 공통 JNDI 위치를 탐색하여 트랜잭션 매니저를 자동설정하려고 할 것이다(```java:comp/UserTransaction```, ```java:comp/TransactionManager``` 등등). 애플리케이션 서버에서 제공하는 트랜잭션 서비스를 사용한다면, 모든 자원들에 대해서 서버에 의해 관리되며 JNDI 외부로 드러나길 바랄 것이다. 스프링부트는 JNDI 경로 ```java:/JmsXA``` 혹은 ```java:/XAConnectionFactory``` 에서 ```ConnectionFactory```를 찾아 JMS 자동설정을 제공할 것이며 [spring.datasource.jndi-name](#JNDI 데이터베이스 연결) 속성을 사용하여 ```DataSource```에 대한 설정할 수 있다.
+
 ### 32.4. XA 그리고 non-XA JMS 연결 혼합
+JTA를 사용할 때 주 JMS ```ConnectionFactory``` 빈은 분산트랜잭션에서 XA를 사용할 것이다. non-XA ```ConnectionFactory```를 사용한 JMS 메시지 처리를 해야하는 경우가 있을 것이다. 예를 들어, JMS 처리 로직이 XA 타임아웃보다 긴 경우가 그렇다.
+
+만약 non-XA ```ConnectionFactory```를 사용하려고 한다면 ```@Primary jmsConnectionFactory```보다 ```nonXaJmsConnectionFactory``` 빈을 주입하면 된다. ```jmsConnectionFactory``` 빈은 또한 또한 ```xaJmsConnectionFactory``` 빈 별칭을 제공한다.
+
+예를 들어:
+```bean
+// Inject the primary (XA aware) ConnectionFactory
+@Autowired
+private ConnectionFactory defaultConnectionFactory;
+
+// Inject the XA aware ConnectionFactory (uses the alias and injects the same as above)
+@Autowired
+@Qualifier("xaJmsConnectionFactory")
+private ConnectionFactory xaConnectionFactory;
+
+// Inject the non-XA aware ConnectionFactory
+@Autowired
+@Qualifier("nonXaJmsConnectionFactory")
+private ConnectionFactory nonXaConnectionFactory;
+```
+
 ### 32.5. 대안적인 내장형 트른잭션 매니저 지원
+[XAConnectionFactoryWrapper](http://github.com/spring-projects/spring-boot/tree/master/spring-boot/src/main/java/org/springframework/boot/jta/XAConnectionFactoryWrapper.java)와 [XADataSourceWrapper](http://github.com/spring-projects/spring-boot/tree/master/spring-boot/src/main/java/org/springframework/boot/jta/XADataSourceWrapper.java) 인터페이스는 내장형 트른잭션 매니저들을 지원하는데 사용할 수 있다. 인터페이스는 ```XAConnectionFactory``` 그리고 ```XADataSource```빈을 감싸고 ```ConnectionFactory``` 그리고 ```DataSource``` 빈즈로 내보내어 분산 트랜잭션에 등록한다. DataSource와 JM 자동설정은 ```JtaTransactionManager```빈을 가지고 있는 한 JTA 변형체를 사용하며 ```ApplicationContext```에 등록되어 있는 XA wrapper를 사용한다.
+
+[BitronixXAConnectionFactoryWrapper](http://github.com/spring-projects/spring-boot/tree/master/spring-boot/src/main/java/org/springframework/boot/jta/BitronixXAConnectionFactoryWrapper.java) and [BitronixXADataSourceWrapper](http://github.com/spring-projects/spring-boot/tree/master/spring-boot/src/main/java/org/springframework/boot/jta/BitronixXADataSourceWrapper.java)는 XA wrapper를 어떻게 사용하는지 좋은 예제를 제공한다.
 
 ## 33. 스프링 통합
 스프링통합Spring Integration은 메시징 추상화와 HTTP, TCP 등의 전송수단 들을 제공한다. 만약 스프링통합을 클래스패스 상에서 사용하기 위해서는 ```@EnableIntegration``` 애노테이션을 이용하여 초기화한다. 'spring-integration-jmx'가 클래스패스에 있을 경우 메시징 프로세싱 분석은 JMX를 통해 제공될 것이다. 보다 자세한 사항은 [IntegrationAutoConfig](http://github.com/spring-projects/spring-boot/tree/master/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/integration/IntegrationAutoConfiguration.java)를 살펴보자.
