@@ -2618,6 +2618,7 @@ private ConnectionFactory nonXaConnectionFactory;
 #### 36.3.3. 리소스 상황
 #### 36.3.4. 웹 애플리케이션 상황
 #### 36.3.5. SpEL 표현식 상황
+
 ## 37. 웹소켓
 스프링부트는 내장형 톰캣(7과 8) 그리고 내장형 Jetty 9에 대한 웹소켓 자동설정을 제공한다. 만약 war 파일을 단독 컨테이너에 배포할 경우, 스프링부트는 컨테이너가 웹소켓을 지원하는 설정을 제공하는지 확인한다.
 
@@ -2628,8 +2629,32 @@ private ConnectionFactory nonXaConnectionFactory;
 
 스프링부트의 핵심 기능들에 대해서 충분히 숙지했다면, [스프링부트 액츄에터: 출시준비 기능들](#스프링부트 액츄에터: 출시준비 기능들)으로 이동하도록 하자.
 
-# V. <a name="스프링부트 액츄에터: 출시준비 기능들">스프링부트 액츄에터: 출시준비 기능들</a>
-## 39. 사용가능한 출시준비 기능들
+# V. 스프링부트 액츄에터: 출시준비 기능들<a name="스프링부트 액츄에터: 출시준비 기능들"></a>
+스프링부트는 제품을 출시했을 때 애플리케이션을 관찰하고 관리하는데 유용한 많은 기능들을 포함하고 있다. HTTP endpoints, 그리고 JMX 혹은 리모트 쉘(SSH 혹은 Telnet) 등 다양한 기능 중에서 어떤 기능을 이용하여 애플리케이션을 관리하고 관찰할 지 결정할 수 있다. 애플리케이션에서 감시audting, 건강health 그리고 측정metrics 을 자동으로 획득할 수 있다. 
+
+## 39. 사용가능한 출시준비 기능들<a name="사용가능한 출시준비 기능들"></a>
+[```spring-boot-actuator```](http://github.com/spring-projects/spring-boot/tree/master/spring-boot-actuator) 모듈은 스프링부트의 출시준비 기능을 제공한다. ``` spring-boot-starter-actuator``` 'Starter POM' 의존성을 추가하는 것만으로 간단하게 기능을 활서오하할 수 있다.
+
+#### 액츄에이터 정의
+액체에이터는 기간동안 생산하고, 무엇인가를 제어하거나 움직이기 위해 기계적인 장치를 참조하는 것이다. 액츄에이터는 작은 변화로부터 큰 변화를 만들어낼 수 있다.
+
+메이븐 기반의 프로젝트에 액츄이에터를 추가하는, 'starter' 의존성을 추가해보자:
+```xml
+<dependencies>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-actuator</artifactId>
+    </dependency>
+</dependencies>
+```
+
+그레들에서는 다음과 같이 정의한다:
+```
+dependencies {
+    compile("org.springframework.boot:spring-boot-starter-actuator")
+}
+```
+
 ## 40. 엔드포인트<a name="엔드포인트"></a>
 ### 40.1. 엔드포인트 변경<a name="엔드포인트 변경"></a>
 ### 40.2. 상태 정보 변경
