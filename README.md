@@ -2610,8 +2610,13 @@ private ConnectionFactory nonXaConnectionFactory;
 #### 35.4.3. ```OutputCapture```
 #### 35.4.4. ```TestRestTemplate```
 ## 36. 자동설정으로 개발하고 @Condition 사용하기<a name="자동설정으로 개발와 상황에 맞춰 사용"></a>
+공유 라이브러리를 개발하는 회사에서 일하거나, 오픈소스 혹은 상용 라이브러리 회사에서 일한다면 고유한 자동설정을 만들고 싶을 것이다.
+자동 설정 클래스는 외부 jar에 담길 수도 있고[can be bundled] 스프링 부트가 이것을 고르는 것도 가능하다.
 ### 36.1. 자동설정 빈 이해
-### 36.2. 자동설정 위치 후보지
+내부(+구현)에선, 자동 설정[a-c]은 표준 @Configuration 클래스를 가지고 구현되었다. 추가 @Conditional 어노테이션들은 자동 설정이 적용해야 할 때 제약으로 작용한다(|제약한다)
+대개 자동 설정클래스들은 @ConditionalOnClass 와 @ConditionalOnMissingBean 어노테이션을 사용한다. 이(+어노테이션)는 자동 설정[a-c]이 적절한 클래스가 발견되었을 때와 직접 선언한 @Configuration이 없을 때에만 적용되는 것을 보장한다.
+우리가 제공하는 @Configuration 클래스를 보려면 spring-boot-autoconfigure 의 소스 코드를 살펴보면 된다(META-INF/spring.factories 파일을 보라).
+### 36.2. 자동설정 위치 후보지(|후보 찾아내기)
 ### 36.3. 컨디션 애노테이션 @Condition<a name="컨디션 애노테이션 @Condition"></a>
 #### 36.3.1. 클래스 상황
 #### 36.3.2. 빈Bean 상황
