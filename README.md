@@ -2625,7 +2625,6 @@ com.mycorp.libx.autoconfigure.LibXAutoConfiguration,\
 com.mycorp.libx.autoconfigure.LibXWebAutoConfiguration
 ```
 
-You can use the ```@AutoConfigureAfter``` or ```@AutoConfigureBefore``` annotations if your configuration needs to be applied in a specific order. For example, if you provide web-specific configuration, your class may need to be applied after ```WebMvcAutoConfiguration```.
 설정이 특정한 순서대로 적용되어야 한다면 ```@AutoConfigureAfter``` 나 ```@AutoConfigureBefore``` 어노테이션을 사용하면 된다. 예를 들어, 웹에 국한된 설정을 제공하려 한다면 당신의 설정 클래스는 ```WebMvcAutoConfiguration``` 다음에 적용되어야 할 수도 있다.
 
 ### 36.3. 컨디션 애노테이션 @Condition<a name="컨디션 애노테이션 @Condition"></a>
