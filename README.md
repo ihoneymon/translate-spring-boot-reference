@@ -177,7 +177,7 @@ Copies of this document may be made for your own use and for distribution to oth
 #### 35.4.2. ```EnvironmentTestUtils```
 #### 35.4.3. ```OutputCapture```
 #### 35.4.4. ```TestRestTemplate```
-## 36. 자동설정으로 개발하고 @Condition 사용하기
+## [36. 자동설정으로 개발하고 @Condition 사용하기](#자동설정으로 개발하고 @Condition 사용하기)
 ### 36.1. 자동설정 빈 이해
 ### 36.2. 자동설정 위치 후보지
 ### 36.3. 상황 애노테이션
@@ -2609,7 +2609,7 @@ private ConnectionFactory nonXaConnectionFactory;
 #### 35.4.2. ```EnvironmentTestUtils```
 #### 35.4.3. ```OutputCapture```
 #### 35.4.4. ```TestRestTemplate```
-## 36. 자동설정으로 개발하고 @Condition 사용하기<a name="자동설정으로 개발와 상황에 맞춰 사용"></a>
+## 36. 자동설정으로 개발하고 @Condition 사용하기<a name="자동설정으로 개발하고 @Condition 사용하기"></a>
 공유 라이브러리를 개발하는 회사에서 일하거나, 오픈소스 혹은 상용 라이브러리 회사에서 일한다면 고유한 자동설정을 만들고 싶을 것이다.
 자동 설정 클래스는 외부 jar에 담길 수도 있고[can be bundled] 스프링 부트가 이것을 고르는 것도 가능하다.
 ### 36.1. 자동설정 빈 이해
