@@ -2615,8 +2615,19 @@ private ConnectionFactory nonXaConnectionFactory;
 ### 36.1. 자동설정 빈 이해
 내부(+구현)에선, 자동 설정은 표준 ```@Configuration``` 클래스를 가지고 구현되었다. 추가 ```@Conditional``` 어노테이션들은 자동 설정이 적용해야 할 때 제약으로 작용한다(|제약한다)
 대개 자동 설정클래스들은 ```@ConditionalOnClass``` 와 ```@ConditionalOnMissingBean``` 어노테이션을 사용한다. 이(+어노테이션)는 자동 설정이 적절한 클래스가 발견되었을 때와 직접 선언한 ```@Configuration```이 없을 때에만 적용되는 것을 보장한다.
-우리가 제공하는 ```@Configuration``` 클래스를 보려면 spring-boot-autoconfigure 의 소스 코드를 살펴보면 된다(```META-INF/spring.factories``` 파일을 보라).
+우리가 제공하는 ```@Configuration``` 클래스를 보려면 ```spring-boot-autoconfigure``` 의 소스 코드를 살펴보면 된다(```META-INF/spring.factories``` 파일을 보라).
 ### 36.2. 자동설정 위치 후보지(|후보 찾아내기)
+스프링 부트는 배포한[published] jar 안에 ```META-INF/spring.factories``` 가 있는지 체크한다. 이 파일은 ```EnableAutoConfiguration``` 키 에 당신의 설정 클래스를 나열하고(|담고) 있어야 한다.
+
+```properties
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.mycorp.libx.autoconfigure.LibXAutoConfiguration,\
+com.mycorp.libx.autoconfigure.LibXWebAutoConfiguration
+```
+
+You can use the ```@AutoConfigureAfter``` or ```@AutoConfigureBefore``` annotations if your configuration needs to be applied in a specific order. For example, if you provide web-specific configuration, your class may need to be applied after ```WebMvcAutoConfiguration```.
+설정이 특정한 순서대로 적용되어야 한다면 ```@AutoConfigureAfter``` 나 ```@AutoConfigureBefore``` 어노테이션을 사용하면 된다. 예를 들어, 웹에 국한된 설정을 제공하려 한다면 당신의 설정 클래스는 ```WebMvcAutoConfiguration``` 다음에 적용되어야 할 수도 있다.
+
 ### 36.3. 컨디션 애노테이션 @Condition<a name="컨디션 애노테이션 @Condition"></a>
 #### 36.3.1. 클래스 상황
 #### 36.3.2. 빈Bean 상황
