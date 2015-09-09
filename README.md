@@ -2637,12 +2637,21 @@ com.mycorp.libx.autoconfigure.LibXWebAutoConfiguration
 ```@ConditionalOnClass``` 와 ```@ConditionalOnMissingClass``` 어노테이션은 특정 클래스가 존재하거나 존재하지 않는 경우에 대해서 설정을 건너 뛸 수 있도록 해준다. 어노테이션 메타데이터는 [ASM](http://asm.ow2.org/) 을 이용하여 파싱되므로 실행중인 어플리케이션의 클래스패스에 해당 클래스가 나타나지 않더라도 실제 클래스를 참조하는 ```value``` 속성을 사용할 수 있다. ```String``` 값을 사용하여 클래스 이름을 명시하는 것을 선호한다면 ```name``` 속성을 사용할 수도 있다.
 
 #### 36.3.2. 빈Bean 조건
-@ConditionalOnBean 과 @ConditionalOnMissingBean 어노테이션은 특정 빈이 존재하거나 존재하지 않는 경우에 대해서 설정을 건너뛸 수 있도록 해준다. 타입으로 특정 빈을 명시하는 데에 ```value``` 속성을 사용하거나 이름으로 명시할 때 ```name``` 속성을 사용할 수 있다. ```search``` 속성을 사용하여 빈을 찾을 때 ```ApplicationContext``` 계층에 제한을 둘 수 있다.
+```@ConditionalOnBean``` 과 ```@ConditionalOnMissingBean``` 어노테이션은 특정 빈이 존재하거나 존재하지 않는 경우에 대해서 설정을 건너뛸 수 있도록 해준다. 타입으로 특정 빈을 명시하는 데에 ```value``` 속성을 사용하거나 이름으로 명시할 때 ```name``` 속성을 사용할 수 있다. ```search``` 속성을 사용하여 빈을 찾을 때 ```ApplicationContext``` 계층에 제한을 둘 수 있다.
 
-> @Conditional 어노테이션은 @Configuration 클래스들이 파싱될 때 (+함꼐) 처리된다. 자동설정 @Configuration 은 항상 나중에(사용자가 정의한어떠한 빈들 다음에) 파싱된다. 하지만 이 어노테이션(?@Conditional?)을 보통 @Configuration 클래스에 사용하려 한다면 아직 생성하지 않은 빈의 정의를 참조하지 않도록 주의해야한다. 
-#### 36.3.3. 리소스 조건
-#### 36.3.4. 웹 애플리케이션 조건
-#### 36.3.5. SpEL 표현식 조건
+> ```@Conditional``` 어노테이션은 ```@Configuration``` 클래스들이 파싱될 때 (+함꼐) 처리된다. 자동설정 ```@Configuration``` 은 항상 나중에(사용자가 정의한어떠한 빈들 다음에) 파싱된다. 하지만 이 어노테이션(?```@Conditional```?) 을 보통 ```@Configuration``` 클래스에 사용하려 한다면 아직 생성하지 않은 빈의 정의를 참조하지 않도록 주의해야한다. 
+
+#### 36.3.3. 특성(|프로퍼티) 조건
+```@ConditionalOnProperty```` 어노테이션은 스프링 환경 특성(|프로퍼티)에 따라 설정을 할 수 있도록 해준다. ```prefix``` 와 ```name``` 속성으로 체크해야할 특성을 명시한다. 존재하고 ```false```가 아닌 특성은 기본적으로(|설정 없이도|자동으로) 매치가 될 것이다. 상세하게 체크하고 싶다면 ```havingValue``` 와 ```matchIfMssing``` 속성을 사용하면 된다.
+
+#### 36.3.4. 리소스 조건
+```@ConditionalOnResource``` 어노테이션은 특정 리소스가 존재할 때에만 설정을 할 수 있도록 해준다. 리소스는 보통 스프링 관례를 따라 나타낼 수 있다. 예를 들어, 파일은 ```file:/home/user/test.dat``` 로 나타낼 수 있다.
+
+#### 36.3.5. 웹 어플리케이션 조건
+```@ConditionalOnWebApplication``` 과 ```@ConditionalOnNotWebApplication``` 어노테이션은 어플리케이션이 '웹 어플리케이션'인지 아닌지에 따라 설정을 건너뛸 수 있게 해준다. 스프링 ```WebApplicationContext``` 를 사용하고, ```session``` 스코프를 정의하거나 ```StandardServletEnvironment``` 를 가지고 있는 어플리케이션은 웹 어플리케이션으로 본다(|취급한다).
+
+#### 36.3.6. SpEL 표현식 조건
+```@ConditionalOnExpression``` 어노테이션은 [SpEL expression](http://docs.spring.io/spring/docs/4.1.3.RELEASE/spring-framework-reference/htmlsingle/#expressions) 결과에 따라 설정을 건너뛸 수 있게 해준다.
 
 ## 37. 웹소켓
 스프링부트는 내장형 톰캣(7과 8) 그리고 내장형 Jetty 9에 대한 웹소켓 자동설정을 제공한다. 만약 war 파일을 단독 컨테이너에 배포할 경우, 스프링부트는 컨테이너가 웹소켓을 지원하는 설정을 제공하는지 확인한다.
