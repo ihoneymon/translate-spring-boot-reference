@@ -108,7 +108,7 @@ Copies of this document may be made for your own use and for distribution to oth
 ### 25.2. 콘솔 출력
 ### 25.3. 파일 출력
 ### 25.4. 로그 레벨
-### 25.5. 로그 설정 변경
+### 25.5. [로그 설정 변경](#로그 설정 변경)
 ## 26. 웹 애플리케이션 개발
 ### 26.1. 'Spring Web MVC framework'
 #### 26.1.1. Spring MVC 자동설정
@@ -1823,18 +1823,20 @@ logging.level.org.springframework.web: DEBUG
 logging.level.org.hibernate: ERROR
 ```
 
-### 25.5. 로그 설정 변경
+### 25.5. 로그 설정 변경<a name="로그 설정 변경"></a>
 
 다양한 로깅 시스템은 기본적인 라이브러리를 포함하여 클래스패스 상의 활동상태를 관찰할 수 있다, 또한 클래스패스 루트에 위치한 적절한 설정파일을 제공하면 변경할 수 있으나, 스프링 ```Environment``` ```logging.config``` 속성으로 정의해야한다. (보충하자면, 로깅 시작은 ```ApplicationContext```가 **생성되기 전** 초기화되는 순간부터 시작된다. 스프링 ```@Configuration``` 파일에서 ```@PropertySources``` 에서 로깅을 컨트롤하는 것은 불가능하다. 시스템 프로퍼티즈와 스프링부트의 외부설정 파일을 이용한 것은 잘 동작한다. )
 
 로깅시스템의 부수적인, 다음의 파일들이 있어야 한다:
+
 | 로깅 시스템 | 설정파일 |
 |------------|----------|
 | Logback | logback.xml |
 | Log4j | log4j.properties 혹은 log4j.xml |
 | JDK(Java Util Logging) | logging.properties |
 
-설정에 필요한 몇몇 속성들은 스프링 ```Envirionment``에서 시스템 프로퍼티스로 변환된다.
+설정에 필요한 몇몇 속성들은 스프링 ```Envirionment```에서 시스템 프로퍼티스로 변환된다.
+
 | Spring environment | System property | 설명 |
 |--------------------|-----------------|------|
 | logging.file | LOG_FILE | 정의되어 있다면 기본 로그 설정으로 사용된다. |
