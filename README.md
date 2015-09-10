@@ -177,7 +177,7 @@ Copies of this document may be made for your own use and for distribution to oth
 #### 35.4.2. ```EnvironmentTestUtils```
 #### 35.4.3. ```OutputCapture```
 #### 35.4.4. ```TestRestTemplate```
-## 36. 자동설정으로 개발하고 @Condition 사용하기
+## [36. 자동설정으로 개발하고 @Condition 사용하기](#자동설정으로 개발하고 @Condition 사용하기)
 ### 36.1. 자동설정 빈 이해
 ### 36.2. 자동설정 위치 후보지
 ### 36.3. 상황 애노테이션
@@ -2609,15 +2609,49 @@ private ConnectionFactory nonXaConnectionFactory;
 #### 35.4.2. ```EnvironmentTestUtils```
 #### 35.4.3. ```OutputCapture```
 #### 35.4.4. ```TestRestTemplate```
-## 36. 자동설정으로 개발하고 @Condition 사용하기<a name="자동설정으로 개발와 상황에 맞춰 사용"></a>
+## 36. 자동설정으로 개발하고 @Condition 사용하기<a name="자동설정으로 개발하고 @Condition 사용하기"></a>
+공유 라이브러리를 개발하는 회사에서 일하거나, 오픈소스 혹은 상용 라이브러리 회사에서 일한다면 고유한 자동설정을 만들고 싶을 것이다.
+자동 설정 클래스는 외부 jar에 담길 수도 있고[can be bundled] 스프링 부트가 이것을 고르는 것도 가능하다.
 ### 36.1. 자동설정 빈 이해
-### 36.2. 자동설정 위치 후보지
+내부(+구현)에선, 자동 설정은 표준 ```@Configuration``` 클래스를 가지고 구현되었다. 추가 ```@Conditional``` 어노테이션들은 자동 설정이 적용해야 할 때 제약으로 작용한다(|제약한다)
+대개 자동 설정클래스들은 ```@ConditionalOnClass``` 와 ```@ConditionalOnMissingBean``` 어노테이션을 사용한다. 이(+어노테이션)는 자동 설정이 적절한 클래스가 발견되었을 때와 직접 선언한 ```@Configuration```이 없을 때에만 적용되는 것을 보장한다.
+우리가 제공하는 ```@Configuration``` 클래스를 보려면 ```spring-boot-autoconfigure``` 의 소스 코드를 살펴보면 된다(```META-INF/spring.factories``` 파일을 보라).
+### 36.2. 자동설정 위치 후보지(|후보 찾아내기)
+스프링 부트는 배포한[published] jar 안에 ```META-INF/spring.factories``` 가 있는지 체크한다. 이 파일은 ```EnableAutoConfiguration``` 키 에 당신의 설정 클래스를 나열하고(|담고) 있어야 한다.
+
+```properties
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.mycorp.libx.autoconfigure.LibXAutoConfiguration,\
+com.mycorp.libx.autoconfigure.LibXWebAutoConfiguration
+```
+
+설정이 특정한 순서대로 적용되어야 한다면 ```@AutoConfigureAfter``` 나 ```@AutoConfigureBefore``` 어노테이션을 사용하면 된다. 예를 들어, 웹에 국한된 설정을 제공하려 한다면 당신의 설정 클래스는 ```WebMvcAutoConfiguration``` 다음에 적용되어야 할 수도 있다.
+
 ### 36.3. 컨디션 애노테이션 @Condition<a name="컨디션 애노테이션 @Condition"></a>
-#### 36.3.1. 클래스 상황
-#### 36.3.2. 빈Bean 상황
-#### 36.3.3. 리소스 상황
-#### 36.3.4. 웹 애플리케이션 상황
-#### 36.3.5. SpEL 표현식 상황
+여러분은 대개 자동설정에 하나 혹은 그 이상 ```@Condition``` 어노테이션을 포함하기를 바란다(|바랄 것이다). ```@ConditionalOnMissingBean``` 은 개발자가 여러분의 기본(+설정)이 만족스럽지 않으면 자동설정을 'override'하도록 허용하는 것을 보여주는 예이다.
+
+스프링 부트는 ```@Conditional``` 어노테이션을 여러 개 포함하고 있는데 이것은 여러분 코드에서 ```@Configuration``` 클래스나 각 ```@Bean``` 메소드를 표기함으로써 재사용할 수 있다.
+(?```@Configuration``` 을 클래스 정의에 붙여주거나 ```@Bean을``` 메소드에 붙여준다는 의미인지?)
+
+#### 36.3.1. 클래스 조건
+```@ConditionalOnClass``` 와 ```@ConditionalOnMissingClass``` 어노테이션은 특정 클래스가 존재하거나 존재하지 않는 경우에 대해서 설정을 건너 뛸 수 있도록 해준다. 어노테이션 메타데이터는 [ASM](http://asm.ow2.org/) 을 이용하여 파싱되므로 실행중인 어플리케이션의 클래스패스에 해당 클래스가 나타나지 않더라도 실제 클래스를 참조하는 ```value``` 속성을 사용할 수 있다. ```String``` 값을 사용하여 클래스 이름을 명시하는 것을 선호한다면 ```name``` 속성을 사용할 수도 있다.
+
+#### 36.3.2. 빈Bean 조건
+```@ConditionalOnBean``` 과 ```@ConditionalOnMissingBean``` 어노테이션은 특정 빈이 존재하거나 존재하지 않는 경우에 대해서 설정을 건너뛸 수 있도록 해준다. 타입으로 특정 빈을 명시하는 데에 ```value``` 속성을 사용하거나 이름으로 명시할 때 ```name``` 속성을 사용할 수 있다. ```search``` 속성을 사용하여 빈을 찾을 때 ```ApplicationContext``` 계층에 제한을 둘 수 있다.
+
+> ```@Conditional``` 어노테이션은 ```@Configuration``` 클래스들이 파싱될 때 (+함꼐) 처리된다. 자동설정 ```@Configuration``` 은 항상 나중에(사용자가 정의한어떠한 빈들 다음에) 파싱된다. 하지만 이 어노테이션(?```@Conditional```?) 을 보통 ```@Configuration``` 클래스에 사용하려 한다면 아직 생성하지 않은 빈의 정의를 참조하지 않도록 주의해야한다. 
+
+#### 36.3.3. 특성(|프로퍼티) 조건
+```@ConditionalOnProperty```` 어노테이션은 스프링 환경 특성(|프로퍼티)에 따라 설정을 할 수 있도록 해준다. ```prefix``` 와 ```name``` 속성으로 체크해야할 특성을 명시한다. 존재하고 ```false```가 아닌 특성은 기본적으로(|설정 없이도|자동으로) 매치가 될 것이다. 상세하게 체크하고 싶다면 ```havingValue``` 와 ```matchIfMssing``` 속성을 사용하면 된다.
+
+#### 36.3.4. 리소스 조건
+```@ConditionalOnResource``` 어노테이션은 특정 리소스가 존재할 때에만 설정을 할 수 있도록 해준다. 리소스는 보통 스프링 관례를 따라 나타낼 수 있다. 예를 들어, 파일은 ```file:/home/user/test.dat``` 로 나타낼 수 있다.
+
+#### 36.3.5. 웹 어플리케이션 조건
+```@ConditionalOnWebApplication``` 과 ```@ConditionalOnNotWebApplication``` 어노테이션은 어플리케이션이 '웹 어플리케이션'인지 아닌지에 따라 설정을 건너뛸 수 있게 해준다. 스프링 ```WebApplicationContext``` 를 사용하고, ```session``` 스코프를 정의하거나 ```StandardServletEnvironment``` 를 가지고 있는 어플리케이션은 웹 어플리케이션으로 본다(|취급한다).
+
+#### 36.3.6. SpEL 표현식 조건
+```@ConditionalOnExpression``` 어노테이션은 [SpEL expression](http://docs.spring.io/spring/docs/4.1.3.RELEASE/spring-framework-reference/htmlsingle/#expressions) 결과에 따라 설정을 건너뛸 수 있게 해준다.
 
 ## 37. 웹소켓
 스프링부트는 내장형 톰캣(7과 8) 그리고 내장형 Jetty 9에 대한 웹소켓 자동설정을 제공한다. 만약 war 파일을 단독 컨테이너에 배포할 경우, 스프링부트는 컨테이너가 웹소켓을 지원하는 설정을 제공하는지 확인한다.
