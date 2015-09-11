@@ -167,7 +167,7 @@ Copies of this document may be made for your own use and for distribution to oth
 ### 32.5. 대안적인 내장형 트른잭션 매니저 지원
 ## 33. 스프링 통합
 ## 34. JMX를 통해서 모니터링과 관리
-## 35. 테스팅
+## [35. 테스팅](#테스팅)
 ### 35.1. 테스트 스코프 의존성
 ### 35.2. 스프링 애플리케이션 테스트
 ### 35.3. 스프링부트 애플리케이션 테스트
@@ -2621,9 +2621,67 @@ private ConnectionFactory nonXaConnectionFactory;
 
 스프링 프레임워크는 딱 이런 통합 테스트 전용 테스트 모듈을 포함하고 있다. ```org.springframework:spring-test```에 대한 의존성을 직접 선언하거나 'Starter POM'에 ```spring-boot-starter-test```을 사용하여 (+메이븐이) 가져오도록 설정할 수 있다.
 
-```spring-test``` 모듈을 써본 적이 없다면 스프링 프레임워크 레퍼런스에서 (관련부분)[http://docs.spring.io/spring/docs/4.1.3.RELEASE/spring-framework-reference/htmlsingle/#testing]을 읽고 시작하는 것이 좋을 것이다.
+```spring-test``` 모듈을 써본 적이 없다면 스프링 프레임워크 레퍼런스에서 [관련부분](http://docs.spring.io/spring/docs/4.1.3.RELEASE/spring-framework-reference/htmlsingle/#testing) 을 읽고 시작하는 것이 좋을 것이다.
 
 ### 35.3. 스프링부트 애플리케이션 테스트<a name="스프링부트 애플리케이션 테스트"></a>
+A Spring Boot application is just a Spring ```ApplicationContext``` so nothing very special has to be done to test it beyond what you would normally do with a vanilla Spring context. One thing to watch out for though is that the external properties, logging and other features of Spring Boot are only installed in the context by default if you use ```SpringApplication``` to create it.
+
+Spring Boot provides a ```@SpringApplicationConfiguration``` annotation as an alternative to the standard ```spring-test``` ```@ContextConfiguration``` annotation. If you use ```@SpringApplicationConfiguration``` to configure the ```ApplicationContext``` used in your tests, it will be created via ```SpringApplication``` and you will get the additional Spring Boot features.
+
+For example:
+
+```java
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringApplicationConfiguration(classes = SampleDataJpaApplication.class)
+public class CityRepositoryIntegrationTests {
+
+    @Autowired
+    CityRepository repository;
+
+    // ...
+
+}
+```
+
+[Tip]
+
+ The context loader guesses whether you want to test a web application or not (e.g. with ```MockMVC```) by looking for the ```@WebAppConfiguration``` annotation. (```MockMVC``` and ```@WebAppConfiguration``` are part of ```spring-test```).
+
+If you want a web application to start up and listen on its normal port, so you can test it with HTTP (e.g. using ```RestTemplate```), annotate your test class (or one of its superclasses) with ```@IntegrationTest```. This can be very useful because it means you can test the full stack of your application, but also inject its components into the test class and use them to assert the internal state of the application after an HTTP interaction. For example:
+```java
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringApplicationConfiguration(classes = SampleDataJpaApplication.class)
+@WebAppConfiguration
+@IntegrationTest
+public class CityRepositoryIntegrationTests {
+
+    @Autowired
+    CityRepository repository;
+
+    RestTemplate restTemplate = new TestRestTemplate();
+
+    // ... interact with the running server
+
+}
+```
+[Note]
+
+ Spring’s test framework will cache application contexts between tests. Therefore, as long as your tests share the same configuration, the time consuming process of starting and stopping the server will only happen once, regardless of the number of tests that actually run.
+
+To change the port you can add environment properties to ```@IntegrationTest``` as colon- or equals-separated name-value pairs, e.g. ```@IntegrationTest("server.port:9000")```. Additionally you can set the ```server.port``` and ```management.port``` properties to ```0``` in order to run your integration tests using random ports. For example:
+```java
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringApplicationConfiguration(classes = MyApplication.class)
+@WebAppConfiguration
+@IntegrationTest({"server.port=0", "management.port=0"})
+public class SomeIntegrationTests {
+
+    // ...
+
+}
+```
+See [Section 64.4, “Discover the HTTP port at runtime”](http://docs.spring.io/spring-boot/docs/1.2.0.BUILD-SNAPSHOT/reference/html/howto-embedded-servlet-containers.html#howto-discover-the-http-port-at-runtime) for a description of how you can discover the actual port that was allocated for the duration of the tests.
+
 #### 35.3.1. 스팍Spock을 사용하여 스프링 부트 애플리케이션 테스트
 ### 35.4. 테스트 유틸리티<a name="테스트 유틸리티"></a>
 #### 35.4.1. ```ConfigFileApplicationContextInitializer```
