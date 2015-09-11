@@ -108,7 +108,7 @@ Copies of this document may be made for your own use and for distribution to oth
 ### 25.2. 콘솔 출력
 ### 25.3. 파일 출력
 ### 25.4. 로그 레벨
-### 25.5. 로그 설정 변경
+### 25.5. [로그 설정 변경](#로그 설정 변경)
 ## 26. 웹 애플리케이션 개발
 ### 26.1. 'Spring Web MVC framework'
 #### 26.1.1. Spring MVC 자동설정
@@ -191,7 +191,7 @@ Copies of this document may be made for your own use and for distribution to oth
 
 # V. 스프링부트 액츄에터: 출시준비 기능들
 ## 39. 사용가능한 출시준비 기능들
-## 40. 엔드포인트
+## 40. [엔드포인트](#엔드포인트)
 ### 40.1. 엔드포인트 변경
 ### 40.2. 상태 정보 변경
 ### 40.3. 애플리케이션 정보 안내 변경
@@ -1823,18 +1823,20 @@ logging.level.org.springframework.web: DEBUG
 logging.level.org.hibernate: ERROR
 ```
 
-### 25.5. 로그 설정 변경
+### 25.5. 로그 설정 변경<a name="로그 설정 변경"></a>
 
 다양한 로깅 시스템은 기본적인 라이브러리를 포함하여 클래스패스 상의 활동상태를 관찰할 수 있다, 또한 클래스패스 루트에 위치한 적절한 설정파일을 제공하면 변경할 수 있으나, 스프링 ```Environment``` ```logging.config``` 속성으로 정의해야한다. (보충하자면, 로깅 시작은 ```ApplicationContext```가 **생성되기 전** 초기화되는 순간부터 시작된다. 스프링 ```@Configuration``` 파일에서 ```@PropertySources``` 에서 로깅을 컨트롤하는 것은 불가능하다. 시스템 프로퍼티즈와 스프링부트의 외부설정 파일을 이용한 것은 잘 동작한다. )
 
 로깅시스템의 부수적인, 다음의 파일들이 있어야 한다:
+
 | 로깅 시스템 | 설정파일 |
 |------------|----------|
 | Logback | logback.xml |
 | Log4j | log4j.properties 혹은 log4j.xml |
 | JDK(Java Util Logging) | logging.properties |
 
-설정에 필요한 몇몇 속성들은 스프링 ```Envirionment``에서 시스템 프로퍼티스로 변환된다.
+설정에 필요한 몇몇 속성들은 스프링 ```Envirionment```에서 시스템 프로퍼티스로 변환된다.
+
 | Spring environment | System property | 설명 |
 |--------------------|-----------------|------|
 | logging.file | LOG_FILE | 정의되어 있다면 기본 로그 설정으로 사용된다. |
@@ -2101,10 +2103,10 @@ Using default security password: 78fa095d-3f4c-48b1-ad50-e24c31d5cf35
 ## 28. <a name="SQL 데이터베이스 작업">SQL 데이터베이스 작업</a>
 스프링 프레임워크는 SQL 데이터베이스에서 동작하는 넓은 지원을 제공한다. ```JdbcTemplate```를 사용하여 바로 JDBC에 접속하는 것부터 '객체 관계 매핑' 기술의 하이버네이트까지 폭넓게 지원한다. 스프링 데이터는 인터페이스로부터 바로 ```Repository``` 구현체를 생성하고 메서드명으로부터 쿼리를 생성하는 관례를 사용할 수 있는 수준의 추가적인 기능성을 제공한다. 
 
-### 28.1. <a name="데이터베이스 설정">데이터베이스 설정</a>
+### 28.1. 데이터베이스 설정<a name="데이터베이스 설정"></a>
 자바의 ```javax.sql.DataSource``` 인터페이스는 데이터베이스 연결을 위한 표준 메서드를 제공한다. 기본적으로 데이터소스는 데이터베이스 연결을 생성하는 자격들을 얻는데 ```URL```을 사용한다.
 
-#### 28.1.1. <a name="내장형 데이터베이스 지원">내장형 데이터베이스 지원</a>
+#### 28.1.1. 내장형 데이터베이스 지원<a name="내장형 데이터베이스 지원"></a>
 인-메모리 내장형 데이터베이스를 사용하면 애플리케이션을 개발하는데 편리하다. 당연히, 인-메모리 데이터베이스는 영속적인 저장소를 제공하지 않는다. 애플리케이션을 시작할 때와 애플리케이션을 종료할 때 데이터를 옮기기 위해 데이터베이스를 필요로 할 것이다.
 > 팁: 어떻게 하는지는 [어떻게 데이터베이스를 초기화하는지 섹션](#데이터베이스 초기화)에 정리되어 있다.
 
@@ -2704,13 +2706,160 @@ dependencies {
 ```
 
 ## 40. 엔드포인트<a name="엔드포인트"></a>
+액츄에이터 엔드포인트는 애플리케이션에 대한 감시와 상호작용을 허용한다. 스프링부트는 작성가능한 엔드포인트들을 포함하고 있으며 필요에 따라 추가할 수 있다. 예를들어 ```health``` 엔드포인트는 애플리케이션의 기본적인 건강정보를 제공한다.
+
+엔드포인트는 선택하는 기술에 따라서 노출되는 방법이 달라진다. 대부분의 애플리케이션은 엔드포인트의 ID가 URL과 매핑된 HTTP 모니터링을 선택한다. 예를 들어, 기본적으로, ```health``` 엔드포인트는 ```/health```에 매핑된다.
+
+사용가능한 엔드포인트는 다음과 같다.
+
+| ID           | 설명                  | 민감도                |
+|--------------|-----------------------|----------------------|
+| ```autoconfig``` | '사용' 혹은 '비사용'된 모든 자동구성 후보와 이유를 보여주는 자동구성 보고서를 표시합니다. | true |
+| ```beans``` | 애플리케이션에 등록된 스프링빈 목록을 보여준다.| true |
+| ```configprops``` | 모든 ```@ConfigurationProperties```를 보여준다. | true |
+| ```dump``` | thread dump 수행결과를 보여준다. | true |
+| ```env``` | 스프링의 ```ConfigurableEnvironment``` 정보를 보여준다. | true |
+| ```health``` | 애플리케이션의 건강상태 정보를 보여준다. 기본은 'OK' 만 | false |
+| ```info``` | 임의적인 애플리케이션의 정보를 보여준다. | false |
+| ```metrics``` | 현재 애플리케이션의 metrics를 보여준다. | true |
+| ```mappings``` | 모든 ```@RequestMapping``` 경로를 보여준다. | true |
+| ```shutdown``` | 애플리케이션을 정상적으로 종료한다(기본은 비활성화). | true |
+| ```trace``` | Trace 정보를 보여준다(기본적으로는 최근의 HTTP 요청을 보여줌). | true |
+
+> 노트:
+엔드포인트를 어떻게 노출할지는 ```sensitive``` 파라미터에 따라 보안요소가 적용된다. 예를 들어, sensitive 엔드포인트는 HTTP 접근시 사용자명/비밀번호를 요구할 것이다(혹은 웹 시큐리티를 비활성화하면 간단히 비활성화된다).
+
 ### 40.1. 엔드포인트 변경<a name="엔드포인트 변경"></a>
-### 40.2. 상태 정보 변경
+엔트포인트는 스프링 프로퍼티즈를 사용하여 변경할 수 있다. 엔드포인트를 ```enabled```를 활성화로 변경한다면, ```sensitive```와 그 ```id```를 고려하자.
+
+예를 들어, 여기 ```application.properties```는 ```beans``` 엔드포인트의 의 id와 sensitivity를 변경하고 ```shutdown```도 활성화 했다.
+
+```
+endpoints.beans.id=springbeans
+endpoints.beans.sensitive=false
+endpoints.shutdown.enabled=true
+```
+> 팁:
+접미사 ```"endpoints + . + name"```엔드포인트의 유일한 식별자로 사용하고 한다.
+
+### 40.2. 상태 정보 변경<a name="상태 정보 변경"></a>
+```health``` 엔드포인트가 노출하는 기본정보는 간단하게 'OK' 메시지다. 이것은 건강상태를 점검하기 위한 용도로 자주 사용된다. 예를 들어, 데이터베이스 연결 혹은 원격지 REST endpoint 기능을 점검할 때 효과적이다.
+
+[```HealthIndicator```](http://github.com/spring-projects/spring-boot/tree/master/spring-boot-actuator/src/main/java/org/springframework/boot/actuate/health/HealthIndicator.java) 인터페이스를 구현한 것을 스프링빈으로 등록하여 건강상태 정보를 변경하여 제공하는 것이 가능하다.
+
+```java
+import org.springframework.boot.actuate.health.HealthIndicator;
+import org.springframework.stereotype.Component;
+
+@Component
+public class MyHealth implements HealthIndicator {
+
+    @Override
+    public Health health() {
+        // perform some specific health check
+        return ...
+    }
+
+}
+```
+
+스프링부트는 [```DataSourceHealthIndicator```](http://github.com/spring-projects/spring-boot/tree/master/spring-boot-actuator/src/main/java/org/springframework/boot/actuate/health/DataSourceHealthIndicator.java) 구현체는 Redis, MongoDB 그리고 RabbitMQ 등의 데이터베 베이스 점검(검증 쿼리가 있다면 그것을 재사용)을 실행한 정보를 제공한다. 스프링부트는 ```ApplicationContext``` 에 ```DataSource```, ```MongoTemplate```, ```RedisConnectionFactory``` 그리고  ```RabbitTemplate``` 타입의 빈이 있다면```HealthIndicator``` 인스턴스를 자동으로 구현한다. health indicator는 또한 디스크 빈 공간에 관한 정보를 제공한다.
+
+```HealthIndicator``` 유형의 수정된 구현체는 ```Status``` 유형을 독창적으로 사용할 수 있다. 게다가 ```Status```를 동일하거나 보다 복잡한 시스템 상태를 표현하는 것도 가능하다.
+
+이 경우 사용자가 정의한 ```HealthAggregator``` 인터페이스 구현체나 기본구현체는  필요한 정보들을  ```management.health.status.order``` 설정 속성을 사용해서 설정해야 한다.
+
+```HealthIndicator``` 구현체 중 하나를 사용하여 새로운 ```Status```인 ```FATA```을 사용한다고 가정해보자. 애플리케이션의 속성 ```management.health.status.order: DOWN, OUT_OF_SERVICE, UNKNOWN, UP```을 따라 심각한 정도나 우선순위에 따라 추가한다.
+
 ### 40.3. 애플리케이션 정보 안내 변경
+```info``` 엔드포인트는 스프링 속성 ```info.*``` 을 설정하여 노출되는 데이터를 변경할 수 있다. ```info``` 키 아래의 모든 ```Environment``` 속성들이 자동으로 노출된다. 예를 들어, ```application.properties``` 에 다음과 같이 추가해보자:
+
+```
+info.app.name=MyService
+info.app.description=My awesome service
+info.app.version=1.0.0
+```
+
 #### 40.3.1. 빌드 시간에 관한 속성 확장 자동화
+하지만 프로젝트의 빌드구성에 지정된 일부 속성을 하드코딩하는 것보다, 자동으로 빌드 구성을 사용하여 info 속성들을 확장할 수 있습니다. Maven과 Grdale 모두 가능합니다.
+
 #### 메이븐을 이용하여 속성 확장 자동화
+메이븐 프로젝트는 리소스 필터링을 통해서 자동으로 info 속성을 확장한다. 만약 ```spring-boot-starter-parent``` 를 사용하고 있다면 메이븐 'project properties'들을 ```@..@``` placeholder로 참조할 수 있다.
+
+```
+project.artifactId=myproject
+project.name=Demo
+project.version=X.X.X.X
+project.description=Demo project for info endpoint
+info.build.artifact=${project.artifactId}
+info.build.name=@project.name@
+info.build.description=@project.description@
+info.build.version=@project.version@
+```
+
+> 노트: 
+위의 예에서 리소스 메이븐 필터링이 어떤 이유로 변환되지 않은 경우 폴백으로서 사용될 일부값을 설정하는데 ```project.*```를 사용했다. 
+
+> 노트:
+만약 starter parent를 사용하지 않는다면, ```pom.xml``` 에 ```<build/>``` 요소가 필요하다.
+
+```xml
+<resources>
+    <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+    </resource>
+</resources>
+```
+
+and (inside ```<plugins/>```):
+
+```xml
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-resources-plugin</artifactId>
+    <version>2.6</version>
+    <configuration>
+        <delimiters>
+            <delimiter>@</delimiter>
+        </delimiters>
+    </configuration>
+</plugin>
+```
+
 #### 그레들을 이용하여 속성 확장 자동화
+그레들 프로젝트는 Java 플러그인의 ```processResource``` 태스크로부터 info 속성들을 자동으로 설정한다.
+```
+processResources {
+    expand(project.properties)
+}
+```
+
+그레들 프로젝트의 속성들을 placeholder를 통해 참조할 수 있다.
+```
+info.build.name=${name}
+info.build.description=${description}
+info.build.version=${version}
+```
+
 #### 40.3.2. 깃 커밋 정보
+한편으로 ```info``` 엔드포인트의 유용한 기능중 하나는 프로젝트가 빌드되었을 때 ```git``` 소스코드의 상태에 관한 정보를 노출할 수 있다. 만약 jar  파일에 있는 ```git.properties```  파일에 ```git.branch``` 그리고 ```git.commit``` 속성이 있다면 노출된다.
+
+메이븐 사용자라면 ```spring-boot-starter-parent``` POM에 포함된 플러그인을 통해서 ```git.properties``` 파일을 생성할 수 있다. POM에 추가하는 방법은 간단하다:
+
+```xml
+<build>
+    <plugins>
+        <plugin>
+            <groupId>pl.project13.maven</groupId>
+            <artifactId>git-commit-id-plugin</artifactId>
+        </plugin>
+    </plugins>
+</build>
+```
+
+그레들 사용자는 이와 유사한 [```gradle-git```](https://github.com/ajoberstar/gradle-git) 플러그인을 통해서 가능한데, 프로퍼티즈 파일을 생성하기 위해서는 약간의 추가적인 작업이 필요하다.
+
 ## 41. HTTP를 통해서 모니터링 및 관리<a name="HTTP를 통해서 모니터링 및 관리"></a>
 ### 41.1. 세밀한 엔드포인트 노출
 ### 41.2. 관리 서버컨텍스트패스 변경
