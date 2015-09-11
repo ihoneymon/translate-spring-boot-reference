@@ -3352,10 +3352,488 @@ org.springframework.boot.actuate.system.EmbeddedServerPortFileWriter
 ### 75.4. 웹로직을 위한 war 배포
 ### 75.5. 오래된(Servlet 2.5) 컨테이너에 war 배포
 
-# X. 부록
-## A. 일반적인 애플리케이션 속성<a name="애플리케이션 속성"></a>
-## B. 메타데이터 설정
-### B.1. 메타데이터 형식
+# X. 부록<a name="X. 부록"></a>
+## A. 일반적인 애플리케이션 속성<a name="A. 일반적인 애플리케이션 속성"></a>
+```application.properties/application.yml``` 파일 혹은 커맨드라인 스위치를 통해서 다양한 속성들을 정의할 수 있다. 이번 세션에서는 공통적인 스프링부트의 속성목록과 그 속성을 사용하는 연관성있는 클래스를 제공한다.
+
+> 노트:
+이 목록을 완전히 고려해서는 안되는데 그 이유는 클래스패스에 추가된 jar 파일에서도 속성을 가져올 수 있기 때문이다. 또한 필요한 경우에는 자신의 속성을 정의하여 사용가능하다.
+
+> 위험:
+이 예제 파일은 안내를 목적으로 한다. 애플리케이션에 복사해서 붙여넣지 마라. 필요한 속성만 사용하자.
+
+```
+# ===================================================================
+# COMMON SPRING BOOT PROPERTIES
+#
+# This sample file is provided as a guideline. Do NOT copy it in its
+# entirety to your own application.               ^^^
+# ===================================================================
+
+# ----------------------------------------
+# CORE PROPERTIES
+# ----------------------------------------
+
+# SPRING CONFIG (ConfigFileApplicationListener)
+spring.config.name= # 설정파일명 (기본은 'application')
+spring.config.location= # 설정파일 위치
+
+# PROFILES
+spring.profiles.active= # comma list of active profiles
+spring.profiles.include= # unconditionally activate the specified comma separated profiles
+
+# APPLICATION SETTINGS (SpringApplication)
+spring.main.sources=
+spring.main.web-environment= # 기본에 의한 탐색
+spring.main.show-banner=true
+spring.main....= # 보다 자세한 속성은 클래스를 확인
+
+# LOGGING
+logging.path=/var/logs
+logging.file=myapp.log
+logging.config= # 로깅설정파일 위치 (기본 classpath:logback.xml for logback)
+logging.level.*= # 로거 레벨, e.g. "logging.level.org.springframework=DEBUG" (TRACE, DEBUG, INFO, WARN, ERROR, FATAL, OFF)
+
+# IDENTITY (ContextIdApplicationContextInitializer)
+spring.application.name=
+spring.application.index=
+
+# EMBEDDED SERVER CONFIGURATION (ServerProperties)
+server.port=8080
+server.address= # 별도의 NIC와 연동
+server.session-timeout= # 초단위의 세션 타임아웃
+server.context-parameters.*= # 서블릿 컨텍스트 초기화 파라메터, 예. server.context-parameters.a=alpha
+server.context-path= # 컨텍스트 경로, 기본  '/'
+server.servlet-path= # 서블릿경로, 기본 '/'
+server.ssl.client-auth= # 원하거나 필요한 경우
+server.ssl.key-alias=
+server.ssl.ciphers= # SSL ciphers 지원
+server.ssl.key-password=
+server.ssl.key-store=
+server.ssl.key-store-password=
+server.ssl.key-store-provider=
+server.ssl.key-store-type=
+server.ssl.protocol=TLS
+server.ssl.trust-store=
+server.ssl.trust-store-password=
+server.ssl.trust-store-provider=
+server.ssl.trust-store-type=
+server.tomcat.access-log-pattern= # 접근기록 로그패턴
+server.tomcat.access-log-enabled=false # 접근기록 활성화여부
+server.tomcat.internal-proxies=10\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}|\\
+        192\\.168\\.\\d{1,3}\\.\\d{1,3}|\\
+        169\\.254\\.\\d{1,3}\\.\\d{1,3}|\\
+        127\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3} # 신뢰가능한 IP 주소에 대한 정규표현식
+server.tomcat.protocol-header=x-forwarded-proto # front end proxy forward header
+server.tomcat.port-header= # front end proxy port header
+server.tomcat.remote-ip-header=x-forwarded-for
+server.tomcat.basedir=/tmp # base dir (usually not needed, defaults to tmp)
+server.tomcat.background-processor-delay=30; # in seconds
+server.tomcat.max-http-header-size= # maximum size in bytes of the HTTP message header
+server.tomcat.max-threads = 0 # number of threads in protocol handler
+server.tomcat.uri-encoding = UTF-8 # character encoding to use for URL decoding
+
+# SPRING MVC (WebMvcProperties)
+spring.mvc.locale= # 지역 설정, 예. en_UK
+spring.mvc.date-format= # 날짜형식 설정, 예. dd/MM/yyyy
+spring.mvc.message-codes-resolver-format= # PREFIX_ERROR_CODE / POSTFIX_ERROR_CODE
+spring.mvc.ignore-default-model-on-redirect=true # If the the content of the "default" model should be ignored redirects / 리다이렉트시 모델의 컨텐츠를 무시한다는 뜻
+spring.view.prefix= # MVC view prefix
+spring.view.suffix= # ... and suffix
+spring.resources.cache-period= # 브라우저에 캐시 타임아웃을 헤더로 전달하는 주기
+spring.resources.add-mappings=true # if default mappings should be added
+
+# HTTP encoding (HttpEncodingProperties)
+spring.http.encoding.charset=UTF-8 # HTTP 요청/응답 인코딩 설정
+spring.http.encoding.enabled=true # HTTP 인코딩 지원여부
+spring.http.encoding.force=true # 인코딩 강제처리 설정 
+
+# JACKSON (JacksonProperties)
+spring.jackson.date-format= # 데이터형식 문자열 (예. yyyy-MM-dd HH:mm:ss), 혹은 날짜 형식 클래스의 완전한 경로 (e.g. com.fasterxml.jackson.databind.util.ISO8601DateFormat)
+spring.jackson.property-naming-strategy= # One of the constants on Jackson's PropertyNamingStrategy (e.g. CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES) or PropertyNamingStrategy 클래스의 하위클래스 완전한 경로
+spring.jackson.deserialization.*= # see Jackson's DeserializationFeature
+spring.jackson.generator.*= # see Jackson's JsonGenerator.Feature
+spring.jackson.mapper.*= # see Jackson's MapperFeature
+spring.jackson.parser.*= # see Jackson's JsonParser.Feature
+spring.jackson.serialization.*= # see Jackson's SerializationFeature
+
+# THYMELEAF (ThymeleafAutoConfiguration)
+spring.thymeleaf.check-template-location=true
+spring.thymeleaf.prefix=classpath:/templates/
+spring.thymeleaf.excluded-view-names= # 구현에서 제외될 뷰 이름을 콤마(,)로 구분하여 목록정리
+spring.thymeleaf.view-names= # comma-separated list of view names that can be resolved
+spring.thymeleaf.suffix=.html
+spring.thymeleaf.mode=HTML5
+spring.thymeleaf.encoding=UTF-8
+spring.thymeleaf.content-type=text/html # ;charset=<encoding> 를 추가
+spring.thymeleaf.cache=true # 캐시처리하지 않을경우 false 설정
+
+# FREEMARKER (FreeMarkerAutoConfiguration)
+spring.freemarker.allow-request-override=false
+spring.freemarker.cache=true
+spring.freemarker.check-template-location=true
+spring.freemarker.charset=UTF-8
+spring.freemarker.content-type=text/html
+spring.freemarker.expose-request-attributes=false
+spring.freemarker.expose-session-attributes=false
+spring.freemarker.expose-spring-macro-helpers=false
+spring.freemarker.prefix=
+spring.freemarker.request-context-attribute=
+spring.freemarker.settings.*=
+spring.freemarker.suffix=.ftl
+spring.freemarker.template-loader-path=classpath:/templates/ # comma-separated list
+spring.freemarker.view-names= # whitelist of view names that can be resolved
+
+# GROOVY TEMPLATES (GroovyTemplateAutoConfiguration)
+spring.groovy.template.cache=true
+spring.groovy.template.charset=UTF-8
+spring.groovy.template.configuration.*= # See Groovy's TemplateConfiguration
+spring.groovy.template.content-type=text/html
+spring.groovy.template.prefix=classpath:/templates/
+spring.groovy.template.suffix=.tpl
+spring.groovy.template.view-names= # whitelist of view names that can be resolved
+
+# VELOCITY TEMPLATES (VelocityAutoConfiguration)
+spring.velocity.allow-request-override=false
+spring.velocity.cache=true
+spring.velocity.check-template-location=true
+spring.velocity.charset=UTF-8
+spring.velocity.content-type=text/html
+spring.velocity.date-tool-attribute=
+spring.velocity.expose-request-attributes=false
+spring.velocity.expose-session-attributes=false
+spring.velocity.expose-spring-macro-helpers=false
+spring.velocity.number-tool-attribute=
+spring.velocity.prefer-file-system-access=true # prefer file system access for template loading
+spring.velocity.prefix=
+spring.velocity.properties.*=
+spring.velocity.request-context-attribute=
+spring.velocity.resource-loader-path=classpath:/templates/
+spring.velocity.suffix=.vm
+spring.velocity.toolbox-config-location= # velocity Toolbox config location, for example "/WEB-INF/toolbox.xml"
+spring.velocity.view-names= # whitelist of view names that can be resolved
+
+# JERSEY (JerseyProperties)
+spring.jersey.type=servlet # servlet or filter
+spring.jersey.init= # init params
+spring.jersey.filter.order=
+
+# INTERNATIONALIZATION (MessageSourceAutoConfiguration)
+spring.messages.basename=messages
+spring.messages.cache-seconds=-1
+spring.messages.encoding=UTF-8
+
+
+# SECURITY (SecurityProperties)
+security.user.name=user # login username
+security.user.password= # login password
+security.user.role=USER # role assigned to the user
+security.require-ssl=false # advanced settings ...
+security.enable-csrf=false
+security.basic.enabled=true
+security.basic.realm=Spring
+security.basic.path= # /**
+security.filter-order=0
+security.headers.xss=false
+security.headers.cache=false
+security.headers.frame=false
+security.headers.content-type=false
+security.headers.hsts=all # none / domain / all
+security.sessions=stateless # always / never / if_required / stateless
+security.ignored=false
+
+# DATASOURCE (DataSourceAutoConfiguration & DataSourceProperties)
+spring.datasource.name= # name of the data source
+spring.datasource.initialize=true # populate using data.sql
+spring.datasource.schema= # a schema (DDL) script resource reference
+spring.datasource.data= # a data (DML) script resource reference
+spring.datasource.sql-script-encoding= # a charset for reading SQL scripts
+spring.datasource.platform= # the platform to use in the schema resource (schema-${platform}.sql)
+spring.datasource.continue-on-error=false # continue even if can't be initialized
+spring.datasource.separator=; # statement separator in SQL initialization scripts
+spring.datasource.driver-class-name= # JDBC Settings...
+spring.datasource.url=
+spring.datasource.username=
+spring.datasource.password=
+spring.datasource.jndi-name # For JNDI lookup (class, url, username & password are ignored when set)
+spring.datasource.max-active=100 # Advanced configuration...
+spring.datasource.max-idle=8
+spring.datasource.min-idle=8
+spring.datasource.initial-size=10
+spring.datasource.validation-query=
+spring.datasource.test-on-borrow=false
+spring.datasource.test-on-return=false
+spring.datasource.test-while-idle=
+spring.datasource.time-between-eviction-runs-millis=
+spring.datasource.min-evictable-idle-time-millis=
+spring.datasource.max-wait=
+spring.datasource.jmx-enabled=false # Export JMX MBeans (if supported)
+
+# DATASOURCE (PersistenceExceptionTranslationAutoConfiguration
+spring.dao.exceptiontranslation.enabled=true
+
+# MONGODB (MongoProperties)
+spring.data.mongodb.host= # the db host
+spring.data.mongodb.port=27017 # the connection port (defaults to 27107)
+spring.data.mongodb.uri=mongodb://localhost/test # connection URL
+spring.data.mongodb.database=
+spring.data.mongodb.authentication-database=
+spring.data.mongodb.grid-fs-database=
+spring.data.mongodb.username=
+spring.data.mongodb.password=
+spring.data.mongodb.repositories.enabled=true # if spring data repository support is enabled
+
+# JPA (JpaBaseConfiguration, HibernateJpaAutoConfiguration)
+spring.jpa.properties.*= # properties to set on the JPA connection
+spring.jpa.open-in-view=true
+spring.jpa.show-sql=true
+spring.jpa.database-platform=
+spring.jpa.database=
+spring.jpa.generate-ddl=false # ignored by Hibernate, might be useful for other vendors
+spring.jpa.hibernate.naming-strategy= # naming classname
+spring.jpa.hibernate.ddl-auto= # defaults to create-drop for embedded dbs
+spring.data.jpa.repositories.enabled=true # if spring data repository support is enabled
+
+# JTA (JtaAutoConfiguration)
+spring.jta.log-dir= # transaction log dir
+spring.jta.*= # technology specific configuration
+
+# SOLR (SolrProperties})
+spring.data.solr.host=http://127.0.0.1:8983/solr
+spring.data.solr.zk-host=
+spring.data.solr.repositories.enabled=true # if spring data repository support is enabled
+
+# ELASTICSEARCH (ElasticsearchProperties})
+spring.data.elasticsearch.cluster-name= # The cluster name (defaults to elasticsearch)
+spring.data.elasticsearch.cluster-nodes= # The address(es) of the server node (comma-separated; if not specified starts a client node)
+spring.data.elasticsearch.repositories.enabled=true # if spring data repository support is enabled
+
+# DATA RESET (RepositoryRestConfiguration})
+spring.data.rest.base-uri= # base URI against which the exporter should calculate its links
+
+# FLYWAY (FlywayProperties)
+flyway.check-location=false # check that migration scripts location exists
+flyway.locations=classpath:db/migration # locations of migrations scripts
+flyway.schemas= # schemas to update
+flyway.init-version= 1 # version to start migration
+flyway.init-sqls= # SQL statements to execute to initialize a connection immediately after obtaining it
+flyway.sql-migration-prefix=V
+flyway.sql-migration-suffix=.sql
+flyway.enabled=true
+flyway.url= # JDBC url if you want Flyway to create its own DataSource
+flyway.user= # JDBC username if you want Flyway to create its own DataSource
+flyway.password= # JDBC password if you want Flyway to create its own DataSource
+
+# LIQUIBASE (LiquibaseProperties)
+liquibase.change-log=classpath:/db/changelog/db.changelog-master.yaml
+liquibase.check-change-log-location=true # check the change log location exists
+liquibase.contexts= # runtime contexts to use
+liquibase.default-schema= # default database schema to use
+liquibase.drop-first=false
+liquibase.enabled=true
+liquibase.url= # specific JDBC url (if not set the default datasource is used)
+liquibase.user= # user name for liquibase.url
+liquibase.password= # password for liquibase.url
+
+# JMX
+spring.jmx.enabled=true # Expose MBeans from Spring
+
+# RABBIT (RabbitProperties)
+spring.rabbitmq.host= # connection host
+spring.rabbitmq.port= # connection port
+spring.rabbitmq.addresses= # connection addresses (e.g. myhost:9999,otherhost:1111)
+spring.rabbitmq.username= # login user
+spring.rabbitmq.password= # login password
+spring.rabbitmq.virtual-host=
+spring.rabbitmq.dynamic=
+
+# REDIS (RedisProperties)
+spring.redis.database= # database name
+spring.redis.host=localhost # server host
+spring.redis.password= # server password
+spring.redis.port=6379 # connection port
+spring.redis.pool.max-idle=8 # pool settings ...
+spring.redis.pool.min-idle=0
+spring.redis.pool.max-active=8
+spring.redis.pool.max-wait=-1
+spring.redis.sentinel.master= # name of Redis server
+spring.redis.sentinel.nodes= # comma-separated list of host:port pairs
+
+# ACTIVEMQ (ActiveMQProperties)
+spring.activemq.broker-url=tcp://localhost:61616 # connection URL
+spring.activemq.user=
+spring.activemq.password=
+spring.activemq.in-memory=true # broker kind to create if no broker-url is specified
+spring.activemq.pooled=false
+
+# HornetQ (HornetQProperties)
+spring.hornetq.mode= # connection mode (native, embedded)
+spring.hornetq.host=localhost # hornetQ host (native mode)
+spring.hornetq.port=5445 # hornetQ port (native mode)
+spring.hornetq.embedded.enabled=true # if the embedded server is enabled (needs hornetq-jms-server.jar)
+spring.hornetq.embedded.server-id= # auto-generated id of the embedded server (integer)
+spring.hornetq.embedded.persistent=false # message persistence
+spring.hornetq.embedded.data-directory= # location of data content (when persistence is enabled)
+spring.hornetq.embedded.queues= # comma-separated queues to create on startup
+spring.hornetq.embedded.topics= # comma-separated topics to create on startup
+spring.hornetq.embedded.cluster-password= # customer password (randomly generated by default)
+
+# JMS (JmsProperties)
+spring.jms.jndi-name= # JNDI location of a JMS ConnectionFactory
+spring.jms.pub-sub-domain= # false for queue (default), true for topic
+
+# Email (MailProperties)
+spring.mail.host=smtp.acme.org # mail server host
+spring.mail.port= # mail server port
+spring.mail.username=
+spring.mail.password=
+spring.mail.default-encoding=UTF-8 # encoding to use for MimeMessages
+spring.mail.properties.*= # properties to set on the JavaMail session
+
+# SPRING BATCH (BatchDatabaseInitializer)
+spring.batch.job.names=job1,job2
+spring.batch.job.enabled=true
+spring.batch.initializer.enabled=true
+spring.batch.schema= # batch schema to load
+
+# AOP
+spring.aop.auto=
+spring.aop.proxy-target-class=
+
+# FILE ENCODING (FileEncodingApplicationListener)
+spring.mandatory-file-encoding=false
+
+# SPRING SOCIAL (SocialWebAutoConfiguration)
+spring.social.auto-connection-views=true # Set to true for default connection views or false if you provide your own
+
+# SPRING SOCIAL FACEBOOK (FacebookAutoConfiguration)
+spring.social.facebook.app-id= # your application's Facebook App ID
+spring.social.facebook.app-secret= # your application's Facebook App Secret
+
+# SPRING SOCIAL LINKEDIN (LinkedInAutoConfiguration)
+spring.social.linkedin.app-id= # your application's LinkedIn App ID
+spring.social.linkedin.app-secret= # your application's LinkedIn App Secret
+
+# SPRING SOCIAL TWITTER (TwitterAutoConfiguration)
+spring.social.twitter.app-id= # your application's Twitter App ID
+spring.social.twitter.app-secret= # your application's Twitter App Secret
+
+# SPRING MOBILE SITE PREFERENCE (SitePreferenceAutoConfiguration)
+spring.mobile.sitepreference.enabled=true # enabled by default
+
+# SPRING MOBILE DEVICE VIEWS (DeviceDelegatingViewResolverAutoConfiguration)
+spring.mobile.devicedelegatingviewresolver.enabled=true # disabled by default
+spring.mobile.devicedelegatingviewresolver.normal-prefix=
+spring.mobile.devicedelegatingviewresolver.normal-suffix=
+spring.mobile.devicedelegatingviewresolver.mobile-prefix=mobile/
+spring.mobile.devicedelegatingviewresolver.mobile-suffix=
+spring.mobile.devicedelegatingviewresolver.tablet-prefix=tablet/
+spring.mobile.devicedelegatingviewresolver.tablet-suffix=
+
+# ----------------------------------------
+# ACTUATOR PROPERTIES
+# ----------------------------------------
+
+# MANAGEMENT HTTP SERVER (ManagementServerProperties)
+management.port= # defaults to 'server.port'
+management.address= # bind to a specific NIC
+management.context-path= # default to '/'
+management.add-application-context-header= # default to true
+management.security.enabled=true # enable security
+management.security.role=ADMIN # role required to access the management endpoint
+management.security.sessions=stateless # session creating policy to use (always, never, if_required, stateless)
+
+# PID FILE (ApplicationPidFileWriter)
+spring.pidfile= # Location of the PID file to write
+
+# ENDPOINTS (AbstractEndpoint subclasses)
+endpoints.autoconfig.id=autoconfig
+endpoints.autoconfig.sensitive=true
+endpoints.autoconfig.enabled=true
+endpoints.beans.id=beans
+endpoints.beans.sensitive=true
+endpoints.beans.enabled=true
+endpoints.configprops.id=configprops
+endpoints.configprops.sensitive=true
+endpoints.configprops.enabled=true
+endpoints.configprops.keys-to-sanitize=password,secret,key # suffix or regex
+endpoints.dump.id=dump
+endpoints.dump.sensitive=true
+endpoints.dump.enabled=true
+endpoints.env.id=env
+endpoints.env.sensitive=true
+endpoints.env.enabled=true
+endpoints.env.keys-to-sanitize=password,secret,key # suffix or regex
+endpoints.health.id=health
+endpoints.health.sensitive=true
+endpoints.health.enabled=true
+endpoints.health.mapping.*= # mapping of health statuses to HttpStatus codes
+endpoints.health.time-to-live=1000
+endpoints.info.id=info
+endpoints.info.sensitive=false
+endpoints.info.enabled=true
+endpoints.mappings.enabled=true
+endpoints.mappings.id=mappings
+endpoints.mappings.sensitive=true
+endpoints.metrics.id=metrics
+endpoints.metrics.sensitive=true
+endpoints.metrics.enabled=true
+endpoints.shutdown.id=shutdown
+endpoints.shutdown.sensitive=true
+endpoints.shutdown.enabled=false
+endpoints.trace.id=trace
+endpoints.trace.sensitive=true
+endpoints.trace.enabled=true
+
+# HEALTH INDICATORS
+management.health.db.enabled=true
+management.health.diskspace.enabled=true
+management.health.mongo.enabled=true
+management.health.rabbit.enabled=true
+management.health.redis.enabled=true
+management.health.solr.enabled=true
+management.health.diskspace.path=.
+management.health.diskspace.threshold=10485760
+management.health.status.order: DOWN, OUT_OF_SERVICE, UNKNOWN, UP
+
+# MVC ONLY ENDPOINTS
+endpoints.jolokia.path=jolokia
+endpoints.jolokia.sensitive=true
+endpoints.jolokia.enabled=true # when using Jolokia
+
+# JMX ENDPOINT (EndpointMBeanExportProperties)
+endpoints.jmx.enabled=true
+endpoints.jmx.domain= # the JMX domain, defaults to 'org.springboot'
+endpoints.jmx.unique-names=false
+endpoints.jmx.static-names=
+
+# JOLOKIA (JolokiaProperties)
+jolokia.config.*= # See Jolokia manual
+
+# REMOTE SHELL
+shell.auth=simple # jaas, key, simple, spring
+shell.command-refresh-interval=-1
+shell.command-path-patterns= # classpath*:/commands/**, classpath*:/crash/commands/**
+shell.config-path-patterns= # classpath*:/crash/*
+shell.disabled-commands=jpa*,jdbc*,jndi* # comma-separated list of commands to disable
+shell.disabled-plugins=false # don't expose plugins
+shell.ssh.enabled= # ssh settings ...
+shell.ssh.key-path=
+shell.ssh.port=
+shell.telnet.enabled= # telnet settings ...
+shell.telnet.port=
+shell.auth.jaas.domain= # authentication settings ...
+shell.auth.key.path=
+shell.auth.simple.user.name=
+shell.auth.simple.user.password=
+shell.auth.spring.roles=
+
+# GIT INFO
+spring.git.properties= # resource ref to generated git info properties file
+```
+
+## B. 메타데이터 설정<a name="B. 메타데이터 설정"></a>
+### B.1. 메타데이터 형식<a name="B.1. 메타데이터 형식"></a>
 #### B.1.1. 그룹 어트리뷰트
 #### B.1.2. 속성 어트리뷰트
 #### B.1.3. 반복적인 메타데이터 아이템
