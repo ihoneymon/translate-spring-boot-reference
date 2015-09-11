@@ -2600,7 +2600,21 @@ private ConnectionFactory nonXaConnectionFactory;
 보다 자세한 내용은 [JmxAutoConfiguration](http://github.com/spring-projects/spring-boot/tree/master/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/jmx/JmxAutoConfiguration.java)을 살펴보자.
 
 ## 35. 테스팅<a name="테스팅"></a>
-### 35.1. 테스트 스코프 의존성
+
+Spring Boot provides a number of useful tools for testing your application. The spring-boot-starter-test POM provides Spring Test, JUnit, Hamcrest and Mockito dependencies. There are also useful test utilities in the core spring-boot module under the org.springframework.boot.test package.
+스프링 부트는 어플리케이션을 테스트 하는 데에 쓸모있는 도구를 여러 개 제공한다. ```spring-boot-starter-test``` POM 은 Spring Test, JUnit, Hamcrest 와 Mockito 의존성을 제공한다.(|패키지묶음을 쓸 수 있도록 의존성 정보를 제공한다.) 그리고 ```org.springframework.boot.test``` 패키지 아래에 있는 핵심```spring-boot``` 모듈에는 유용한 테스트 유틸리티들이 있다.
+
+## 35.1. 테스트 스코프 의존성
+'시작 POM'(```test scope```에서)(+으로) ```spring-boot-starter-test``` 를 사용한다면 아래처럼 제공되는 라이브러리를 볼 수 있을 것이다.
+
+ - Spring Test — 스프링 어플리케이션을 위한 통합 테스트
+ - JUnit — Java 어플리케이션을 유닛테스트 할 때 (+거의) 표준
+ - Hamcrest — JUnit assertion(|단언) 스타일을 따르는 매처 오브젝트(서술부 혹은 한정사로 알려져있다)
+ - Mockito — 자바 Mock 프레임워크
+
+이 (+라이브러리)들은 테스트를 작성할 때 유용하게 쓰이는 공통 라이브러리다. 이 라이브러리들이 적당하지 않다고 생각한다면 자유롭게 다른 테스트 (라이브러리)의존성을 추가할 수 있다.
+
+#
 ### 35.2. 스프링 애플리케이션 테스트
 ### 35.3. 스프링부트 애플리케이션 테스트<a name="스프링부트 애플리케이션 테스트"></a>
 #### 35.3.1. 스팍Spock을 사용하여 스프링 부트 애플리케이션 테스트
