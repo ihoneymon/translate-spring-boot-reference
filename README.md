@@ -2617,12 +2617,11 @@ private ConnectionFactory nonXaConnectionFactory;
 ### 35.2. 스프링 애플리케이션 테스트
 의존성 주입으로 얻는 가장 큰 장점 하나는 작성한 코드가 유닛테스트 하기 쉬워진다는 것이다. 심지어 스프링과 조금도 상관없이, ```new``` 명령을 사용해서 오브젝트를 간단하게 인스턴스화 할 수 있다. 그리고 *목 객체[mock objects]*를 실제 의존하는 대상 대신 사용할 수도 있다.
 
-Often you need to move beyond ‘unit testing’ and start ‘integration testing’ (with a Spring ApplicationContext actually involved in the process). It’s useful to be able to perform integration testing without requiring deployment of your application or needing to connect to other infrastructure.
 종종 '유닛 테스팅'을 마치고 '통합 테스팅'을 시작해야 한다(통합 테스팅 과정에 스프링 ```ApplicationContext```이 실제로 개입하게 된다). 이때 어플리케이션을 디플로이하거나 다른 기반 기술과 연결할 필요 없이 통합 테스트가 가능하도록 만드는 것이 좋다.
 
-The Spring Framework includes a dedicated test module for just such integration testing. You can declare a dependency directly to org.springframework:spring-test or use the spring-boot-starter-test ‘Starter POM’ to pull it in transitively.
+스프링 프레임워크는 딱 이런 통합 테스트 전용 테스트 모듈을 포함하고 있다. ```org.springframework:spring-test```에 대한 의존성을 직접 선언하거나 'Starter POM'에 ```spring-boot-starter-test```을 사용하여 (+메이븐이) 가져오도록 설정할 수 있다.
 
-If you have not used the spring-test module before you should start by reading the relevant section of the Spring Framework reference documentation.
+```spring-test``` 모듈을 써본 적이 없다면 스프링 프레임워크 레퍼런스에서 (관련부분)[http://docs.spring.io/spring/docs/4.1.3.RELEASE/spring-framework-reference/htmlsingle/#testing]을 읽고 시작하는 것이 좋을 것이다.
 
 ### 35.3. 스프링부트 애플리케이션 테스트<a name="스프링부트 애플리케이션 테스트"></a>
 #### 35.3.1. 스팍Spock을 사용하여 스프링 부트 애플리케이션 테스트
