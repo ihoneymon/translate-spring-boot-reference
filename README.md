@@ -3833,9 +3833,68 @@ spring.git.properties= # resource ref to generated git info properties file
 ```
 
 ## B. 메타데이터 설정<a name="B. 메타데이터 설정"></a>
+스프링부트 jars는 설정 속성들을 모두 지원하는 메타데이터 파일과 함께 제공된다. 이 파일들은 IDE 개발자가 제공하는 문맥적인 도움과 사용자가 ```application.properties``` 혹은 ```application.yml``` 파일에서 처럼 "코드 완성"기능을 허용하도록 설계되었다.
+
+메타데이터 파일의 대부분은 ```@ConfigurationProperties``` 선언된 모든 아이템을 컴파일하는 과정에서 자동적으로 생성된다.
+
 ### B.1. 메타데이터 형식<a name="B.1. 메타데이터 형식"></a>
-#### B.1.1. 그룹 어트리뷰트
-#### B.1.2. 속성 어트리뷰트
+설정 메타데이터 파일은 jar 안쪽에 ```META-INF/spring-configuration-metadata.json```에 위치한다. 간단한 JSON 형식에 아이템들은 "groups" 혹은 "properties" 하위에 분류되어 있다:
+
+```
+{"groups": [
+    {
+        "name": "server",
+        "type": "org.springframework.boot.autoconfigure.web.ServerProperties",
+        "sourceType": "org.springframework.boot.autoconfigure.web.ServerProperties"
+    }
+    ...
+],"properties": [
+    {
+        "name": "server.port",
+        "type": "java.lang.Integer",
+        "sourceType": "org.springframework.boot.autoconfigure.web.ServerProperties"
+    },
+    {
+        "name": "server.servlet-path",
+        "type": "java.lang.String",
+        "sourceType": "org.springframework.boot.autoconfigure.web.ServerProperties"
+        "defaultValue": "/"
+    }
+    ...
+]}
+```
+
+각 "property"는 사용자가 정의한 값으로 설정되어 있다. 예를 들어 ```server.port``` 그리고 ```server.servlet-path```는 ```application.properties``` 에 다음과 같이 정의되어 있다:
+
+```
+server.port=9090
+server.servlet-path=/home
+```
+
+"groups"는 사용자정의되지 않은 높은 수준의 것들이지만 프로퍼티즈를 위한 문맥적인 그룹핑을 제공한다. 예를 들어 ```server.port``` 그리고 ```server.servlet-path``` 속성은 ```server``` 그룹의 일부분이다.
+
+> 노트:
+모든 "property"이 "group"을 필요로 하지는 않는다. 일부 프로퍼티즈들에 존재한다.
+
+#### B.1.1. 그룹 어트리뷰트<a name="B.1.1. 그룹 어트리뷰트"></a>
+```groups```로 구성된 JSON 객체배열은 다음 속성들을 따른다:
+
+| 이름 | 유형 | 목적 |
+|------|------|------|
+|```name```|String|그룹의 완전한 경로, 이 속성은 필수항목이다. |
+|```type```|String|그룹의 데이터 타입의 클래스명. 예를들어, 그룹이 ```@ConfigurationProperties``` 주석 클래스를 기반으로 한 경우 속성은 해당래스의 완전한 이름을 포함한다. |
+|```description```|String|사용자에게 노출되는 그룹에 대한 짧은 설명. 설명이 없는 경우는 생략할 수 있다. 설명은 짧은 단락들로, 그 중에서 첫번째 줄에는 간결한 요약을 제공하는 것이 좋다.|
+|```sourceType```|String|이 그룹에 관여하는 소스의 클래스 이름. 예를 들어 ```@ConfigurationProperties``` 으로 선언된 ```@Bean``` 메서드에 따라 이 속성은 메서드를 포함하는 ```@Configuration``` 클래스의 완전한 이름을 포함한다. |
+|```sourceMethod```|String|이 그룹에 관여된 메서드의 완전한 이름(괄호와 인수 유형을 포함). 예를 들어, ```@ConfigurationProperties``` 선언된 ```@Bean``` 메서드의 이름. 소스 메서드가 알려지지 않은 경우 생략할 수 있다. |
+
+#### B.1.2. 속성 어트리뷰트<a name="B.1.2. 속성 어트리뷰트"></a>
+속성 배열에 포함된 JSON 객체는 다음과 같은 속성들을 포함할 수 있다:
+
+| Name | Type | Purpose |
+|------|------|---------|
+|```name```|String|속성의 완전한 이름. 이름은 소문자-로 되어있다(예: ```server.servlet-path```). 이 속성은 필수항목이다. |
+|```type```|String||
+
 #### B.1.3. 반복적인 메타데이터 아이템
 ### B.2. 애노테이션 프로레서를 사용하여 메타데이터 생성
 #### B.2.1. 내부 속성
