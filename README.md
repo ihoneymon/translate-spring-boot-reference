@@ -3893,12 +3893,64 @@ server.servlet-path=/home
 | Name | Type | Purpose |
 |------|------|---------|
 |```name```|String|속성의 완전한 이름. 이름은 소문자-로 되어있다(예: ```server.servlet-path```). 이 속성은 필수항목이다. |
-|```type```|String||
+|```type```|String|속성의 데이터 유형의 클래스 이름. 예를 들어, ```java.lnag.String```. 이 특성은 입력할 수 있는 값의 종류로 사용자를 안내하는데 사용될 수 있다. 일관성을 위해, 원시종류는 래퍼 대응을 통해 지정된다, 예를 들어 ```boolean```은 ```java.lang.Boolean```이 된다. 컬렉션 유형은 그들의 인터페이스에 대응하고 실제 제네릭 타입들을 정의한다, 예를 들어 ``` java.util.HashMap<java.lang.String,java.lang.Integer>```는 ```java.util.Map<java.lang.String,java.lang.Integer>```가 된다. 보다 복잡한 타입의 클래스가 될 경우에는 값은 문자열로 변환되어 연결된다. |
+|```description```|String|사용자에게 노출되는 그룹에 관한 짧은 설명. 설명이 없는 경우는 생략할 수 있다. 설명이 짧은 문단인 경우에는 간결한 요약을 첫번째 줄에 제공하는 것을 권장한다. 설명의 마지막 라인에는 마침표(.)으로 끝을 기술한다. |
+|```sourceType```|String|이 속성은 소스의 클래스명을 제공한다. 예를 들어, ```@ConfigurationProperties``` 선언된 클래스의 속성은 클래스의 완전한 이름을 포함한다. 소스 유형이 알려지지 않은 경우에는 생략될 수 있다. |
+|```defaultValue```|Object|속성이 지정되지 않았을 때 사용되는 기본값이다. 속성의 타입이 배열인 경우는 값의 배열일 수 있다. 소스 유형이 알려지지 않은 경우에는 생략될 수 있다. |
+|```deprecated```|boolean|속성을 더이상 사용하지 않을 경우 정의한다. deprecated 필드를 정의하지 않았거나 정보가 알려지지 않은 경우 생략될 수 있다. |
 
-#### B.1.3. 반복적인 메타데이터 아이템
-### B.2. 애노테이션 프로레서를 사용하여 메타데이터 생성
-#### B.2.1. 내부 속성
-#### B.2.2. 추가적인 메타데이터 추가
+#### B.1.3. 반복적인 메타데이터 아이템<a name="B.1.3. 반복적인 메타데이터 아이템"></a>
+"property"와 "group" 객체에 대한 완벽한 허용은 메타-데이터 파일 내에서 같은 이름이 여러번 반복될 수 있다. 예를 들어, 스프링부트는 Hikari, Tomcat 그리고 DBCP 클래스들에 대한  ```spring.datasource``` 속성들의 이름들에 대한 잠재적인 중복을 제공한다. 메타-데이터의 소비는 시나리오들을 지원할수 있도록 주의를 기울여야 한다.
+
+### B.2. 애노테이션 프로레서를 사용하여 메타데이터 생성<a name="B.2. 애노테이션 프로레서를 사용하여 메타데이터 생성"></a>
+```spring-boot-configuration-processor``` jar 를 사용하여 ```@ConfigurationProperties``` 선언된 아이템들로부터 설정 메타-데이터 파일을 쉽게 생성할 수 있다. jar에 포함된 Java annotation processor는 프로젝트를 컴파일할 때 요청한다. 프로세서를 사용하려면, ```spring-boot-configuration-processor```을 선택적으로 의존성을 포함, 메이븐의 경우는 다음과 같이 추가할 수 있다:
+
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-configuration-processor</artifactId>
+    <optional>true</optional>
+</dependency>
+```
+
+애노테이션은 ```@ConfigurationProperties```을 사용한 클래스와 메서드들을 추출한다. 설정클래스들의 필드값들은 Javadoc의 ```description``` 속성으로 사용된다.
+
+> 노트:
+JSON에 추가되기 전에 처리되지 않기 때문에 ```@ConfigurationProperties``` 필드 Javadoc과 간단한 텍스트를 사용한다.
+
+#### B.2.1. 내부 속성<a name="B.2.1. 내부 속성"></a>
+애노테이션 프로세서는 자동으로 중첩된 속성으로 내부 클래스를 고려할 것이다. 예를 들어, 다음 클래스의 경우:
+
+```java
+@ConfigurationProperties(prefix="server")
+public class ServerProperties {
+
+    private String name;
+
+    private Host host;
+
+    // ... getter and setters
+
+    private static class Host {
+
+        private String ip;
+
+        private int port;
+
+        // ... getter and setters
+
+    }
+
+}
+```
+
+는 ```server.name```, ```server.host.ip``` 과 ```server.host.port``` 속성들을 생성한다. 중첩된 것처럼 일반(내부 클래스가 아닌) 클래스가 처리되어야한다는 것을 나타내기 위해서 ```@NestedConfigurationProperty``` 애노테이션을 사용할 수 있다.
+
+#### B.2.2. 추가적인 메타데이터 추가<a name="B.2.2. 추가적인 메타데이터 추가"></a>
+스프링부트의 설정파일 제어는 매우 유연하며, 그것의 속성은 ```@ConfigurationProperties``` 빈에 연결되지 않은 경우가 종종 존재한다. 각각의 경우, 애노테이션 프로세스가 자동으로 주요 메타-데이터 파일에 ```META-INF/additional-spring-configuration-metadata.json```의 아이템들을 병합한다.
+
+```additional-spring-configuration-metadata.json``` 파일의 형식은 ```spring-configuration-metadata.json``` 파일과 같다. 추가 프로퍼타이즈 파일은 선택적이며, 추가 프로퍼타이즈가 없다면, 추가하지 않는다.
+
 ## C. 자동설정 클래스<a name="자동설정 클래스"></a>
 ### C.1. "spring-boot-autoconfigure" 모듈
 ### C.2. "spring-boot-actuator" 모듈
