@@ -2624,13 +2624,10 @@ private ConnectionFactory nonXaConnectionFactory;
 ```spring-test``` 모듈을 써본 적이 없다면 스프링 프레임워크 레퍼런스에서 [관련부분](http://docs.spring.io/spring/docs/4.1.3.RELEASE/spring-framework-reference/htmlsingle/#testing) 을 읽고 시작하는 것이 좋을 것이다.
 
 ### 35.3. 스프링부트 애플리케이션 테스트<a name="스프링부트 애플리케이션 테스트"></a>
-A Spring Boot application is just a Spring ```ApplicationContext``` so nothing very special has to be done to test it beyond what you would normally do with a vanilla Spring context. One thing to watch out for though is that the external properties, logging and other features of Spring Boot are only installed in the context by default if you use ```SpringApplication``` to create it.
-평범한[vanilla] 스프링 컨텍스트를 가지고 하려는 일 대부분을 
+스프링 부트 어플리케이션은 그냥 스프링 `ApplicationContext` 이므로 평범한[vanilla] 스프링 컨텍스트를 가지고 하려는 일 대부분은 테스트 할  때 특별히 해줘야 하는 것은 없다. 다만 한 가지 주의할 것은 `SpringApplication` 을 생성해서 사용한다면 로깅 등 스프링 부트의 기능, 외부 속성(|프로퍼티)은 컨텍스트에만 자동으로 설치해야한다는 것이다.(? 컨텍스트 안에 자동 설치되도록 해야만  `SpringApplication`을 쓸 수 있나?)
 
-Spring Boot provides a ```@SpringApplicationConfiguration``` annotation as an alternative to the standard ```spring-test``` ```@ContextConfiguration``` annotation. If you use ```@SpringApplicationConfiguration``` to configure the ```ApplicationContext``` used in your tests, it will be created via ```SpringApplication``` and you will get the additional Spring Boot features.
-
-For example:
-
+스프링 부트는 표준 ```spring-test``` ```@ContextConfiguration``` 어노테이션 대신에 ```@SpringApplicationConfiguration``` 어노테이션을 제공한다. 테스트에 사용하는 ```ApplicationContext```를 설정할 때 ```@SpringApplicationConfiguration``` 를 사용하면 ```SpringApplication```에 의해 (+```ApplicationContext```가) 생성되고 스프링 부트의 추가 기능을 쓸 수 있을 것이다.
+예를 보자 : 
 ```java
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = SampleDataJpaApplication.class)
@@ -2644,11 +2641,9 @@ public class CityRepositoryIntegrationTests {
 }
 ```
 
-[Tip]
+컨텍스트 로더는 ```@WebAppConfiguration``` 어노테이션을 찾아서 웹 어플리케이션을 테스트 할 것인지 아닌지(예를 들어 ```MockMVC```를 사용한다든지) 추측한다. (```MockMVC``` 와 ```@WebAppConfiguration``` 은 ```spring-test```의 일부분이다).
 
-> The context loader guesses whether you want to test a web application or not (e.g. with ```MockMVC```) by looking for the ```@WebAppConfiguration``` annotation. (```MockMVC``` and ```@WebAppConfiguration``` are part of ```spring-test```).
-
-If you want a web application to start up and listen on its normal port, so you can test it with HTTP (e.g. using ```RestTemplate```), annotate your test class (or one of its superclasses) with ```@IntegrationTest```. This can be very useful because it means you can test the full stack of your application, but also inject its components into the test class and use them to assert the internal state of the application after an HTTP interaction. For example:
+(+테스트할 때 실제로) 웹 어플리케이션을 시작하고 포트에서 수신(|대기)하게 하려면  테스트할 클래스(또는 테스트할 클래스의 슈퍼 클래스 중 하나)에 ```@IntegrationTest``` 을 표시하여 HTTP(예를 들면 ```RestTemplate```을 사용하고) 를 써서 테스트 할 수 있다. 이 (+```@IntegrationTest```)는 매우 유용한데, 어플리케이션을 풀 스택으로 테스트할 수 있을 뿐만 아니라 컴포넌트들을 테스트 클래스에 주입하고 HTTP 상호작용이 끝난 다음 내부 상태를 단정[assert]할 수 있기 때문이다. 예시 : 
 ```java
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = SampleDataJpaApplication.class)
@@ -2665,11 +2660,9 @@ public class CityRepositoryIntegrationTests {
 
 }
 ```
-[Note]
+> 스프링의 테스트 프레임워크는 각 테스트 사이에 어플리케이션 컨텍스트를 캐쉬해둔다(|보관한다). 그러므로 테스트들이 같은 설정을 공유하는 한 실제로 테스트를 몇 개나 실행하든 상관없이 서버를 시작하고 멈추는 과정에서 시간을 소모하는 일은 딱 한 번 일어난다.
 
-> Spring’s test framework will cache application contexts between tests. Therefore, as long as your tests share the same configuration, the time consuming process of starting and stopping the server will only happen once, regardless of the number of tests that actually run.
-
-To change the port you can add environment properties to ```@IntegrationTest``` as colon- or equals-separated name-value pairs, e.g. ```@IntegrationTest("server.port:9000")```. Additionally you can set the ```server.port``` and ```management.port``` properties to ```0``` in order to run your integration tests using random ports. For example:
+포트를 바꾸고 싶다면 ```@IntegrationTest```에 환경 속성을 콜론(+;)이나 대입식 이름-값 묶음으로 추가하면 된다. 예를 들면  ```@IntegrationTest("server.port:9000")``` 와 같은 식이다. 게다가 ```server.port``` 와 ```management.port``` 속성을 `0`으로 설정하면 임의의 포트로 통합테스트 할 수있다. 예제 : 
 ```java
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = MyApplication.class)
@@ -2681,7 +2674,7 @@ public class SomeIntegrationTests {
 
 }
 ```
-See [Section 64.4, “Discover the HTTP port at runtime”](http://docs.spring.io/spring-boot/docs/1.2.0.BUILD-SNAPSHOT/reference/html/howto-embedded-servlet-containers.html#howto-discover-the-http-port-at-runtime) for a description of how you can discover the actual port that was allocated for the duration of the tests.
+테스트를 실행하는 동안 실제로 할당된 포트를 알아내고 싶다면 [Section 64.4, “Discover the HTTP port at runtime”](http://docs.spring.io/spring-boot/docs/1.2.0.BUILD-SNAPSHOT/reference/html/howto-embedded-servlet-containers.html#howto-discover-the-http-port-at-runtime) 문서를 보라.
 
 #### 35.3.1. 스팍Spock을 사용하여 스프링 부트 애플리케이션 테스트
 ### 35.4. 테스트 유틸리티<a name="테스트 유틸리티"></a>
