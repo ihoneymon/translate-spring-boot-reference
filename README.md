@@ -2679,7 +2679,7 @@ public class SomeIntegrationTests {
 #### 35.3.1. 스팍Spock을 사용하여 스프링 부트 애플리케이션 테스트
 Spock 을 스프링 부트 어플리케이션을 테스트하는 데 사용하고 싶다면 Spock의 `spock-spring` 모듈에 대한 의존성을 어플리케이션 빌드에 추가해야한다. `spock-spring`은 스프링 테스트 프레임워크를 Spock 안에 포함하고 있다.
 
-Spock은 @ContextConfiguration [메타 어노테이션](https://code.google.com/p/spock/issues/detail?id=349)을 [찾아내지 않으므로](https://code.google.com/p/spock/issues/detail?id=349) [위에서 설명한](#스프링부트 애플리케이션 테스트) @SpringApplicationConfiguration 을 사용할 수 없다는 것을 명심하라. 이런 제한을 피하려면 @ContextConfiguration 어노테이션을 직접 사용해서 스프링 부트가 명확한(|특정한) 컨텍스트 로더를 사용하도록 설정해야한다.
+Spock은 `@ContextConfiguration` [메타 어노테이션](https://code.google.com/p/spock/issues/detail?id=349)을 [찾아내지 않으므로](https://code.google.com/p/spock/issues/detail?id=349) [위에서 설명한](#스프링부트 애플리케이션 테스트) `@SpringApplicationConfiguration` 을 사용할 수 없다는 것을 명심하라. 이런 제한을 피하려면 `@ContextConfiguration` 어노테이션을 직접 사용해서 스프링 부트가 명확한(|특정한) 컨텍스트 로더를 사용하도록 설정해야한다.
 ```java
 @ContextConfiguration(loader = SpringApplicationContextLoader.class)
 class ExampleSpec extends Specification {
