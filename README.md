@@ -2625,6 +2625,7 @@ private ConnectionFactory nonXaConnectionFactory;
 
 ### 35.3. 스프링부트 애플리케이션 테스트<a name="스프링부트 애플리케이션 테스트"></a>
 A Spring Boot application is just a Spring ```ApplicationContext``` so nothing very special has to be done to test it beyond what you would normally do with a vanilla Spring context. One thing to watch out for though is that the external properties, logging and other features of Spring Boot are only installed in the context by default if you use ```SpringApplication``` to create it.
+평범한[vanilla] 스프링 컨텍스트를 가지고 하려는 일 대부분을 
 
 Spring Boot provides a ```@SpringApplicationConfiguration``` annotation as an alternative to the standard ```spring-test``` ```@ContextConfiguration``` annotation. If you use ```@SpringApplicationConfiguration``` to configure the ```ApplicationContext``` used in your tests, it will be created via ```SpringApplication``` and you will get the additional Spring Boot features.
 
@@ -2645,7 +2646,7 @@ public class CityRepositoryIntegrationTests {
 
 [Tip]
 
- The context loader guesses whether you want to test a web application or not (e.g. with ```MockMVC```) by looking for the ```@WebAppConfiguration``` annotation. (```MockMVC``` and ```@WebAppConfiguration``` are part of ```spring-test```).
+> The context loader guesses whether you want to test a web application or not (e.g. with ```MockMVC```) by looking for the ```@WebAppConfiguration``` annotation. (```MockMVC``` and ```@WebAppConfiguration``` are part of ```spring-test```).
 
 If you want a web application to start up and listen on its normal port, so you can test it with HTTP (e.g. using ```RestTemplate```), annotate your test class (or one of its superclasses) with ```@IntegrationTest```. This can be very useful because it means you can test the full stack of your application, but also inject its components into the test class and use them to assert the internal state of the application after an HTTP interaction. For example:
 ```java
@@ -2666,7 +2667,7 @@ public class CityRepositoryIntegrationTests {
 ```
 [Note]
 
- Spring’s test framework will cache application contexts between tests. Therefore, as long as your tests share the same configuration, the time consuming process of starting and stopping the server will only happen once, regardless of the number of tests that actually run.
+> Spring’s test framework will cache application contexts between tests. Therefore, as long as your tests share the same configuration, the time consuming process of starting and stopping the server will only happen once, regardless of the number of tests that actually run.
 
 To change the port you can add environment properties to ```@IntegrationTest``` as colon- or equals-separated name-value pairs, e.g. ```@IntegrationTest("server.port:9000")```. Additionally you can set the ```server.port``` and ```management.port``` properties to ```0``` in order to run your integration tests using random ports. For example:
 ```java
