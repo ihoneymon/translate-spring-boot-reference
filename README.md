@@ -2677,11 +2677,75 @@ public class SomeIntegrationTests {
 테스트를 실행하는 동안 실제로 할당된 포트를 알아내고 싶다면 [Section 64.4, “Discover the HTTP port at runtime”](http://docs.spring.io/spring-boot/docs/1.2.0.BUILD-SNAPSHOT/reference/html/howto-embedded-servlet-containers.html#howto-discover-the-http-port-at-runtime) 문서를 보라.
 
 #### 35.3.1. 스팍Spock을 사용하여 스프링 부트 애플리케이션 테스트
+Spock 을 스프링 부트 어플리케이션을 테스트하는 데 사용하고 싶다면 Spock의 `spock-spring` 모듈에 대한 의존성을 어플리케이션 빌드에 추가해야한다. `spock-spring`은 스프링 테스트 프레임워크를 Spock 안에 포함하고 있다.
+
+Spock은 @ContextConfiguration [메타 어노테이션](https://code.google.com/p/spock/issues/detail?id=349)을 [찾아내지 않으므로](https://code.google.com/p/spock/issues/detail?id=349) [위에서 설명한](#스프링부트 애플리케이션 테스트) @SpringApplicationConfiguration 을 사용할 수 없다는 것을 명심하라. 이런 제한을 피하려면 @ContextConfiguration 어노테이션을 직접 사용해서 스프링 부트가 명확한(|특정한) 컨텍스트 로더를 사용하도록 설정해야한다.
+```java
+@ContextConfiguration(loader = SpringApplicationContextLoader.class)
+class ExampleSpec extends Specification {
+
+	    // ...
+
+}
+```
+> (+이렇게 하면) [위에서 설명한](#스프링부트 애플리케이션 테스트) 어노테이션은 Spock과 함께 사용할 수 있다. 즉 @IntegrationTest 와 @WebAppConfiguration 을 필요로 하는 테스트에 따라 (+위 예제의)`Specification` (+클래스)에 표시(|사용)할 수 있다.
+
 ### 35.4. 테스트 유틸리티<a name="테스트 유틸리티"></a>
+`spring-boot` 에는 대부분의 어플리케이션을 테스트할 때 쓸모있는 테스트 유틸리티가 들어있다.
+
 #### 35.4.1. ```ConfigFileApplicationContextInitializer```
+`ConfigFileApplicationContextInitializer` 은 테스트에 스프링 부트 `application.properties`파일을 로드해서 적용하는 `ApplicationContextInitializer` 이다. `@SpringApplicationConfiguration`이 제공하는 모든 기능이 필요없을 때 사용한다.
+```java
+@ContextConfiguration(classes = Config.class,
+    initializers = ConfigFileApplicationContextInitializer.class)
+```
 #### 35.4.2. ```EnvironmentTestUtils```
+`EnvironmentTestUtils` 는 `ConfigurableEnvironment` 나 `ConfigurableApplicationContext` 에 속성을 빠르게 추가할 수 있도록 해준다. `key=value` 스트링으로 간단하게 호출할 수 있다:
+```java
+EnvironmentTestUtils.addEnvironment(env, "org=Spring", "name=Boot");
+```
+
 #### 35.4.3. ```OutputCapture```
+`OutputCapture` 은 `System.out` 과 `System.err` 출력을 캡처하는 JUnit `Rule`이다. capture를 선언하고 `@Rule`을 표시하는 것으로 간편하게 단정문[assertion]에서 `toString()`을 사용할 수 있다.
+```
+import org.junit.Rule;
+import org.junit.Test;
+import org.springframework.boot.test.OutputCapture;
+
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
+
+public class MyTest {
+
+    @Rule
+    public OutputCapture capture = new OutputCapture();
+
+    @Test
+    public void testName() throws Exception {
+        System.out.println("Hello World!");
+        assertThat(capture.toString(), containsString("World"));
+    }
+
+}
+```
+
 #### 35.4.4. ```TestRestTemplate```
+`TestRestTemplate`은 스프링 `RestTemplate`의 편리한 서브 클래스로 통합 테스트를 할 때 유용하다. 평범한 템플릿을 사용하거나 기본 HTTP 인증(사용자 이름과 암호 사용)을 보내는 방법을 쓸 수 있다. 어느 경우든 템플릿이 테스트 친화적인 방법이 될 것이다 : 리다이렉트를 따라가지 않고(이러면 응답 위치를 단정(|테스트)할 수 있다), 쿠키를 무시하거나(템플릿은 이전 상태를 저장하지 않는 stateless이다), 서버 사이드 에러에 대해 예외를 던지지 않도록 한다
+아파치 HTTP 클라이언트(4.3.2 또는 그 이상)을 사용하는 것은 추천이나 필수는 아니다. 클래스패스에 아파치 클라이언트가 있으면 `TestRestTemplate`는 클라이언트를 적당히 설정하여 응답할 것이다. 
+
+```java
+public class MyTest {
+
+    RestTemplate template = new TestRestTemplate();
+
+    @Test
+    public void testRequest() throws Exception {
+        HttpHeaders headers = template.getForEntity("http://myhost.com", String.class).getHeaders();
+        assertThat(headers.getLocation().toString(), containsString("myotherhost"));
+    }
+
+}
+```
 ## 36. 자동설정으로 개발하고 @Condition 사용하기<a name="자동설정으로 개발하고 @Condition 사용하기"></a>
 공유 라이브러리를 개발하는 회사에서 일하거나, 오픈소스 혹은 상용 라이브러리 회사에서 일한다면 고유한 자동설정을 만들고 싶을 것이다.
 자동 설정 클래스는 외부 jar에 담길 수도 있고[can be bundled] 스프링 부트가 이것을 고르는 것도 가능하다.
