@@ -648,7 +648,7 @@ dependencies {
 }
 ```
 
-### 10.2. 스프링부트 CLI를 이용한 설치
+### 10.2. 스프링부트 CLI를 이용한 설치<a name="CLI를 이용한 설치"></a>
 스프링부트 CLI는 스프링 프로토타입을 빠르게 만들려고할 때 쓸만한 커맨드라인 툴이다. [그루비](http://groovy.codehaus.org/) 스크립트를 실행할 수 있다으며, 이는 자바와 매우 유사한 문법을 가지고 있기에 별도로 다른 복잡한 코드를 작성할 필요가 없다.
 
 스프링부트를 작업하데 CLI를 사용할 필요가 없을수도 있지만 스프링 애플리케이션을 만들 수 있는 가장 빠른 방법이라는 건 분명하다.
@@ -3349,9 +3349,80 @@ org.springframework.boot.actuate.system.EmbeddedServerPortFileWriter
 ## 54. 다음 읽을거리
 
 # VII. 스프링부트 CLI<a name="스프링부트 CLI"></a>
-## 55. CLI 설치
-## 56. CLI 사용
+스프링을 써서 빨리 개발하고 싶을 때 스프링부트 CLI를 쓸 수 있다. 스프링부트 CLI는 상투적으로 반복하는 코드를 잔뜩 쓰지 않고도, 익숙한 자바같은 문법을 쓰는 그루비 스크립트를 실행할 수 있게 해준다. 사용자만의 고유한 명령을 만들거나 새 프로젝트를 위한 환경을 빠르게 갖추려고 할 때에(bootstrap a new project) 쓸 수 있다.
+
+## 54. CLI 설치
+스프링부트 CLI는 수동으로 설치할 수 있다. GVM(그루비 환경관리자)이나 OSX 사용자라면 Homebrew를 써서 설치한다. 더 포괄적인 설치 지침은 [섹션 10.2, "스프링부트 CLI 설치하기"](#CLI를 이용한 설치)에서 보도록 하자.
+
+## 55. CLI 사용
+CLI를 설치하고 나면 `spring`이라고 쳐서 실행할 수 있다. 아무런 인자도 주지않고 `spring`을 실행하면 다음과 같이 간단한 도움말 화면을 보게 될 것이다 :
+```
+$ spring
+usage: spring [--help] [--version]
+       <command> [<args>]
+
+Available commands are:
+
+  run [options] <files> [--] [args]
+    Run a spring groovy script
+
+  ... more command help is shown here
+```
+`help`로 지원하는 명령을 자세하게 살펴볼 수 있다. 예를 들면 :
+```
+$ spring help run
+spring run - Run a spring groovy script
+
+usage: spring run [options] <files> [--] [args]
+
+Option                     Description
+------                     -----------
+--autoconfigure [Boolean]  Add autoconfigure compiler
+                             transformations (default: true)
+--classpath, -cp           Additional classpath entries
+-e, --edit                 Open the file with the default system
+                             editor
+--no-guess-dependencies    Do not attempt to guess dependencies
+--no-guess-imports         Do not attempt to guess imports
+-q, --quiet                Quiet logging
+-v, --verbose              Verbose logging of dependency
+                             resolution
+--watch                    Watch the specified file for changes
+```
+`version` 명령으로 사용하고 있는 스프링부트 버전이 어떤 것인지 빠르게 체크할 수 있다.
+```
+$ spring version
+Spring CLI v1.2.0.RELEASE
+```
+
 ### 56.1. CLI를 이용해서 애플리케이션 실행
+`run` 명령으로 그루비 소스코드를 컴파일하고 실행할 수 있다. 스프링부트 CLLI는 그루비를 포함하고 있으므로 별다른 그루비를 설치할 필요가 없다.
+아래 그루비로 된 "hello world" 웹 어플리케이션 예를 보자 :
+
+*hello.groovy*. 
+```groovy
+@RestController
+class WebApplication {
+
+    @RequestMapping("/")
+    String home() {
+        "Hello World!"
+    }
+
+}
+```
+어플리케이션을 컴파일하고 실행하려면 다음과 같이 입력한다 :
+```
+$ spring run hello.groovy
+```
+어플리케이션 명령행 인자를 주려면 `--`를 "spring" 명령과 분리하는 데 사용하도록 한다. 즉, 다음과 같다.
+```
+$ spring run hello.groovy -- --server.port=9000
+```
+JVM 명령행 인자를 설정하는 데에는 `JAVA_OPTS` 환경변수를 사용할 수 있다. 즉,
+```
+$ JAVA_OPTS=-Xmx1024m spring run hello.groovy
+```
 ### 56.2. CLI에 의존성 추가
 #### 56.2.1. "grab" 의존성 추정
 #### 56.2.2. "grab" 협력 추정
