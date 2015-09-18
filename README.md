@@ -47,7 +47,7 @@ Copies of this document may be made for your own use and for distribution to oth
 ### 11.5. 실행가능한 jar 생성
 ## 12. 다음 읽을거리
 
-# III. 스프링부트 사용
+# III. 스프링부트 사용<a name="III. 스프링부트 사용"></a>
 ## 13. 빌드 시스템
 ### 13.1. 메이븐
 #### 13.1.1. 스프링부트 스타터 부모 상속
@@ -993,7 +993,7 @@ $ java -jar target/myproject-0.0.1-SNAPSHOT.jar
 
 단순히 스프링부트를 실행시켜보는 것이 목적이라면, 이 섹션을 시작하기 전에 [바로 시작하기]()만 읽어도 충분할 것이다.
 
-## 13. 빌드 시스템
+## 13. 빌드 시스템<a name="13. 빌드 시스템"></a>
 선택한 빌드 시스템이 *의존성 관리* 지원은 필수적인 요구사항이며, 이를 위해서 "메이븐 중앙" 저장소repository에 배포된 아티팩트들을 사용할 수 있다. 스프링부트는 메이븐 혹은 그레들 중에서 하나를 선택해야 한다. 물론 스프링부트는 다른 빌드시스템(예를 들어 앤트Ant)에서 사용할 수 있지만, 특정 부분에 대해서는 정상동작하지 않을 수도 있다.
 
 ### 13.1. 메이븐<a name="메이븐"><a/>
@@ -3367,9 +3367,121 @@ org.springframework.boot.actuate.system.EmbeddedServerPortFileWriter
 ## 58. 다음 읽을거리
 
 # VIII. 빌드툴 플러그인<a name="빌드툴 플러그인"></a>
+스프링부트는 메이븐과 그레들 플러그인을 위한 빌드툴 플러그인을 제공한다. 플러그인은 실행가능한 jar 압축을 포함한 다양한 기능을 제공한다. 이 섹션은 플러그인에 대한 보다 상세한 내용을 제공하고, 지원하지 않는 빌드 시스템에 대한 확장에도 도움이 될 것이다. 만약 바로 시작하려한다면, [III. 스프링부트 사용](#III. 스프링부트 사용)에서 [13. 빌드시스템](#13. 빌드 시스템) 을 읽어보기를 바란다.
+
 ## 59. 스프링부트 메이븐 플러그인<a name="스프링부트 메이븐 플러그인"></a>
-### 59.1. 플러그인 추가
-### 59.2. 실행가능한 jar 와 war 파일 패키징
+[스프링부트 메이븐 플러그인](http://docs.spring.io/spring-boot/docs/1.2.0.BUILD-SNAPSHOT/maven-plugin/)은, 실행가능한 jar 혹은 war 압축파일 압축기능과 부트앱 실행 기능을 제공한다. 메이븐3 부터 사용가능하다.
+> 노트:
+플러그인에 대한 보다 자세한 사항은 [스프링부트 메이븐 플러그인 사이트](http://docs.spring.io/spring-boot/docs/1.2.0.BUILD-SNAPSHOT/maven-plugin/)를 참조하라.
+
+### 59.1. 플러그인 추가<a name="59.1. 플러그인 추가"></a>
+스프링부트 메이븐 플러그인은 ```pom.xml``` 에서 ```plugins``` 섹션에 다음의 내용을 간단히 추가하면 사용할 수 있다.
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <!-- ... -->
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>1.2.0.BUILD-SNAPSHOT</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+```
+
+이 설정은 메이븐의 생존주기 ```package``` 페이즈 동안 jar 혹은 war를 재압축한다. 다음의 ```target``` 디렉토리를 보면 original jar와 재압축된 jar 파일을 볼 수 있다:
+
+```
+$ mvn package
+$ ls target/*.jar
+target/myproject-1.0.0.jar target/myproject-1.0.0.jar.original
+```
+
+위 설정에서 ```<execution/>```을 포함시키지 않았어도 플러그인을 실행할 수 있다(하지만 ```package``` 골을 사용해야 한다). 예를 들어:
+
+```
+$ mvn package spring-boot:repackage
+$ ls target/*.jar
+target/myproject-1.0.0.jar target/myproject-1.0.0.jar.original
+```
+
+만약 마일스톤 혹은 스냅샷 버전을 사용한다면 ```pluginRepository``` 요소를 적절히 추가해야할 것이다:
+
+```xml
+<pluginRepositories>
+    <pluginRepository>
+        <id>spring-snapshots</id>
+        <url>http://repo.spring.io/snapshot</url>
+    </pluginRepository>
+    <pluginRepository>
+        <id>spring-milestones</id>
+        <url>http://repo.spring.io/milestone</url>
+    </pluginRepository>
+</pluginRepositories>
+```
+### 59.2. 실행가능한 jar 와 war 파일 패키징<a name="59.2. 실행가능한 jar 와 war 파일 패키징"></a>
+```pom.xml```에 추가된 ```spring-boot-maven-plugin```은 ```spring-boot:repackage``` 골이 사용될 경우 자동으로 압축파일을 재압축하여 실행가능하게 만든다. ```packaging``` 요소를 사용하여 jar 혹은 war 파일 빌드타입을 설정할 수 있다.
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <!-- ... -->
+    <packaging>jar</packaging>
+    <!-- ... -->
+</project>
+```
+
+```package``` 페이즈 동안에 스프링부트에 의해 존재하는 압축파일이 처리된다. 실행하고자 하는 메인클래스를 설정항목을 통해 정의하거나 ```Main-Class``` 속성을 메니페스트에 추가하는 방법을 통해 실행한다. 만약 메인 클래스를 정의하지 않았다면 플러그인은 클래스에서 ```public static void main(String[] args)``` 메서드를 탐색할 것이다.
+
+빌드된 프로젝트 산출물을 실행하려면 다음과 같이 입력하면 된다:
+
+```
+$ mvn package
+$ java -jar target/mymodule-0.0.1-SNAPSHOT.jar
+```
+
+war 파일을 빌드했을 경우에는 실행하거나 외부 컨테이너에 배포하는 경우에는 내장된 컨테이너의 의존성을 ```provided``` 로 정의해줘야 한다. 예:
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <!-- ... -->
+    <packaging>war</packaging>
+    <!-- ... -->
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <!-- ... -->
+    </dependencies>
+</project>
+```
+
+> 팁:
+배포가능한 war 파일을 어떻게 생성하는지 상세히 알고 싶다면 [75.1. 배포가능한 war 파일 생성](#75.1. 배포가능한 war 파일 생성) 섹션을 살펴보자.
+
+보다 상세한 설정항목과 예는 [플러그인 안내 페이지](http://docs.spring.io/spring-boot/docs/1.2.0.BUILD-SNAPSHOT/maven-plugin/)에서 볼 수 있다.
+
 ## 60. 스프링부트 그레들 플러그인<a name="스프링부트 그레들 플러그인"></a>
 ### 60.1. 플러그인 추가
 ### 60.2. 버전 없이 의존성 정의<a name="버전 없이 의존성 정의"></a>
@@ -3481,7 +3593,7 @@ org.springframework.boot.actuate.system.EmbeddedServerPortFileWriter
 ### 74.7. 그레들을 이용해서 스프링부트 애플리케이션 원격 디버그 시작
 ### 74.8. 앤트를 이용해서 실행가능한 아카이브 빌드<a name="앤트를 이용해서 실행가능한 아카이브 빌드"></a>
 ## 75. 전통적 배포
-### 75.1. 배포가능한 war 파일 생성
+### 75.1. 배포가능한 war 파일 생성<a name="75.1. 배포가능한 war 파일 생성"></a>
 ### 75.2. 오래된 서블릿 컨테이너에 배포가능한 war 파일 생성
 ### 75.3. 기존의 애플리케이션을 스프링부트로 변환
 ### 75.4. 웹로직을 위한 war 배포
