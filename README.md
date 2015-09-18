@@ -167,7 +167,7 @@ Copies of this document may be made for your own use and for distribution to oth
 ### 32.5. 대안적인 내장형 트른잭션 매니저 지원
 ## 33. 스프링 통합
 ## 34. JMX를 통해서 모니터링과 관리
-## 35. 테스팅
+## [35. 테스팅](#테스팅)
 ### 35.1. 테스트 스코프 의존성
 ### 35.2. 스프링 애플리케이션 테스트
 ### 35.3. 스프링부트 애플리케이션 테스트
@@ -2602,15 +2602,150 @@ private ConnectionFactory nonXaConnectionFactory;
 보다 자세한 내용은 [JmxAutoConfiguration](http://github.com/spring-projects/spring-boot/tree/master/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/jmx/JmxAutoConfiguration.java)을 살펴보자.
 
 ## 35. 테스팅<a name="테스팅"></a>
-### 35.1. 테스트 스코프 의존성
+스프링 부트는 어플리케이션을 테스트 하는 데에 쓸모있는 도구를 여러 개 제공한다. ```spring-boot-starter-test``` POM 은 Spring Test, JUnit, Hamcrest 와 Mockito 의존성을 제공한다.(|패키지묶음을 쓸 수 있도록 의존성 정보를 제공한다.) 그리고 ```org.springframework.boot.test``` 패키지 아래에 있는 핵심```spring-boot``` 모듈에는 유용한 테스트 유틸리티들이 있다.
+
+## 35.1. 테스트 스코프 의존성
+'시작 POM'(```test scope```에서)(+으로) ```spring-boot-starter-test``` 를 사용한다면 아래처럼 제공되는 라이브러리를 볼 수 있을 것이다.
+
+ - Spring Test — 스프링 어플리케이션을 위한 통합 테스트
+ - JUnit — Java 어플리케이션을 유닛테스트 할 때 (+거의) 표준
+ - Hamcrest — JUnit assertion(|단언) 스타일을 따르는 매처 오브젝트(서술부 혹은 한정사로 알려져있다)
+ - Mockito — 자바 Mock 프레임워크
+
+이 (+라이브러리)들은 테스트를 작성할 때 유용하게 쓰이는 공통 라이브러리다. 이 라이브러리들이 적당하지 않다고 생각한다면 자유롭게 다른 테스트 (라이브러리)의존성을 추가할 수 있다.
+
 ### 35.2. 스프링 애플리케이션 테스트
+의존성 주입으로 얻는 가장 큰 장점 하나는 작성한 코드가 유닛테스트 하기 쉬워진다는 것이다. 심지어 스프링과 조금도 상관없이, ```new``` 명령을 사용해서 오브젝트를 간단하게 인스턴스화 할 수 있다. 그리고 *목 객체[mock objects]*를 실제 의존하는 대상 대신 사용할 수도 있다.
+
+종종 '유닛 테스팅'을 마치고 '통합 테스팅'을 시작해야 한다(통합 테스팅 과정에 스프링 ```ApplicationContext```이 실제로 개입하게 된다). 이때 어플리케이션을 디플로이하거나 다른 기반 기술과 연결할 필요 없이 통합 테스트가 가능하도록 만드는 것이 좋다.
+
+스프링 프레임워크는 딱 이런 통합 테스트 전용 테스트 모듈을 포함하고 있다. ```org.springframework:spring-test```에 대한 의존성을 직접 선언하거나 'Starter POM'에 ```spring-boot-starter-test```을 사용하여 (+메이븐이) 가져오도록 설정할 수 있다.
+
+```spring-test``` 모듈을 써본 적이 없다면 스프링 프레임워크 레퍼런스에서 [관련부분](http://docs.spring.io/spring/docs/4.1.3.RELEASE/spring-framework-reference/htmlsingle/#testing) 을 읽고 시작하는 것이 좋을 것이다.
+
 ### 35.3. 스프링부트 애플리케이션 테스트<a name="스프링부트 애플리케이션 테스트"></a>
+스프링 부트 어플리케이션은 그냥 스프링 `ApplicationContext` 이므로 평범한[vanilla] 스프링 컨텍스트를 가지고 하려는 일 대부분은 테스트 할  때 특별히 해줘야 하는 것은 없다. 다만 한 가지 주의할 것은 `SpringApplication` 을 생성해서 사용한다면 로깅 등 스프링 부트의 기능, 외부 속성(|프로퍼티)은 컨텍스트에만 자동으로 설치해야한다는 것이다.(? 컨텍스트 안에 자동 설치되도록 해야만  `SpringApplication`을 쓸 수 있나?)
+
+스프링 부트는 표준 ```spring-test``` ```@ContextConfiguration``` 어노테이션 대신에 ```@SpringApplicationConfiguration``` 어노테이션을 제공한다. 테스트에 사용하는 ```ApplicationContext```를 설정할 때 ```@SpringApplicationConfiguration``` 를 사용하면 ```SpringApplication```에 의해 (+```ApplicationContext```가) 생성되고 스프링 부트의 추가 기능을 쓸 수 있을 것이다.
+예를 보자 : 
+```java
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringApplicationConfiguration(classes = SampleDataJpaApplication.class)
+public class CityRepositoryIntegrationTests {
+
+    @Autowired
+    CityRepository repository;
+
+    // ...
+
+}
+```
+
+컨텍스트 로더는 ```@WebAppConfiguration``` 어노테이션을 찾아서 웹 어플리케이션을 테스트 할 것인지 아닌지(예를 들어 ```MockMVC```를 사용한다든지) 추측한다. (```MockMVC``` 와 ```@WebAppConfiguration``` 은 ```spring-test```의 일부분이다).
+
+(+테스트할 때 실제로) 웹 어플리케이션을 시작하고 포트에서 수신(|대기)하게 하려면  테스트할 클래스(또는 테스트할 클래스의 슈퍼 클래스 중 하나)에 ```@IntegrationTest``` 을 표시하여 HTTP(예를 들면 ```RestTemplate```을 사용하고) 를 써서 테스트 할 수 있다. 이 (+```@IntegrationTest```)는 매우 유용한데, 어플리케이션을 풀 스택으로 테스트할 수 있을 뿐만 아니라 컴포넌트들을 테스트 클래스에 주입하고 HTTP 상호작용이 끝난 다음 내부 상태를 단정[assert]할 수 있기 때문이다. 예시 : 
+```java
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringApplicationConfiguration(classes = SampleDataJpaApplication.class)
+@WebAppConfiguration
+@IntegrationTest
+public class CityRepositoryIntegrationTests {
+
+    @Autowired
+    CityRepository repository;
+
+    RestTemplate restTemplate = new TestRestTemplate();
+
+    // ... interact with the running server
+
+}
+```
+> 스프링의 테스트 프레임워크는 각 테스트 사이에 어플리케이션 컨텍스트를 캐쉬해둔다(|보관한다). 그러므로 테스트들이 같은 설정을 공유하는 한 실제로 테스트를 몇 개나 실행하든 상관없이 서버를 시작하고 멈추는 과정에서 시간을 소모하는 일은 딱 한 번 일어난다.
+
+포트를 바꾸고 싶다면 ```@IntegrationTest```에 환경 속성을 콜론(+;)이나 대입식 이름-값 묶음으로 추가하면 된다. 예를 들면  ```@IntegrationTest("server.port:9000")``` 와 같은 식이다. 게다가 ```server.port``` 와 ```management.port``` 속성을 `0`으로 설정하면 임의의 포트로 통합테스트 할 수있다. 예제 : 
+```java
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringApplicationConfiguration(classes = MyApplication.class)
+@WebAppConfiguration
+@IntegrationTest({"server.port=0", "management.port=0"})
+public class SomeIntegrationTests {
+
+    // ...
+
+}
+```
+테스트를 실행하는 동안 실제로 할당된 포트를 알아내고 싶다면 [Section 64.4, “Discover the HTTP port at runtime”](http://docs.spring.io/spring-boot/docs/1.2.0.BUILD-SNAPSHOT/reference/html/howto-embedded-servlet-containers.html#howto-discover-the-http-port-at-runtime) 문서를 보라.
+
 #### 35.3.1. 스팍Spock을 사용하여 스프링 부트 애플리케이션 테스트
+Spock 을 스프링 부트 어플리케이션을 테스트하는 데 사용하고 싶다면 Spock의 `spock-spring` 모듈에 대한 의존성을 어플리케이션 빌드에 추가해야한다. `spock-spring`은 스프링 테스트 프레임워크를 Spock 안에 포함하고 있다.
+
+Spock은 `@ContextConfiguration` [메타 어노테이션](https://code.google.com/p/spock/issues/detail?id=349)을 [찾아내지 않으므로](https://code.google.com/p/spock/issues/detail?id=349) [위에서 설명한](#스프링부트 애플리케이션 테스트) `@SpringApplicationConfiguration` 을 사용할 수 없다는 것을 명심하라. 이런 제한을 피하려면 `@ContextConfiguration` 어노테이션을 직접 사용해서 스프링 부트가 명확한(|특정한) 컨텍스트 로더를 사용하도록 설정해야한다.
+```java
+@ContextConfiguration(loader = SpringApplicationContextLoader.class)
+class ExampleSpec extends Specification {
+
+	    // ...
+
+}
+```
+> (+이렇게 하면) [위에서 설명한](#스프링부트 애플리케이션 테스트) 어노테이션은 Spock과 함께 사용할 수 있다. 즉 @IntegrationTest 와 @WebAppConfiguration 을 필요로 하는 테스트에 따라 (+위 예제의)`Specification` (+클래스)에 표시(|사용)할 수 있다.
+
 ### 35.4. 테스트 유틸리티<a name="테스트 유틸리티"></a>
+`spring-boot` 에는 대부분의 어플리케이션을 테스트할 때 쓸모있는 테스트 유틸리티가 들어있다.
+
 #### 35.4.1. ```ConfigFileApplicationContextInitializer```
+`ConfigFileApplicationContextInitializer` 은 테스트에 스프링 부트 `application.properties`파일을 로드해서 적용하는 `ApplicationContextInitializer` 이다. `@SpringApplicationConfiguration`이 제공하는 모든 기능이 필요없을 때 사용한다.
+```java
+@ContextConfiguration(classes = Config.class,
+    initializers = ConfigFileApplicationContextInitializer.class)
+```
 #### 35.4.2. ```EnvironmentTestUtils```
+`EnvironmentTestUtils` 는 `ConfigurableEnvironment` 나 `ConfigurableApplicationContext` 에 속성을 빠르게 추가할 수 있도록 해준다. `key=value` 스트링으로 간단하게 호출할 수 있다:
+```java
+EnvironmentTestUtils.addEnvironment(env, "org=Spring", "name=Boot");
+```
+
 #### 35.4.3. ```OutputCapture```
+`OutputCapture` 은 `System.out` 과 `System.err` 출력을 캡처하는 JUnit `Rule`이다. capture를 선언하고 `@Rule`을 표시하는 것으로 간편하게 단정문[assertion]에서 `toString()`을 사용할 수 있다.
+```
+import org.junit.Rule;
+import org.junit.Test;
+import org.springframework.boot.test.OutputCapture;
+
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
+
+public class MyTest {
+
+    @Rule
+    public OutputCapture capture = new OutputCapture();
+
+    @Test
+    public void testName() throws Exception {
+        System.out.println("Hello World!");
+        assertThat(capture.toString(), containsString("World"));
+    }
+
+}
+```
+
 #### 35.4.4. ```TestRestTemplate```
+`TestRestTemplate`은 스프링 `RestTemplate`의 편리한 서브 클래스로 통합 테스트를 할 때 유용하다. 평범한 템플릿을 사용하거나 기본 HTTP 인증(사용자 이름과 암호 사용)을 보내는 방법을 쓸 수 있다. 어느 경우든 템플릿이 테스트 친화적인 방법이 될 것이다 : 리다이렉트를 따라가지 않고(이러면 응답 위치를 단정(|테스트)할 수 있다), 쿠키를 무시하거나(템플릿은 이전 상태를 저장하지 않는 stateless이다), 서버 사이드 에러에 대해 예외를 던지지 않도록 한다
+아파치 HTTP 클라이언트(4.3.2 또는 그 이상)을 사용하는 것은 추천이나 필수는 아니다. 클래스패스에 아파치 클라이언트가 있으면 `TestRestTemplate`는 클라이언트를 적당히 설정하여 응답할 것이다. 
+
+```java
+public class MyTest {
+
+    RestTemplate template = new TestRestTemplate();
+
+    @Test
+    public void testRequest() throws Exception {
+        HttpHeaders headers = template.getForEntity("http://myhost.com", String.class).getHeaders();
+        assertThat(headers.getLocation().toString(), containsString("myotherhost"));
+    }
+
+}
+```
 ## 36. 자동설정으로 개발하고 @Condition 사용하기<a name="자동설정으로 개발하고 @Condition 사용하기"></a>
 공유 라이브러리를 개발하는 회사에서 일하거나, 오픈소스 혹은 상용 라이브러리 회사에서 일한다면 고유한 자동설정을 만들고 싶을 것이다.
 자동 설정 클래스는 외부 jar에 담길 수도 있고[can be bundled] 스프링 부트가 이것을 고르는 것도 가능하다.
