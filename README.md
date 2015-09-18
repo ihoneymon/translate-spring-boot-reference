@@ -462,7 +462,7 @@ Copies of this document may be made for your own use and for distribution to oth
 마지막으로, 우리는 보다 고급진~ 사용자들을 위한 소재들을 제공한다.
 * 클라우드 배포: [Cloud Foundry](#Cloud Foundry) | [Heroku](#Heroku) | [CloudBees](#CloudBees)
 * 빌드툴 플러그인: [메이븐](#스프링부트 메이븐 플러그인) | [그레들](#스프링부트 그레들 플러그인)
-* 부록: [애플리케이션 속성](#애플리케이션 속성) | [자동설정 클래스](#자동설정 클래스) | [실행가능한 jar 형식](#실행가능한 jar 형식)
+* 부록: [애플리케이션 속성](#애플리케이션 속성) | [자동설정 클래스](#자동설정 클래스) | [실행가능한 jar 형식](#D. 실행가능한 jar 형식)
 
 # II. 시작<a name="시작"></a>
 스프링부트 혹은 일반적인 '스프링'을 이제막 시작했다면, 여러분을 위한 섹션이다. 여기서 우리는 기본적인 '뭘?', '어떻게?' 와 '왜?'라는 질문들에 답을 한다. 여러분은 스프링부트 단독설치 설명과 함께 정중한 소개를 볼 수 있다. 우리는 먼저 스프링부트 애플리케이션을 빌드하고, 핵심 이론에 관하여 논의하며 진행하게 된다.
@@ -920,7 +920,7 @@ Hello World!
 
 이 문제를 해결하기 위해, 많은 개발자들은 jar를 'shaded'하는 방법을 사용한다. 'shaded` jar는 모든 jar파일로부터 모든 클래스파일들을 "uber jar"안에 한데묶어 버리는 것이다. shaded jar의 문제는 애플리케이션에서 실제로 사용하는 라이브러리들을 파악하기 어렵다는 것이다. 이는 많은 jar 파일들(물론 다른 내용이지만)에 존재하는 같은 이름의 파일명을 가지는 파일들이 문제가 될 수 있다.
 
-스프링부트는 이를 [다르게 접근](#실행가능한 jar 형식)하였고 실제로 내재하고 있는 jar파일들을 직접 접근가능하다.
+스프링부트는 이를 [다르게 접근](#D. 실행가능한 jar 형식)하였고 실제로 내재하고 있는 jar파일들을 직접 접근가능하다.
 
 실행가능한 jar을 생성하기 위해서는 ```spring-boot-maven-plugin```을 ```pom.xml```에 추가해야한다. 아래 코드를 ```dependencies``` 섹션 아래에 입력하자:
 ```xml
@@ -3947,24 +3947,184 @@ public class ServerProperties {
 는 ```server.name```, ```server.host.ip``` 과 ```server.host.port``` 속성들을 생성한다. 중첩된 것처럼 일반(내부 클래스가 아닌) 클래스가 처리되어야한다는 것을 나타내기 위해서 ```@NestedConfigurationProperty``` 애노테이션을 사용할 수 있다.
 
 #### B.2.2. 추가적인 메타데이터 추가<a name="B.2.2. 추가적인 메타데이터 추가"></a>
-스프링부트의 설정파일 제어는 매우 유연하며, 그것의 속성은 ```@ConfigurationProperties``` 빈에 연결되지 않은 경우가 종종 존재한다. 각각의 경우, 애노테이션 프로세스가 자동으로 주요 메타-데이터 파일에 ```META-INF/additional-spring-configuration-metadata.json```의 아이템들을 병합한다.
+스프링부트의 설정파일 제어는 매우 유연하며, 프로퍼타이즈가 ```@ConfigurationProperties``` 빈에 연결되지 않는 경우가 종종 존재한다. 각각의 경우, 애노테이션 프로세스가 자동으로 주요 메타-데이터 파일에 ```META-INF/additional-spring-configuration-metadata.json```의 아이템들을 병합한다.
 
 ```additional-spring-configuration-metadata.json``` 파일의 형식은 ```spring-configuration-metadata.json``` 파일과 같다. 추가 프로퍼타이즈 파일은 선택적이며, 추가 프로퍼타이즈가 없다면, 추가하지 않는다.
 
 ## C. 자동설정 클래스<a name="자동설정 클래스"></a>
-### C.1. "spring-boot-autoconfigure" 모듈
-### C.2. "spring-boot-actuator" 모듈
-## D. 실행가능한 jar 형식<a name="실행가능한 jar 형식"></a>
+스프링부트에서 제공하는 자동설정 클래스들의 문서와 소스코드 링크를 제공하는 목록이 여기 있다. 애플리케이션의 자동설정 보고서에 관한 보다 자세한 기능들을 볼 수 있도록 켤 수 있는 것이 가능하다(앱을 시작할 때 ```--debug``` 혹은 ```-Ddebug```, 혹은 애플리케이션의 액츄에이터 중 ```autoconfig``` 엔드포인트를 사용한다).
+
+### C.1. "spring-boot-autoconfigure" 모듈<name="C.1. \"spring-boot-autoconfigure\" 모듈"></a>
+
+```spring-boot-autoconfigure``` 모듈에 있는 자동설정 클래스들은 다음과 같다:
+| 설정 클래스 | 링크 |
+|[ActiveMQAutoConfiguration](http://github.com/spring-projects/spring-boot/tree/master/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/jms/activemq/ActiveMQAutoConfiguration.java) | [javadoc](http://docs.spring.io/spring-boot/docs/1.2.0.BUILD-SNAPSHOT/api/org/springframework/boot/autoconfigure/jms/activemq/ActiveMQAutoConfiguration.html) |
+| [AopAutoConfiguration](http://github.com/spring-projects/spring-boot/tree/master/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/aop/AopAutoConfiguration.java) | [javadoc](http://docs.spring.io/spring-boot/docs/1.2.0.BUILD-SNAPSHOT/api/org/springframework/boot/autoconfigure/aop/AopAutoConfiguration.html) |
+| [BatchAutoConfiguration](http://github.com/spring-projects/spring-boot/tree/master/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/batch/BatchAutoConfiguration.java) | [javadoc](http://docs.spring.io/spring-boot/docs/1.2.0.BUILD-SNAPSHOT/api/org/springframework/boot/autoconfigure/batch/BatchAutoConfiguration.html) |
+| [CloudAutoConfiguration](http://github.com/spring-projects/spring-boot/tree/master/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/cloud/CloudAutoConfiguration.java) | [http://docs.spring.io/spring-boot/docs/1.2.0.BUILD-SNAPSHOT/api/org/springframework/boot/autoconfigure/cloud/CloudAutoConfiguration.html](javadoc) |
+| [DataSourceAutoConfiguration](http://github.com/spring-projects/spring-boot/tree/master/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/jdbc/DataSourceAutoConfiguration.java) | [javadoc](http://docs.spring.io/spring-boot/docs/1.2.0.BUILD-SNAPSHOT/api/org/springframework/boot/autoconfigure/jdbc/DataSourceAutoConfiguration.html) |
+| [DataSourceTransactionManagerAutoConfiguration](http://github.com/spring-projects/spring-boot/tree/master/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/jdbc/DataSourceTransactionManagerAutoConfiguration.java) | [javadoc](http://docs.spring.io/spring-boot/docs/1.2.0.BUILD-SNAPSHOT/api/org/springframework/boot/autoconfigure/jdbc/DataSourceTransactionManagerAutoConfiguration.html) |
+| [DeviceDelegatingViewResolverAutoConfiguration](http://github.com/spring-projects/spring-boot/tree/master/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/mobile/DeviceDelegatingViewResolverAutoConfiguration.java) | [javadoc](http://docs.spring.io/spring-boot/docs/1.2.0.BUILD-SNAPSHOT/api/org/springframework/boot/autoconfigure/mobile/DeviceDelegatingViewResolverAutoConfiguration.html) |
+| [DeviceResolverAutoConfiguration](http://github.com/spring-projects/spring-boot/tree/master/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/mobile/DeviceResolverAutoConfiguration.java) | [javadoc](http://docs.spring.io/spring-boot/docs/1.2.0.BUILD-SNAPSHOT/api/org/springframework/boot/autoconfigure/mobile/DeviceResolverAutoConfiguration.html) |
+| [DispatcherServletAutoConfiguration](http://github.com/spring-projects/spring-boot/tree/master/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/web/DispatcherServletAutoConfiguration.java) | [javadoc](http://docs.spring.io/spring-boot/docs/1.2.0.BUILD-SNAPSHOT/api/org/springframework/boot/autoconfigure/web/DispatcherServletAutoConfiguration.html) |
+| [ElasticsearchAutoConfiguration](http://github.com/spring-projects/spring-boot/tree/master/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/elasticsearch/ElasticsearchAutoConfiguration.java) | [javadoc](http://docs.spring.io/spring-boot/docs/1.2.0.BUILD-SNAPSHOT/api/org/springframework/boot/autoconfigure/elasticsearch/ElasticsearchAutoConfiguration.html) |
+| [ElasticsearchDataAutoConfiguration](http://github.com/spring-projects/spring-boot/tree/master/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/elasticsearch/ElasticsearchDataAutoConfiguration.java) | [javadoc](http://docs.spring.io/spring-boot/docs/1.2.0.BUILD-SNAPSHOT/api/org/springframework/boot/autoconfigure/elasticsearch/ElasticsearchDataAutoConfiguration.html) |
+| [EmbeddedServletContainerAutoConfiguration](http://github.com/spring-projects/spring-boot/tree/master/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/web/EmbeddedServletContainerAutoConfiguration.java) | [javadoc](http://docs.spring.io/spring-boot/docs/1.2.0.BUILD-SNAPSHOT/api/org/springframework/boot/autoconfigure/web/EmbeddedServletContainerAutoConfiguration.html) |
+
+
+### C.2. "spring-boot-actuator" 모듈<a name="C.2. \"spring-boot-actuator\" 모듈"></a>
+
+## D. 실행가능한 jar 형식<a name="D. 실행가능한 jar 형식"></a>
+```spring-boot-loader``` 모듈은 스프링부트가 실행가능한 jar와 war 파일을 지원하도록 허용한다. 만약 메이븐과 그레들 플러그인을 사용한다면, 실행가능한 jar는 자동적으로 생성되며 어떤 식으로 작업이 진행되는지를 세부적으로 알 필요는 없다.
+
+만약 다른 빌드 시스템을 통해서 실행가능한 jar를 생성해야한다면, 혹은 기저에 깔린 기술들에 대해서 강한 호기심이 있다면, 이 섹션은 배경지식을 제공해줄 것이다.
+
 ### D.1. 내부 JARs
-#### D.1.1. 실행가능한 jar 파일 구조
-#### D.1.2. 실행가능한 war 파일 구조
-### D.2. 스프링부트의 "JarFile" 클래스
-#### D.2.1. 표준 자바 "JarFile" 의 호환성
-### D.3. 실행가능한 jars 실행
-#### D.3.1. 매니페스트 실행
-#### D.3.2. 아카이브 확장
-### D.4. ```PropertiesLauncher``` 기능들
+자바는 기본적으로 jar 파일들을 내장하는 어떤 방식도 제공하지 않는다(예를 들어 jar 파일은 jar 파일 내에 자신들을 포함한다). 이것은 압축해제 없이 커맨드라인에서 자급자족하는 애플리케이션 배포시에는 문제가 될 수 있다.
+
+그 해결책으로, 많은 개발자들은 'shaded' jar를 사용한다. 'shaded' jar는 'uber jar' 라는 간단한 형태에 모든 jar, 모든 클래스를 간단하게 묶는다. shaded jar의 문제점은 애플리케이션에서 실제로 사용할 때 라이브러리들을 찾기가 힘들다는 것이다. 이는 또한 다양한 jar 안에 같은 파일명을 사용하는 경우 문제(하지만 내용은 다른)가 될 수 있다. 스프링부트는 실제 내부 jar에 접근하는 방식을 다르게 접근하였다.
+
+#### D.1.1. 실행가능한 jar 파일 구조<a name="D.1.1. 실행가능한 jar 파일 구조"></a>
+스프링부트 로더는 양립하는 jar 파일들을 다음과 같은 방법으로 구성한다.
+
+```
+example.jar
+ |
+ +-META-INF
+ |  +-MANIFEST.MF
+ +-org
+ |  +-springframework
+ |     +-boot
+ |        +-loader
+ |           +-<spring boot loader classes>
+ +-com
+ |  +-mycompany
+ |     + project
+ |        +-YouClasses.class
+ +-lib
+    +-dependency1.jar
+    +-dependency2.jar
+```
+
+의존성 라이브러리들은 내부에 ```lib``` 디렉토리에 위치시킨다.
+
+#### D.1.2. 실행가능한 war 파일 구조<a name="D.1.2. 실행가능한 war 파일 구조"></a>
+스프링부트 로더는 양립하는 war 파일을 다음과 같은 방법으로 구성한다.
+
+```
+example.jar
+ |
+ +-META-INF
+ |  +-MANIFEST.MF
+ +-org
+ |  +-springframework
+ |     +-boot
+ |        +-loader
+ |           +-<spring boot loader classes>
+ +-WEB-INF
+    +-classes
+    |  +-com
+    |     +-mycompany
+    |        +-project
+    |           +-YouClasses.class
+    +-lib
+    |  +-dependency1.jar
+    |  +-dependency2.jar
+    +-lib-provided
+       +-servlet-api.jar
+       +-dependency3.jar
+```
+
+의존성 라이브러리들은 ```WEB-INF/lib``` 디렉토리에 위치시킨다. 실행하는데는 필요하지만 전통적인 웹 컨테이너에 배포하는 경우에는 필요하지 않은 의존성 라이브러리들은 ```WEB-INF/lib-provided```에 위치시킨다.
+
+### D.2.  스프링부트의 "JarFile" 클래스<a name="D.2. 스프링부트의 \"JarFile\" 클래스"></a>
+내장된 jar를 지원하는 핵심 클래스는 ```org.springframework.boot.loader.jar.JarFile```를 사용한다. 이 클래스는 표준 jar 파일로부터 혹은 내부 하위에 있는 jar data로부터 jar 내용을 읽어오는 것을 허용한다. 처음 적재될 때, 각각의 ```JarEntry```의 위치는 외부 jar의 물리적 파일에 상쇄되어 배치된다.
+
+```
+myapp.jar
++---------+---------------------+
+|         | /lib/mylib.jar      |
+| A.class |+---------+---------+|
+|         || B.class | B.class ||
+|         |+---------+---------+|
++---------+---------------------+
+^          ^          ^
+0063       3452       3980
+```
+
+위의 예를 살펴보면 ```myapp.jar``` 내에서 ```0063```에 위치한 ```A.class```를 어떻게 찾는 지 볼 수 있다. ```myapp.jar``` 내에서 ```B.class``는 ```3452```와 ```3980```위치해있다.
+
+여기서 알 수 있는건, 외부의 jar에 접근하는 방식으로 내부의 엔트리들을 쉽게 읽어올 수 있다. 우리는 압축을 해제할 필요가 없고 모든 엔트리 데이터를 메모리에서 읽어올 필요도 없다.
+
+#### D.2.1. 표준 자바 "JarFile" 의 호환성<a name="D.2.1. 표준 자바 \"JarFile\" 의 호환성"></a>
+스프링부트 로더는 존재하는 코드와 라이브러리들이 양립할수 있도록 노력한다. ```java.util.jar.JarFile```에서 확장한 ```org.springframework.boot.loader.jar.JarFile```은 잘못된 부분들을 교환한다. ```RandomAccessJarFile.getURL()``` 메서드는 ```java.net.JarURLConnection``` 양립가능한 커넥션 ```URL```을 반환할 것이다. ```RandomAccessJarFile``` URL은 Java의 ```URLClassLoader```로 사용가능하다.
+
+### D.3. 실행가능한 jars 실행<a name="D.3. 실행가능한 jars 실행"></a>
+```org.springframework.boot.loader.Launcher``` 클래스는 실행가능한 jar의 주진지점(main entry point)로 사용되는 부트스트랩 클래스다. jar 파일에 ```Main-Class``` 이며 ```URLClassLoader```에 접근하여 최종적으로 ```method()``` 메서드를 호출하도록 설정된다.
+
+하위클래스 3 런처(```JarLauncher```, ```WarLauncher``` 그리고 ```PropertiesLauncher```)가 있다. 이 클래스들의 용도는 내부 jar 파일 혹은 war 파일의 디렉토리에서 자원(```.class``` 파일 등)을 읽는 것이다(클래스패스에 따라 제공한다). ```[Jar|War]Launcher```의 경우 내장 경로는 고정적(war의 경우 ```lib/*.jar``` 그리고  ```lib-provided/*.jar```)이다 추가적으로 jar를 저 위치에 추가하면 된다.
+```PropertiesLauncher```는 기본적으로 ```lib/``` 를 살펴보지만,  ```application.properties``` 에서 ```LOADER_PATH``` 혹은 ```loader.path``` 환경변수로 설정한 위치에 추가할수 있다(콤마로 디렉토리나 압축파일의 위치를 지정한다).
+
+#### D.3.1. 매니페스트 실행<a name="D.3.1. 매니페스트 실행"></a>
+```Launcher```가 실행하려면 ```META-INF/MANIFEST.MF``` 의 ``Main-Class``` 속성을 정의해야 한다. 실제로 실행하기를 바라는 클래스는 ```Start-Class``` 속성으로 정의하고 싶을 것이다(예, ```method``` 메서드를 작성한 클래스).
+
+예를 들어, 여기 실행 jar 파일에 있는 전통적인 ```MANIFEST.MF```가 있다.
+
+```
+Main-Class: org.springframework.boot.loader.JarLauncher
+Start-Class: com.mycompany.project.MyApplication
+```
+
+다음은 war 파일의 경우:
+
+```
+Main-Class: org.springframework.boot.loader.WarLauncher
+Start-Class: com.mycompany.project.MyApplication
+```
+
+> 노트
+매니페스트 파일에 ```Class-Path``` 엔트리를 정의할 필요는 없다. 내장 jar 파일로 부터 추출한다.
+
+#### D.3.2. 아카이브 확장<a nam="D.3.2. 아카이브 확장"></a>
+PaaS 구현체들은 실행에 앞서 압축파일을 압축해제하는 선택을 할 것이다. 예를 들어, Cloud Foundry 는 이 방법을 수행한다. 런처가 실행될 때 간단하게 압축해제하도록 할 수 있다:
+
+```
+$ unzip -q myapp.jar
+$ java org.springframework.boot.loader.JarLauncher
+```
+
+### D.4. ```PropertiesLauncher``` 기능들<a name="D.4. PropertiesLauncher 기능들"></a>
+```PropertiesLauncher```는 확장 프로퍼티즈를 활성화할 수 있는 특별한 기능을 가진다(System properties, environment variables, manifest entries or application.properties).
+
+| KEY | Purpose |
+|-----|---------|
+|```loader.path```| 콤마(,)로 구분된 클래스패스(예, ```lib:${HOME}/app/lib```) 
+> 역자주: 그런데 왜 예에는 콜론...이지? |
+| ```loader.home``` | 추가적인 프로퍼티즈 파일 위치 예: ```/opt/app``` (기본 ```${user.dir}```) |
+| ```loader.args``` | (스페이스로 구분된) 메인메서드의 인자 |
+| ```loader.main``` | 실행 기본 클래스명, 예: ```com.app.Application``` |
+| ```loader.config.name``` | 프로퍼티즈 파일명, 예: ```loader``` (기본적으로 ```application```) |
+| ```loader.config.location``` | 프로퍼티즈 파일 경로, 예: ```classpath:loader.properties``` (기본 ```application.properties```) |
+| ```loader.system``` | 모든 프로퍼티즈를 시스템 프로퍼티즈에 추가할 것인지를 정의(기본 false) |
+
+매니페스트 엔트리 키는 단어의 첫 글자를 대문자로 형성되고 "." 에서 "-"로 분리하여 변환한다(예: ```Loader-Path```). 예외는 ```JarLauncher```과의 호환성을 위해 매니페스트에 시작-클래스로 조회되는 ```loader.main```가 된다. 
+
+환경변수는 기간 대신 밑줄구분으로 대문자화한다.
+* ```loader.home```은 ```loader.config.location```을 정의하지 않는 한 프로퍼티즈 파일의 디렉토리 경로다(기본을 오버라이딩).
+* ```loader.path``` 디렉토리(jar 와 zip 파일들을 회귀적으로 살펴보는), 압축파일 경로 혹은 와일드카드 패턴(JVM의 기본적인 행동)를 포함할 수 있다.
+* placeholder 는 시스템과 환경변수를 더해 사용전 프로퍼티즈 파일의 모든 값을 대체한다.
+
 ### D.5. 실행가능한 jar 제약사항
+몇몇 제약사항들 대문에 스프링부트 로더로 압축된 애플리케이션이 동작할 때 고려해야할 사항들이 있다.
+
 #### D.5.1. Zip 엔트리 압축
+내장된 jar ```ZipEntry```는 ```ZipEntry.STORED``` 메서드를 사용해서 저장해야 한다. 내장된 jar의 컨텐츠를 개별적으로 직접탐색할 수 있기 때문이다. 내장된 jar 파일의 컨텐츠는 외부 jar 안에 다른 항목들처럼 압축할 수 있다.
+
 #### D.5.2. System ClassLoader
+실행된 애플리케이션은 클래스를 로딩할 때(대부분의 라이브러리와 프레임웤가 기본적으로는 이렇게 한다) ```Thread.getContextClassLoader()```를 사용할 것이다. 내장된 jar의 클래스를 ```ClassLoader.getSystemClassLoader()```로 읽으려고 시도하면 실패할 것이다. ```java.util.Logging``` 를 사용하는 것은 항상 주의해야한다. 이런 이유로 다른 로깅 구현체를 고려해야 한다.
+
 ### D.6. 단독 jar 솔루션 대안
+위의 제약사항으로 스프링부트로더를 사용할수 없다면 다음의 대안들을 고려해볼 수 있다:
+* [Maven Shade Plugin](http://maven.apache.org/plugins/maven-shade-plugin/)
+* [JarClassLoader](http://www.jdotsoft.com/JarClassLoader.php)
+* [OneJar](http://one-jar.sourceforge.net/)
