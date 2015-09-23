@@ -242,7 +242,7 @@ Copies of this document may be made for your own use and for distribution to oth
 ## 53. Google App Engine
 ## 54. 다음 읽을거리
 
-# VII. 스프링부트 CLI
+# VII. [스프링부트 CLI](#스프링부트 CLI)
 ## 55. CLI 설치
 ## 56. CLI 사용
 ### 56.1. CLI를 이용해서 애플리케이션 실행
@@ -3430,7 +3430,8 @@ $ JAVA_OPTS=-Xmx1024m spring run hello.groovy
 스프링 부트는 이 방법을 좀 더 확장하여, 코드를 토대로 `grab`할(+가져올) 라이브러리를 추론하려고 시도할 것이다. 예를 들어, `@RestController`어노테이션을 사용하고 있는 `WebApplication` 코드로 "`Tomcat`"과 "`Spring MVC`를 가져오게 될 것이다.
 
 다음은 "`grab hints`"(+가져오기 힌트)로 쓰이는 항목이다 :
- 항목 | 가져오는 것
+
+| 항목 | 가져오는 것|
 |--- | ---|
 |`JdbcTemplate`, `NamedParameterJdbcTemplate`, `DataSource` |JDBC 어플리케이션|
 |`@EnableJms` |JMS 어플리케이션|
