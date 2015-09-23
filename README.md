@@ -3448,9 +3448,8 @@ $ JAVA_OPTS=-Xmx1024m spring run hello.groovy
 
  > 스프링부트 CLI 소스코드에서 사용자화[customization]가 어떻게 적용되는지 이해하려면 [`CompilerAutoConfiguration`](https://github.com/spring-projects/spring-boot/blob/v1.2.0.RELEASE/spring-boot-cli/src/main/java/org/springframework/boot/cli/compiler/CompilerAutoConfiguration.java)의 서브클래스를 보라.
 
-#### 55.2.2. "grab" 추정에 대응하는 것
-스프링 부트는 그루비의 표준 `@Grab` 지원을 확장하여 그룹이나 버전정보 없이 의존성을 표기할 수 있도록 허용한다. (+스프링 부트의 `@Grab`은) artifact의 그룹과 버전 정보를 추정하기 위해 스프링 부트의 기본 의존성 메타데이터를 찾아볼 것이다.
-기본 메타데이터는 현재 사용하고 있는 CLI 버전에 묶여있다는 것을 명심하자 - 이것은 새 버전 CLI로 이동했을 때에만 바뀌므로 사용자가 의존성의 버전이 바뀌는 것을 제어하도록 해준다.
+#### 55.1.2. 추정한 "grab"의 coordinates(+groupId:artifactId:packaging:version)
+스프링 부트는 그루비의 표준 `@Grab` 지원을 확장하여 그룹이나 버전정보 없이 의존성을 표기할 수 있도록 허용한다. (+스프링 부트의 `@Grab`은) artifact의 그룹과 버전 정보를 추정하기 위해 스프링 부트의 기본 의존성 메타데이터를 찾아볼 것이다.좌표기본 메타데이터는 현재 사용하고 있는 CLI 버전에 묶여있다는 것을 명심하자 - 이것은 새 버전 CLI로 이동했을 때에만 바뀌므로 사용자가 의존성의 버전이 바뀌는 것을 제어하도록 해준다.
 기본 메타데이터에 포함된 의존성과 버전에 대한 표는 [부록](#dependency-verions)에서 찾을 수 있다.
 
 #### 55.1.3. 기본 import문
@@ -3459,10 +3458,35 @@ $ JAVA_OPTS=-Xmx1024m spring run hello.groovy
 
  > 많은 스프링 어노테이션이 `import`문 없이 동작할 것이다. import를 추가하기 전에, 어플리케이션을 실행해서 어떤 것이 실패하는 지 살펴보라. 
 
+#### 55.1.4. 자동 main 메소드
+비슷한 자바 어플리케이션과 다르게, `Groovy`스크립트에는 `public static void main(String[] args)`를 넣어둘 필요가 없다. `SpringApplication`은 자동으로 만들어져서 컴파일한 사용자 코드와 함께 `source`로 동작할 것이다.
 
+#### 55.1.5. 사용자[Custom] "`grab`" 메타데이터
+스프링부트는 스프링부트의 기본 메타데이터를 무시하고[overrides] 사용자가 지정한 의존성 메타데이터를 사용할 수 있도록 `@GrabMetadata` 어노테이션을 새롭게 제공한다.
+이 메타데이터는 어노테이션을 사용해서 지정할 수 있으며 하나 혹은 그 이상 프로퍼티 파일[properties files]을 어노테이션에 제공해줄 수 있다.((+프로퍼티 파일은)메이븐 저장소에 있는 `properties` `type` 식별자가 붙은 파일)
 
-#### 56.2.3. 기본 불러오기 문장
-#### 56.2.4. 자동 main 메서드
+각 프로퍼티 파일에 개별 항목은 `group:module=version`형식이어야 한다.
+
+예를 들면 다음 선언에서는:
+```java
+@GrabMetadata("com.example.custom-versions:1.0.0")
+```
+메이븐 저장소 `com/example/custom-versions/1.0.0/` 아래에서 `custom-versions-1.0.0.properties`를 가져올 것이다.
+
+어노테이션에 명시된 다중 프로퍼티 파일은 선언된 순서대로 적용될 것이다. 예로 :
+```
+@GrabMetadata(["com.example.custom-versions:1.0.0",
+    "com.example.more-versions:1.0.0"])
+```
+은 `more-versions`의 프로퍼티가 `custom-versions`의 프로퍼티를 [override]하게 될 것이다.
+
+`@Grab`을 쓸 수 있는 곳이면 어디나 `@GrabMetadata`를 쓸 수 있다. 하지만 메타데이터 순서에 일관성을 지키기 위해서 `@GrabMetadata`는 어플리케이션에서 최대 한 번만 사용하는 게 낫다.
+A useful source of dependency metadata (a superset of Spring Boot) is the http://platform.spring.io/[Spring IO Platform], e.g. 
+(스프링 부트의 상위집합인)유용한 의존성 메타데이터의 원천은 [Spring IO Platform](http://platform.spring.io/)이다. 예를 들면 다음과 같다 :
+```java
+@GrabMetadata('io.spring.platform:platform-versions:1.0.4.RELEASE')
+```
+
 ### 56.3. 코드 테스트
 ### 56.4. 다양한 소스파일을 가진 애플리케이션
 ### 56.5. 애플리케이션 패키징
