@@ -3423,7 +3423,7 @@ JVM 명령행 인자를 설정하는 데에는 `JAVA_OPTS` 환경변수를 사�
 ```
 $ JAVA_OPTS=-Xmx1024m spring run hello.groovy
 ```
-#### 55.1.1. 추론된[Deduced] "grab" 의존성
+#### 55.1.1. "grab" 의존성 추정 
 표준 그루비는 서드 파티 라이브러리에 대한 의존성을 선언할 수 있게 해주는 `@Grab` 어노테이션을 포함하고 있다.
 빌드 도구를 사용하지 않고서 메이븐이나 그래들과 같은 방법으로 그루비가 jar 파일을 다운로드 하게 해주는 유용한 방법이다.
 
@@ -3448,8 +3448,19 @@ $ JAVA_OPTS=-Xmx1024m spring run hello.groovy
 
  > 스프링부트 CLI 소스코드에서 사용자화[customization]가 어떻게 적용되는지 이해하려면 [`CompilerAutoConfiguration`](https://github.com/spring-projects/spring-boot/blob/v1.2.0.RELEASE/spring-boot-cli/src/main/java/org/springframework/boot/cli/compiler/CompilerAutoConfiguration.java)의 서브클래스를 보라.
 
-#### 55.2.2. "grab" 협력 추정
-#### "grab" 메타데이터 변경
+#### 55.2.2. "grab" 추정에 대응하는 것
+스프링 부트는 그루비의 표준 `@Grab` 지원을 확장하여 그룹이나 버전정보 없이 의존성을 표기할 수 있도록 허용한다. (+스프링 부트의 `@Grab`은) artifact의 그룹과 버전 정보를 추정하기 위해 스프링 부트의 기본 의존성 메타데이터를 찾아볼 것이다.
+기본 메타데이터는 현재 사용하고 있는 CLI 버전에 묶여있다는 것을 명심하자 - 이것은 새 버전 CLI로 이동했을 때에만 바뀌므로 사용자가 의존성의 버전이 바뀌는 것을 제어하도록 해준다.
+기본 메타데이터에 포함된 의존성과 버전에 대한 표는 [부록](#dependency-verions)에서 찾을 수 있다.
+
+#### 55.1.3. 기본 import문
+그루비 코드 크기를 줄이기 위해 몇몇 `import`문은 자동으로 포함된다.
+위에서 봤던 예에서 어떻게 `import`문이나 클래스를 표시한 이름을 쓰지 않고 `@Component`, `@RestController`와 `@RequestMapping`을 불러 썼는지 주의해서 살펴보라.
+
+ > 많은 스프링 어노테이션이 `import`문 없이 동작할 것이다. import를 추가하기 전에, 어플리케이션을 실행해서 어떤 것이 실패하는 지 살펴보라. 
+
+
+
 #### 56.2.3. 기본 불러오기 문장
 #### 56.2.4. 자동 main 메서드
 ### 56.3. 코드 테스트
@@ -4198,3 +4209,4 @@ public class ServerProperties {
 #### D.5.1. Zip 엔트리 압축
 #### D.5.2. System ClassLoader
 ### D.6. 단독 jar 솔루션 대안
+## E. 의존성 버전<a name="dependency-versions"></a>
