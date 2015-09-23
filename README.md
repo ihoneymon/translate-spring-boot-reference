@@ -3395,7 +3395,7 @@ $ spring version
 Spring CLI v1.2.0.RELEASE
 ```
 
-### 56.1. CLI를 이용해서 애플리케이션 실행
+### 55.1. CLI를 이용해서 애플리케이션 실행
 `run` 명령으로 그루비 소스코드를 컴파일하고 실행할 수 있다. 스프링부트 CLLI는 그루비를 포함하고 있으므로 별다른 그루비를 설치할 필요가 없다.
 아래 그루비로 된 "hello world" 웹 어플리케이션 예를 보자 :
 
@@ -3423,9 +3423,32 @@ JVM 명령행 인자를 설정하는 데에는 `JAVA_OPTS` 환경변수를 사�
 ```
 $ JAVA_OPTS=-Xmx1024m spring run hello.groovy
 ```
-### 56.2. CLI에 의존성 추가
-#### 56.2.1. "grab" 의존성 추정
-#### 56.2.2. "grab" 협력 추정
+#### 55.1.1. 추론된[Deduced] "grab" 의존성
+표준 그루비는 서드 파티 라이브러리에 대한 의존성을 선언할 수 있게 해주는 `@Grab` 어노테이션을 포함하고 있다.
+빌드 도구를 사용하지 않고서 메이븐이나 그래들과 같은 방법으로 그루비가 jar 파일을 다운로드 하게 해주는 유용한 방법이다.
+
+스프링 부트는 이 방법을 좀 더 확장하여, 코드를 토대로 `grab`할(+가져올) 라이브러리를 추론하려고 시도할 것이다. 예를 들어, `@RestController`어노테이션을 사용하고 있는 `WebApplication` 코드로 "`Tomcat`"과 "`Spring MVC`를 가져오게 될 것이다.
+
+다음은 "`grab hints`"(+가져오기 힌트)로 쓰이는 항목이다 :
+ 항목 | 가져오는 것
+--- | ---
+`JdbcTemplate`, `NamedParameterJdbcTemplate`, `DataSource` |JDBC 어플리케이션
+`@EnableJms` |JMS 어플리케이션
+`@EnableCaching` | Caching abstraction.
+`@Test` |JUnit.
+`@EnableRabbit` |RabbitMQ.
+`@EnableReactor` |Project Reactor.
+확장`Specification` |Spock test.
+`@EnableBatchProcessing` |Spring Batch.
+`@MessageEndpoint` `@EnableIntegrationPatterns` |Spring Integration.
+`@EnableDeviceResolver` |Spring Mobile.
+`@Controller` `@RestController` `@EnableWebMvc` |Spring MVC + Embedded Tomcat.
+`@EnableWebSecurity` |Spring Security.
+`@EnableTransactionManagement` |Spring Transaction Management.
+
+ > 스프링부트 CLI 소스코드에서 사용자화[customization]가 어떻게 적용되는지 이해하려면 [`CompilerAutoConfiguration`](https://github.com/spring-projects/spring-boot/blob/v1.2.0.RELEASE/spring-boot-cli/src/main/java/org/springframework/boot/cli/compiler/CompilerAutoConfiguration.java)의 서브클래스를 보라.
+
+#### 55.2.2. "grab" 협력 추정
 #### "grab" 메타데이터 변경
 #### 56.2.3. 기본 불러오기 문장
 #### 56.2.4. 자동 main 메서드
@@ -3437,6 +3460,7 @@ $ JAVA_OPTS=-Xmx1024m spring run hello.groovy
 ## 57. 그루비 빈즈 DSL을 통해서 애플리케이션 개발
 ## 58. 다음 읽을거리
 
+A
 # VIII. 빌드툴 플러그인<a name="빌드툴 플러그인"></a>
 ## 59. 스프링부트 메이븐 플러그인<a name="스프링부트 메이븐 플러그인"></a>
 ### 59.1. 플러그인 추가
