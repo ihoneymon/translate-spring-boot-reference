@@ -3423,7 +3423,7 @@ JVM 명령행 인자를 설정하는 데에는 `JAVA_OPTS` 환경변수를 사�
 ```
 $ JAVA_OPTS=-Xmx1024m spring run hello.groovy
 ```
-#### 55.1.1. 추론된[Deduced] "grab" 의존성
+#### 55.1.1. "grab" 의존성 추정 
 표준 그루비는 서드 파티 라이브러리에 대한 의존성을 선언할 수 있게 해주는 `@Grab` 어노테이션을 포함하고 있다.
 빌드 도구를 사용하지 않고서 메이븐이나 그래들과 같은 방법으로 그루비가 jar 파일을 다운로드 하게 해주는 유용한 방법이다.
 
@@ -3431,27 +3431,61 @@ $ JAVA_OPTS=-Xmx1024m spring run hello.groovy
 
 다음은 "`grab hints`"(+가져오기 힌트)로 쓰이는 항목이다 :
  항목 | 가져오는 것
---- | ---
-`JdbcTemplate`, `NamedParameterJdbcTemplate`, `DataSource` |JDBC 어플리케이션
-`@EnableJms` |JMS 어플리케이션
-`@EnableCaching` | Caching abstraction.
-`@Test` |JUnit.
-`@EnableRabbit` |RabbitMQ.
-`@EnableReactor` |Project Reactor.
-확장`Specification` |Spock test.
-`@EnableBatchProcessing` |Spring Batch.
-`@MessageEndpoint` `@EnableIntegrationPatterns` |Spring Integration.
-`@EnableDeviceResolver` |Spring Mobile.
-`@Controller` `@RestController` `@EnableWebMvc` |Spring MVC + Embedded Tomcat.
-`@EnableWebSecurity` |Spring Security.
-`@EnableTransactionManagement` |Spring Transaction Management.
+|--- | ---|
+|`JdbcTemplate`, `NamedParameterJdbcTemplate`, `DataSource` |JDBC 어플리케이션|
+|`@EnableJms` |JMS 어플리케이션|
+|`@EnableCaching` | Caching abstraction.|
+|`@Test` |JUnit.|
+|`@EnableRabbit` |RabbitMQ.|
+|`@EnableReactor` |Project Reactor.|
+|확장`Specification` |Spock test.|
+|`@EnableBatchProcessing` |Spring Batch.|
+|`@MessageEndpoint` `@EnableIntegrationPatterns` |Spring Integration.|
+|`@EnableDeviceResolver` |Spring Mobile.|
+|`@Controller` `@RestController` `@EnableWebMvc` |Spring MVC + Embedded Tomcat.|
+|`@EnableWebSecurity` |Spring Security.|
+|`@EnableTransactionManagement` |Spring Transaction Management.|
 
  > 스프링부트 CLI 소스코드에서 사용자화[customization]가 어떻게 적용되는지 이해하려면 [`CompilerAutoConfiguration`](https://github.com/spring-projects/spring-boot/blob/v1.2.0.RELEASE/spring-boot-cli/src/main/java/org/springframework/boot/cli/compiler/CompilerAutoConfiguration.java)의 서브클래스를 보라.
 
-#### 55.2.2. "grab" 협력 추정
-#### "grab" 메타데이터 변경
-#### 56.2.3. 기본 불러오기 문장
-#### 56.2.4. 자동 main 메서드
+#### 55.1.2. 추정한 "grab"의 coordinates(+groupId:artifactId:packaging:version)
+스프링 부트는 그루비의 표준 `@Grab` 지원을 확장하여 그룹이나 버전정보 없이 의존성을 표기할 수 있도록 허용한다. (+스프링 부트의 `@Grab`은) artifact의 그룹과 버전 정보를 추정하기 위해 스프링 부트의 기본 의존성 메타데이터를 찾아볼 것이다.좌표기본 메타데이터는 현재 사용하고 있는 CLI 버전에 묶여있다는 것을 명심하자 - 이것은 새 버전 CLI로 이동했을 때에만 바뀌므로 사용자가 의존성의 버전이 바뀌는 것을 제어하도록 해준다.
+기본 메타데이터에 포함된 의존성과 버전에 대한 표는 [부록](#dependency-verions)에서 찾을 수 있다.
+
+#### 55.1.3. 기본 import문
+그루비 코드 크기를 줄이기 위해 몇몇 `import`문은 자동으로 포함된다.
+위에서 봤던 예에서 어떻게 `import`문이나 클래스를 표시한 이름을 쓰지 않고 `@Component`, `@RestController`와 `@RequestMapping`을 불러 썼는지 주의해서 살펴보라.
+
+ > 많은 스프링 어노테이션이 `import`문 없이 동작할 것이다. import를 추가하기 전에, 어플리케이션을 실행해서 어떤 것이 실패하는 지 살펴보라. 
+
+#### 55.1.4. 자동 main 메소드
+비슷한 자바 어플리케이션과 다르게, `Groovy`스크립트에는 `public static void main(String[] args)`를 넣어둘 필요가 없다. `SpringApplication`은 자동으로 만들어져서 컴파일한 사용자 코드와 함께 `source`로 동작할 것이다.
+
+#### 55.1.5. 사용자[Custom] "`grab`" 메타데이터
+스프링부트는 스프링부트의 기본 메타데이터를 무시하고[overrides] 사용자가 지정한 의존성 메타데이터를 사용할 수 있도록 `@GrabMetadata` 어노테이션을 새롭게 제공한다.
+이 메타데이터는 어노테이션을 사용해서 지정할 수 있으며 하나 혹은 그 이상 프로퍼티 파일[properties files]을 어노테이션에 제공해줄 수 있다.((+프로퍼티 파일은)메이븐 저장소에 있는 `properties` `type` 식별자가 붙은 파일)
+
+각 프로퍼티 파일에 개별 항목은 `group:module=version`형식이어야 한다.
+
+예를 들면 다음 선언에서는:
+```java
+@GrabMetadata("com.example.custom-versions:1.0.0")
+```
+메이븐 저장소 `com/example/custom-versions/1.0.0/` 아래에서 `custom-versions-1.0.0.properties`를 가져올 것이다.
+
+어노테이션에 명시된 다중 프로퍼티 파일은 선언된 순서대로 적용될 것이다. 예로 :
+```
+@GrabMetadata(["com.example.custom-versions:1.0.0",
+    "com.example.more-versions:1.0.0"])
+```
+은 `more-versions`의 프로퍼티가 `custom-versions`의 프로퍼티를 [override]하게 될 것이다.
+
+`@Grab`을 쓸 수 있는 곳이면 어디나 `@GrabMetadata`를 쓸 수 있다. 하지만 메타데이터 순서에 일관성을 지키기 위해서 `@GrabMetadata`는 어플리케이션에서 최대 한 번만 사용하는 게 낫다.
+(스프링 부트의 상위집합인)유용한 의존성 메타데이터의 원천은 [Spring IO Platform](http://platform.spring.io/)이다. 예를 들면 다음과 같다 :
+```java
+@GrabMetadata('io.spring.platform:platform-versions:1.0.4.RELEASE')
+```
+
 ### 56.3. 코드 테스트
 ### 56.4. 다양한 소스파일을 가진 애플리케이션
 ### 56.5. 애플리케이션 패키징
@@ -3460,7 +3494,6 @@ $ JAVA_OPTS=-Xmx1024m spring run hello.groovy
 ## 57. 그루비 빈즈 DSL을 통해서 애플리케이션 개발
 ## 58. 다음 읽을거리
 
-A
 # VIII. 빌드툴 플러그인<a name="빌드툴 플러그인"></a>
 ## 59. 스프링부트 메이븐 플러그인<a name="스프링부트 메이븐 플러그인"></a>
 ### 59.1. 플러그인 추가
@@ -4198,3 +4231,4 @@ public class ServerProperties {
 #### D.5.1. Zip 엔트리 압축
 #### D.5.2. System ClassLoader
 ### D.6. 단독 jar 솔루션 대안
+## E. 의존성 버전<a name="dependency-versions"></a>
