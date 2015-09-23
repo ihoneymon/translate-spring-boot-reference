@@ -3431,20 +3431,20 @@ $ JAVA_OPTS=-Xmx1024m spring run hello.groovy
 
 다음은 "`grab hints`"(+가져오기 힌트)로 쓰이는 항목이다 :
  항목 | 가져오는 것
---- | ---
-`JdbcTemplate`, `NamedParameterJdbcTemplate`, `DataSource` |JDBC 어플리케이션
-`@EnableJms` |JMS 어플리케이션
-`@EnableCaching` | Caching abstraction.
-`@Test` |JUnit.
-`@EnableRabbit` |RabbitMQ.
-`@EnableReactor` |Project Reactor.
-확장`Specification` |Spock test.
-`@EnableBatchProcessing` |Spring Batch.
-`@MessageEndpoint` `@EnableIntegrationPatterns` |Spring Integration.
-`@EnableDeviceResolver` |Spring Mobile.
-`@Controller` `@RestController` `@EnableWebMvc` |Spring MVC + Embedded Tomcat.
-`@EnableWebSecurity` |Spring Security.
-`@EnableTransactionManagement` |Spring Transaction Management.
+|--- | ---|
+|`JdbcTemplate`, `NamedParameterJdbcTemplate`, `DataSource` |JDBC 어플리케이션|
+|`@EnableJms` |JMS 어플리케이션|
+|`@EnableCaching` | Caching abstraction.|
+|`@Test` |JUnit.|
+|`@EnableRabbit` |RabbitMQ.|
+|`@EnableReactor` |Project Reactor.|
+|확장`Specification` |Spock test.|
+|`@EnableBatchProcessing` |Spring Batch.|
+|`@MessageEndpoint` `@EnableIntegrationPatterns` |Spring Integration.|
+|`@EnableDeviceResolver` |Spring Mobile.|
+|`@Controller` `@RestController` `@EnableWebMvc` |Spring MVC + Embedded Tomcat.|
+|`@EnableWebSecurity` |Spring Security.|
+|`@EnableTransactionManagement` |Spring Transaction Management.|
 
  > 스프링부트 CLI 소스코드에서 사용자화[customization]가 어떻게 적용되는지 이해하려면 [`CompilerAutoConfiguration`](https://github.com/spring-projects/spring-boot/blob/v1.2.0.RELEASE/spring-boot-cli/src/main/java/org/springframework/boot/cli/compiler/CompilerAutoConfiguration.java)의 서브클래스를 보라.
 
@@ -3481,7 +3481,6 @@ $ JAVA_OPTS=-Xmx1024m spring run hello.groovy
 은 `more-versions`의 프로퍼티가 `custom-versions`의 프로퍼티를 [override]하게 될 것이다.
 
 `@Grab`을 쓸 수 있는 곳이면 어디나 `@GrabMetadata`를 쓸 수 있다. 하지만 메타데이터 순서에 일관성을 지키기 위해서 `@GrabMetadata`는 어플리케이션에서 최대 한 번만 사용하는 게 낫다.
-A useful source of dependency metadata (a superset of Spring Boot) is the http://platform.spring.io/[Spring IO Platform], e.g. 
 (스프링 부트의 상위집합인)유용한 의존성 메타데이터의 원천은 [Spring IO Platform](http://platform.spring.io/)이다. 예를 들면 다음과 같다 :
 ```java
 @GrabMetadata('io.spring.platform:platform-versions:1.0.4.RELEASE')
