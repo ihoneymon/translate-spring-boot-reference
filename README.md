@@ -3427,7 +3427,6 @@ $ JAVA_OPTS=-Xmx1024m spring run hello.groovy
 표준 그루비는 서드 파티 라이브러리에 대한 의존성을 선언할 수 있게 해주는 `@Grab` 어노테이션을 포함하고 있다.
 빌드 도구를 사용하지 않고서 메이븐이나 그래들과 같은 방법으로 그루비가 jar 파일을 다운로드 하게 해주는 유용한 방법이다.
 
-Spring Boot extends this technique further, and will attempt to deduce which libraries to "`grab`" based on your code. For example, since the `WebApplication` code above uses `@RestController` annotations, "`Tomcat`" and "`Spring MVC`" will be grabbed.
 스프링 부트는 이 방법을 좀 더 확장하여, 코드를 토대로 `grab`할(+가져올) 라이브러리를 추론하려고 시도할 것이다. 예를 들어, `@RestController`어노테이션을 사용하고 있는 `WebApplication` 코드로 "`Tomcat`"과 "`Spring MVC`를 가져오게 될 것이다.
 
 다음은 "`grab hints`"(+가져오기 힌트)로 쓰이는 항목이다 :
