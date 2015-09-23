@@ -47,7 +47,7 @@ Copies of this document may be made for your own use and for distribution to oth
 ### 11.5. 실행가능한 jar 생성
 ## 12. 다음 읽을거리
 
-# III. 스프링부트 사용
+# III. 스프링부트 사용<a name="III. 스프링부트 사용"></a>
 ## 13. 빌드 시스템
 ### 13.1. 메이븐
 #### 13.1.1. 스프링부트 스타터 부모 상속
@@ -461,8 +461,8 @@ Copies of this document may be made for your own use and for distribution to oth
 ## 7. 고급주제
 마지막으로, 우리는 보다 고급진~ 사용자들을 위한 소재들을 제공한다.
 * 클라우드 배포: [Cloud Foundry](#Cloud Foundry) | [Heroku](#Heroku) | [CloudBees](#CloudBees)
-* 빌드툴 플러그인: [메이븐](#스프링부트 메이븐 플러그인) | [그레들](#스프링부트 그레들 플러그인)
-* 부록: [애플리케이션 속성](#애플리케이션 속성) | [자동설정 클래스](#자동설정 클래스) | [실행가능한 jar 형식](#실행가능한 jar 형식)
+* 빌드툴 플러그인: [메이븐](#스프링부트 메이븐 플러그인) | [그레들](#60. 스프링부트 그레들 플러그인)
+* 부록: [애플리케이션 속성](#애플리케이션 속성) | [자동설정 클래스](#자동설정 클래스) | [실행가능한 jar 형식](#D. 실행가능한 jar 형식)
 
 # II. 시작<a name="시작"></a>
 스프링부트 혹은 일반적인 '스프링'을 이제막 시작했다면, 여러분을 위한 섹션이다. 여기서 우리는 기본적인 '뭘?', '어떻게?' 와 '왜?'라는 질문들에 답을 한다. 여러분은 스프링부트 단독설치 설명과 함께 정중한 소개를 볼 수 있다. 우리는 먼저 스프링부트 애플리케이션을 빌드하고, 핵심 이론에 관하여 논의하며 진행하게 된다.
@@ -610,7 +610,7 @@ $ java -version
 #### 10.1.2. 그레들 설치
 스프링부트는 그레들 1.6 혹은 그 이상 버전에 호환된다. 만약 그레들이 설치되어 있지 않다면 <www.gradle.org>의 설명을 따라하면 된다.
 
-스프링부트 의존성은 ```org.springframework.boot group```을 사용하여 정의된다. 일반적으로 여러분의 프로젝트는 하나 혹은 그 이상 [스프링부트 스타터 POMs](#스프링부트 스타터 POMs)에 관한 의존성을 정의했을 것이다. 스프링부트는 의존성을 간단하게 정의하고 실행가능한 jars를 생성하는데 매우 유용한 [그레들 플러그인]($스프링부트 그레들 플러그인)을 제공한다.
+스프링부트 의존성은 ```org.springframework.boot group```을 사용하여 정의된다. 일반적으로 여러분의 프로젝트는 하나 혹은 그 이상 [스프링부트 스타터 POMs](#스프링부트 스타터 POMs)에 관한 의존성을 정의했을 것이다. 스프링부트는 의존성을 간단하게 정의하고 실행가능한 jars를 생성하는데 매우 유용한 [그레들 플러그인](#60. 스프링부트 그레들 플러그인)을 제공한다.
 
 ##### 그레들 래퍼
 그레들 래퍼는 프로젝트를 빌드하려는 떄에 그레들을 포함시킬 수 있는 좋은 방법이다. 그레들 래퍼는 빌드 과정에서 코드를 다루는 데 필요한 작은 스크립트와 라이브러리로 구성되어 있다. 이와 관련해서는 [www.gradle.org/docs/current/userguide/gradle_wrapper.html](www.gradle.org/docs/current/userguide/gradle_wrapper.html)을 통해 상세히 살펴볼 수 있다.
@@ -920,7 +920,7 @@ Hello World!
 
 이 문제를 해결하기 위해, 많은 개발자들은 jar를 'shaded'하는 방법을 사용한다. 'shaded` jar는 모든 jar파일로부터 모든 클래스파일들을 "uber jar"안에 한데묶어 버리는 것이다. shaded jar의 문제는 애플리케이션에서 실제로 사용하는 라이브러리들을 파악하기 어렵다는 것이다. 이는 많은 jar 파일들(물론 다른 내용이지만)에 존재하는 같은 이름의 파일명을 가지는 파일들이 문제가 될 수 있다.
 
-스프링부트는 이를 [다르게 접근](#실행가능한 jar 형식)하였고 실제로 내재하고 있는 jar파일들을 직접 접근가능하다.
+스프링부트는 이를 [다르게 접근](#D. 실행가능한 jar 형식)하였고 실제로 내재하고 있는 jar파일들을 직접 접근가능하다.
 
 실행가능한 jar을 생성하기 위해서는 ```spring-boot-maven-plugin```을 ```pom.xml```에 추가해야한다. 아래 코드를 ```dependencies``` 섹션 아래에 입력하자:
 ```xml
@@ -993,7 +993,7 @@ $ java -jar target/myproject-0.0.1-SNAPSHOT.jar
 
 단순히 스프링부트를 실행시켜보는 것이 목적이라면, 이 섹션을 시작하기 전에 [바로 시작하기]()만 읽어도 충분할 것이다.
 
-## 13. 빌드 시스템
+## 13. 빌드 시스템<a name="13. 빌드 시스템"></a>
 선택한 빌드 시스템이 *의존성 관리* 지원은 필수적인 요구사항이며, 이를 위해서 "메이븐 중앙" 저장소repository에 배포된 아티팩트들을 사용할 수 있다. 스프링부트는 메이븐 혹은 그레들 중에서 하나를 선택해야 한다. 물론 스프링부트는 다른 빌드시스템(예를 들어 앤트Ant)에서 사용할 수 있지만, 특정 부분에 대해서는 정상동작하지 않을 수도 있다.
 
 ### 13.1. 메이븐<a name="메이븐"><a/>
@@ -1072,7 +1072,7 @@ dependencies {
 }
 ```
 
-또한 [spring-boot-gradle-plugin](#스프링부트 그레들 플러그인)은 실행가능한 jar를 생성하는 태스크들을 제공하고 소스를 바탕으로 프로젝트를 실행하는 것이 가능하다. 거기다가 ```ResolutionStrategy```을 추가하여 [의존성의 버전넘버를 생략하는 것](#버전 없이 의존성 정의)도 가능하다:
+또한 [spring-boot-gradle-plugin](#60. 스프링부트 그레들 플러그인)은 실행가능한 jar를 생성하는 태스크들을 제공하고 소스를 바탕으로 프로젝트를 실행하는 것이 가능하다. 거기다가 ```ResolutionStrategy```을 추가하여 [의존성의 버전넘버를 생략하는 것](#버전 없이 의존성 정의)도 가능하다:
 ```
 buildscript {
     repositories { jcenter() }
@@ -3495,10 +3495,123 @@ $ JAVA_OPTS=-Xmx1024m spring run hello.groovy
 ## 58. 다음 읽을거리
 
 # VIII. 빌드툴 플러그인<a name="빌드툴 플러그인"></a>
+스프링부트는 메이븐과 그레들 플러그인을 위한 빌드툴 플러그인을 제공한다. 플러그인은 실행가능한 jar 압축을 포함한 다양한 기능을 제공한다. 이 섹션은 플러그인에 대한 보다 상세한 내용을 제공하고, 지원하지 않는 빌드 시스템에 대한 확장에도 도움이 될 것이다. 만약 바로 시작하려한다면, [III. 스프링부트 사용](#III. 스프링부트 사용)에서 [13. 빌드시스템](#13. 빌드 시스템) 을 읽어보기를 바란다.
+
 ## 59. 스프링부트 메이븐 플러그인<a name="스프링부트 메이븐 플러그인"></a>
-### 59.1. 플러그인 추가
-### 59.2. 실행가능한 jar 와 war 파일 패키징
-## 60. 스프링부트 그레들 플러그인<a name="스프링부트 그레들 플러그인"></a>
+[스프링부트 메이븐 플러그인](http://docs.spring.io/spring-boot/docs/1.2.0.BUILD-SNAPSHOT/maven-plugin/)은, 실행가능한 jar 혹은 war 압축파일 압축기능과 부트앱 실행 기능을 제공한다. 메이븐3 부터 사용가능하다.
+> 노트:
+플러그인에 대한 보다 자세한 사항은 [스프링부트 메이븐 플러그인 사이트](http://docs.spring.io/spring-boot/docs/1.2.0.BUILD-SNAPSHOT/maven-plugin/)를 참조하라.
+
+### 59.1. 플러그인 추가<a name="59.1. 플러그인 추가"></a>
+스프링부트 메이븐 플러그인은 ```pom.xml``` 에서 ```plugins``` 섹션에 다음의 내용을 간단히 추가하면 사용할 수 있다.
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <!-- ... -->
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>1.2.0.BUILD-SNAPSHOT</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+```
+
+이 설정은 메이븐의 생존주기 ```package``` 페이즈 동안 jar 혹은 war를 재압축한다. 다음의 ```target``` 디렉토리를 보면 original jar와 재압축된 jar 파일을 볼 수 있다:
+
+```
+$ mvn package
+$ ls target/*.jar
+target/myproject-1.0.0.jar target/myproject-1.0.0.jar.original
+```
+
+위 설정에서 ```<execution/>```을 포함시키지 않았어도 플러그인을 실행할 수 있다(하지만 ```package``` 골을 사용해야 한다). 예를 들어:
+
+```
+$ mvn package spring-boot:repackage
+$ ls target/*.jar
+target/myproject-1.0.0.jar target/myproject-1.0.0.jar.original
+```
+
+만약 마일스톤 혹은 스냅샷 버전을 사용한다면 ```pluginRepository``` 요소를 적절히 추가해야할 것이다:
+
+```xml
+<pluginRepositories>
+    <pluginRepository>
+        <id>spring-snapshots</id>
+        <url>http://repo.spring.io/snapshot</url>
+    </pluginRepository>
+    <pluginRepository>
+        <id>spring-milestones</id>
+        <url>http://repo.spring.io/milestone</url>
+    </pluginRepository>
+</pluginRepositories>
+```
+### 59.2. 실행가능한 jar 와 war 파일 패키징<a name="59.2. 실행가능한 jar 와 war 파일 패키징"></a>
+```pom.xml```에 추가된 ```spring-boot-maven-plugin```은 ```spring-boot:repackage``` 골이 사용될 경우 자동으로 압축파일을 재압축하여 실행가능하게 만든다. ```packaging``` 요소를 사용하여 jar 혹은 war 파일 빌드타입을 설정할 수 있다.
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <!-- ... -->
+    <packaging>jar</packaging>
+    <!-- ... -->
+</project>
+```
+
+```package``` 페이즈 동안에 스프링부트에 의해 존재하는 압축파일이 처리된다. 실행하고자 하는 메인클래스를 설정항목을 통해 정의하거나 ```Main-Class``` 속성을 메니페스트에 추가하는 방법을 통해 실행한다. 만약 메인 클래스를 정의하지 않았다면 플러그인은 클래스에서 ```public static void main(String[] args)``` 메서드를 탐색할 것이다.
+
+빌드된 프로젝트 산출물을 실행하려면 다음과 같이 입력하면 된다:
+
+```
+$ mvn package
+$ java -jar target/mymodule-0.0.1-SNAPSHOT.jar
+```
+
+war 파일을 빌드했을 경우에는 실행하거나 외부 컨테이너에 배포하는 경우에는 내장된 컨테이너의 의존성을 ```provided``` 로 정의해줘야 한다. 예:
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <!-- ... -->
+    <packaging>war</packaging>
+    <!-- ... -->
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <!-- ... -->
+    </dependencies>
+</project>
+```
+
+> 팁:
+배포가능한 war 파일을 어떻게 생성하는지 상세히 알고 싶다면 [75.1. 배포가능한 war 파일 생성](#75.1. 배포가능한 war 파일 생성) 섹션을 살펴보자.
+
+보다 상세한 설정항목과 예는 [플러그인 안내 페이지](http://docs.spring.io/spring-boot/docs/1.2.0.BUILD-SNAPSHOT/maven-plugin/)에서 볼 수 있다.
+
+## 60. 스프링부트 그레들 플러그인<a name="60. 스프링부트 그레들 플러그인"></a>
+
 ### 60.1. 플러그인 추가
 ### 60.2. 버전 없이 의존성 정의<a name="버전 없이 의존성 정의"></a>
 #### 60.2.1. 버전 관리 변경
@@ -3513,14 +3626,19 @@ $ JAVA_OPTS=-Xmx1024m spring run hello.groovy
 ### 60.10. 그레들을 이용해서 메이븐 레파지토리에 아티팩트 배포
 #### 60.10.1. 그레들 설정을 이용한 상속적 의존성 관리 POM 제작
 #### 60.10.2. 그레들 설정을 이용한 imports 의존성 관리 POM 제작
+
 ## 61. 다른 빌드 지원 시스템 지원
 ### 61.1. 리패키징 아카이브
 ### 61.2. 내포된 라이브러리
 ### 61.3. 메인 클래스 탐색
 ### 61.4. repackage 구현 예제
-## 62. 다음 읽을 거리
 
-# IX. <a name="'어떻게How-to' 가이드">'어떻게How-to' 가이드</a>
+## 62. 다음 읽을 거리
+빌드툴 플러그인이 어떻게 동작하는지에 흥미가 있다면 깃헙의 [spring-boot-tools](http://github.com/spring-projects/spring-boot/tree/master/spring-boot-tools)모듈을 살펴볼 수 있다. 보다 기술적인 상세정보는 [부록 D. 실행가능한 jar 형식](#D. 실행가능한 jar 형식)을 살펴보기 바란다.
+
+특정 빌드와 관련된 질문이 있는 경우에는 ['어떻게How-to' 가이드](#'어떻게How-to' 가이드) 를 살펴보라.
+
+# IX. '어떻게How-to' 가이드<a name="'어떻게How-to' 가이드"></a>
 혹시 우리가 대비하지 못한 부분들에서 문제들이 발생한다면 [스택오버플로우](http://stackoverflow.com/tags/spring-boot)에서 이미 누군가가 작성한 답변을 확인할 수도 있다: 이곳은 새로운 질문을 올리기에도 좋은 곳이다(```spring-boot``` 태그를 사용하자).
 
 # 63. 스프링부트 애플리케이션
@@ -3609,7 +3727,7 @@ $ JAVA_OPTS=-Xmx1024m spring run hello.groovy
 ### 74.7. 그레들을 이용해서 스프링부트 애플리케이션 원격 디버그 시작
 ### 74.8. 앤트를 이용해서 실행가능한 아카이브 빌드<a name="앤트를 이용해서 실행가능한 아카이브 빌드"></a>
 ## 75. 전통적 배포
-### 75.1. 배포가능한 war 파일 생성
+### 75.1. 배포가능한 war 파일 생성<a name="75.1. 배포가능한 war 파일 생성"></a>
 ### 75.2. 오래된 서블릿 컨테이너에 배포가능한 war 파일 생성
 ### 75.3. 기존의 애플리케이션을 스프링부트로 변환
 ### 75.4. 웹로직을 위한 war 배포
@@ -4210,25 +4328,186 @@ public class ServerProperties {
 는 ```server.name```, ```server.host.ip``` 과 ```server.host.port``` 속성들을 생성한다. 중첩된 것처럼 일반(내부 클래스가 아닌) 클래스가 처리되어야한다는 것을 나타내기 위해서 ```@NestedConfigurationProperty``` 애노테이션을 사용할 수 있다.
 
 #### B.2.2. 추가적인 메타데이터 추가<a name="B.2.2. 추가적인 메타데이터 추가"></a>
-스프링부트의 설정파일 제어는 매우 유연하며, 그것의 속성은 ```@ConfigurationProperties``` 빈에 연결되지 않은 경우가 종종 존재한다. 각각의 경우, 애노테이션 프로세스가 자동으로 주요 메타-데이터 파일에 ```META-INF/additional-spring-configuration-metadata.json```의 아이템들을 병합한다.
+스프링부트의 설정파일 제어는 매우 유연하며, 프로퍼타이즈가 ```@ConfigurationProperties``` 빈에 연결되지 않는 경우가 종종 존재한다. 각각의 경우, 애노테이션 프로세스가 자동으로 주요 메타-데이터 파일에 ```META-INF/additional-spring-configuration-metadata.json```의 아이템들을 병합한다.
 
 ```additional-spring-configuration-metadata.json``` 파일의 형식은 ```spring-configuration-metadata.json``` 파일과 같다. 추가 프로퍼타이즈 파일은 선택적이며, 추가 프로퍼타이즈가 없다면, 추가하지 않는다.
 
 ## C. 자동설정 클래스<a name="자동설정 클래스"></a>
-### C.1. "spring-boot-autoconfigure" 모듈
-### C.2. "spring-boot-actuator" 모듈
-## D. 실행가능한 jar 형식<a name="실행가능한 jar 형식"></a>
+스프링부트에서 제공하는 자동설정 클래스들의 문서와 소스코드 링크를 제공하는 목록이 여기 있다. 애플리케이션의 자동설정 보고서에 관한 보다 자세한 기능들을 볼 수 있도록 켤 수 있는 것이 가능하다(앱을 시작할 때 ```--debug``` 혹은 ```-Ddebug```, 혹은 애플리케이션의 액츄에이터 중 ```autoconfig``` 엔드포인트를 사용한다).
+
+### C.1. "spring-boot-autoconfigure" 모듈<name="C.1. \"spring-boot-autoconfigure\" 모듈"></a>
+
+```spring-boot-autoconfigure``` 모듈에 있는 자동설정 클래스들은 다음과 같다:
+| 설정 클래스 | 링크 |
+|[ActiveMQAutoConfiguration](http://github.com/spring-projects/spring-boot/tree/master/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/jms/activemq/ActiveMQAutoConfiguration.java) | [javadoc](http://docs.spring.io/spring-boot/docs/1.2.0.BUILD-SNAPSHOT/api/org/springframework/boot/autoconfigure/jms/activemq/ActiveMQAutoConfiguration.html) |
+| [AopAutoConfiguration](http://github.com/spring-projects/spring-boot/tree/master/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/aop/AopAutoConfiguration.java) | [javadoc](http://docs.spring.io/spring-boot/docs/1.2.0.BUILD-SNAPSHOT/api/org/springframework/boot/autoconfigure/aop/AopAutoConfiguration.html) |
+| [BatchAutoConfiguration](http://github.com/spring-projects/spring-boot/tree/master/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/batch/BatchAutoConfiguration.java) | [javadoc](http://docs.spring.io/spring-boot/docs/1.2.0.BUILD-SNAPSHOT/api/org/springframework/boot/autoconfigure/batch/BatchAutoConfiguration.html) |
+| [CloudAutoConfiguration](http://github.com/spring-projects/spring-boot/tree/master/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/cloud/CloudAutoConfiguration.java) | [http://docs.spring.io/spring-boot/docs/1.2.0.BUILD-SNAPSHOT/api/org/springframework/boot/autoconfigure/cloud/CloudAutoConfiguration.html](javadoc) |
+| [DataSourceAutoConfiguration](http://github.com/spring-projects/spring-boot/tree/master/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/jdbc/DataSourceAutoConfiguration.java) | [javadoc](http://docs.spring.io/spring-boot/docs/1.2.0.BUILD-SNAPSHOT/api/org/springframework/boot/autoconfigure/jdbc/DataSourceAutoConfiguration.html) |
+| [DataSourceTransactionManagerAutoConfiguration](http://github.com/spring-projects/spring-boot/tree/master/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/jdbc/DataSourceTransactionManagerAutoConfiguration.java) | [javadoc](http://docs.spring.io/spring-boot/docs/1.2.0.BUILD-SNAPSHOT/api/org/springframework/boot/autoconfigure/jdbc/DataSourceTransactionManagerAutoConfiguration.html) |
+| [DeviceDelegatingViewResolverAutoConfiguration](http://github.com/spring-projects/spring-boot/tree/master/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/mobile/DeviceDelegatingViewResolverAutoConfiguration.java) | [javadoc](http://docs.spring.io/spring-boot/docs/1.2.0.BUILD-SNAPSHOT/api/org/springframework/boot/autoconfigure/mobile/DeviceDelegatingViewResolverAutoConfiguration.html) |
+| [DeviceResolverAutoConfiguration](http://github.com/spring-projects/spring-boot/tree/master/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/mobile/DeviceResolverAutoConfiguration.java) | [javadoc](http://docs.spring.io/spring-boot/docs/1.2.0.BUILD-SNAPSHOT/api/org/springframework/boot/autoconfigure/mobile/DeviceResolverAutoConfiguration.html) |
+| [DispatcherServletAutoConfiguration](http://github.com/spring-projects/spring-boot/tree/master/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/web/DispatcherServletAutoConfiguration.java) | [javadoc](http://docs.spring.io/spring-boot/docs/1.2.0.BUILD-SNAPSHOT/api/org/springframework/boot/autoconfigure/web/DispatcherServletAutoConfiguration.html) |
+| [ElasticsearchAutoConfiguration](http://github.com/spring-projects/spring-boot/tree/master/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/elasticsearch/ElasticsearchAutoConfiguration.java) | [javadoc](http://docs.spring.io/spring-boot/docs/1.2.0.BUILD-SNAPSHOT/api/org/springframework/boot/autoconfigure/elasticsearch/ElasticsearchAutoConfiguration.html) |
+| [ElasticsearchDataAutoConfiguration](http://github.com/spring-projects/spring-boot/tree/master/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/elasticsearch/ElasticsearchDataAutoConfiguration.java) | [javadoc](http://docs.spring.io/spring-boot/docs/1.2.0.BUILD-SNAPSHOT/api/org/springframework/boot/autoconfigure/elasticsearch/ElasticsearchDataAutoConfiguration.html) |
+| [EmbeddedServletContainerAutoConfiguration](http://github.com/spring-projects/spring-boot/tree/master/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/web/EmbeddedServletContainerAutoConfiguration.java) | [javadoc](http://docs.spring.io/spring-boot/docs/1.2.0.BUILD-SNAPSHOT/api/org/springframework/boot/autoconfigure/web/EmbeddedServletContainerAutoConfiguration.html) |
+
+
+### C.2. "spring-boot-actuator" 모듈<a name="C.2. \"spring-boot-actuator\" 모듈"></a>
+
+## D. 실행가능한 jar 형식<a name="D. 실행가능한 jar 형식"></a>
+```spring-boot-loader``` 모듈은 스프링부트가 실행가능한 jar와 war 파일을 지원하도록 허용한다. 만약 메이븐과 그레들 플러그인을 사용한다면, 실행가능한 jar는 자동적으로 생성되며 어떤 식으로 작업이 진행되는지를 세부적으로 알 필요는 없다.
+
+만약 다른 빌드 시스템을 통해서 실행가능한 jar를 생성해야한다면, 혹은 기저에 깔린 기술들에 대해서 강한 호기심이 있다면, 이 섹션은 배경지식을 제공해줄 것이다.
+
 ### D.1. 내부 JARs
-#### D.1.1. 실행가능한 jar 파일 구조
-#### D.1.2. 실행가능한 war 파일 구조
-### D.2. 스프링부트의 "JarFile" 클래스
-#### D.2.1. 표준 자바 "JarFile" 의 호환성
-### D.3. 실행가능한 jars 실행
-#### D.3.1. 매니페스트 실행
-#### D.3.2. 아카이브 확장
-### D.4. ```PropertiesLauncher``` 기능들
+자바는 기본적으로 jar 파일들을 내장하는 어떤 방식도 제공하지 않는다(예를 들어 jar 파일은 jar 파일 내에 자신들을 포함한다). 이것은 압축해제 없이 커맨드라인에서 자급자족하는 애플리케이션 배포시에는 문제가 될 수 있다.
+
+그 해결책으로, 많은 개발자들은 'shaded' jar를 사용한다. 'shaded' jar는 'uber jar' 라는 간단한 형태에 모든 jar, 모든 클래스를 간단하게 묶는다. shaded jar의 문제점은 애플리케이션에서 실제로 사용할 때 라이브러리들을 찾기가 힘들다는 것이다. 이는 또한 다양한 jar 안에 같은 파일명을 사용하는 경우 문제(하지만 내용은 다른)가 될 수 있다. 스프링부트는 실제 내부 jar에 접근하는 방식을 다르게 접근하였다.
+
+#### D.1.1. 실행가능한 jar 파일 구조<a name="D.1.1. 실행가능한 jar 파일 구조"></a>
+스프링부트 로더는 양립하는 jar 파일들을 다음과 같은 방법으로 구성한다.
+
+```
+example.jar
+ |
+ +-META-INF
+ |  +-MANIFEST.MF
+ +-org
+ |  +-springframework
+ |     +-boot
+ |        +-loader
+ |           +-<spring boot loader classes>
+ +-com
+ |  +-mycompany
+ |     + project
+ |        +-YouClasses.class
+ +-lib
+    +-dependency1.jar
+    +-dependency2.jar
+```
+
+의존성 라이브러리들은 내부에 ```lib``` 디렉토리에 위치시킨다.
+
+#### D.1.2. 실행가능한 war 파일 구조<a name="D.1.2. 실행가능한 war 파일 구조"></a>
+스프링부트 로더는 양립하는 war 파일을 다음과 같은 방법으로 구성한다.
+
+```
+example.jar
+ |
+ +-META-INF
+ |  +-MANIFEST.MF
+ +-org
+ |  +-springframework
+ |     +-boot
+ |        +-loader
+ |           +-<spring boot loader classes>
+ +-WEB-INF
+    +-classes
+    |  +-com
+    |     +-mycompany
+    |        +-project
+    |           +-YouClasses.class
+    +-lib
+    |  +-dependency1.jar
+    |  +-dependency2.jar
+    +-lib-provided
+       +-servlet-api.jar
+       +-dependency3.jar
+```
+
+의존성 라이브러리들은 ```WEB-INF/lib``` 디렉토리에 위치시킨다. 실행하는데는 필요하지만 전통적인 웹 컨테이너에 배포하는 경우에는 필요하지 않은 의존성 라이브러리들은 ```WEB-INF/lib-provided```에 위치시킨다.
+
+### D.2.  스프링부트의 "JarFile" 클래스<a name="D.2. 스프링부트의 \"JarFile\" 클래스"></a>
+내장된 jar를 지원하는 핵심 클래스는 ```org.springframework.boot.loader.jar.JarFile```를 사용한다. 이 클래스는 표준 jar 파일로부터 혹은 내부 하위에 있는 jar data로부터 jar 내용을 읽어오는 것을 허용한다. 처음 적재될 때, 각각의 ```JarEntry```의 위치는 외부 jar의 물리적 파일에 상쇄되어 배치된다.
+
+```
+myapp.jar
++---------+---------------------+
+|         | /lib/mylib.jar      |
+| A.class |+---------+---------+|
+|         || B.class | B.class ||
+|         |+---------+---------+|
++---------+---------------------+
+^          ^          ^
+0063       3452       3980
+```
+
+위의 예를 살펴보면 ```myapp.jar``` 내에서 ```0063```에 위치한 ```A.class```를 어떻게 찾는 지 볼 수 있다. ```myapp.jar``` 내에서 ```B.class``는 ```3452```와 ```3980```위치해있다.
+
+여기서 알 수 있는건, 외부의 jar에 접근하는 방식으로 내부의 엔트리들을 쉽게 읽어올 수 있다. 우리는 압축을 해제할 필요가 없고 모든 엔트리 데이터를 메모리에서 읽어올 필요도 없다.
+
+#### D.2.1. 표준 자바 "JarFile" 의 호환성<a name="D.2.1. 표준 자바 \"JarFile\" 의 호환성"></a>
+스프링부트 로더는 존재하는 코드와 라이브러리들이 양립할수 있도록 노력한다. ```java.util.jar.JarFile```에서 확장한 ```org.springframework.boot.loader.jar.JarFile```은 잘못된 부분들을 교환한다. ```RandomAccessJarFile.getURL()``` 메서드는 ```java.net.JarURLConnection``` 양립가능한 커넥션 ```URL```을 반환할 것이다. ```RandomAccessJarFile``` URL은 Java의 ```URLClassLoader```로 사용가능하다.
+
+### D.3. 실행가능한 jars 실행<a name="D.3. 실행가능한 jars 실행"></a>
+```org.springframework.boot.loader.Launcher``` 클래스는 실행가능한 jar의 주진지점(main entry point)로 사용되는 부트스트랩 클래스다. jar 파일에 ```Main-Class``` 이며 ```URLClassLoader```에 접근하여 최종적으로 ```method()``` 메서드를 호출하도록 설정된다.
+
+하위클래스 3 런처(```JarLauncher```, ```WarLauncher``` 그리고 ```PropertiesLauncher```)가 있다. 이 클래스들의 용도는 내부 jar 파일 혹은 war 파일의 디렉토리에서 자원(```.class``` 파일 등)을 읽는 것이다(클래스패스에 따라 제공한다). ```[Jar|War]Launcher```의 경우 내장 경로는 고정적(war의 경우 ```lib/*.jar``` 그리고  ```lib-provided/*.jar```)이다 추가적으로 jar를 저 위치에 추가하면 된다.
+```PropertiesLauncher```는 기본적으로 ```lib/``` 를 살펴보지만,  ```application.properties``` 에서 ```LOADER_PATH``` 혹은 ```loader.path``` 환경변수로 설정한 위치에 추가할수 있다(콤마로 디렉토리나 압축파일의 위치를 지정한다).
+
+#### D.3.1. 매니페스트 실행<a name="D.3.1. 매니페스트 실행"></a>
+```Launcher```가 실행하려면 ```META-INF/MANIFEST.MF``` 의 ``Main-Class``` 속성을 정의해야 한다. 실제로 실행하기를 바라는 클래스는 ```Start-Class``` 속성으로 정의하고 싶을 것이다(예, ```method``` 메서드를 작성한 클래스).
+
+예를 들어, 여기 실행 jar 파일에 있는 전통적인 ```MANIFEST.MF```가 있다.
+
+```
+Main-Class: org.springframework.boot.loader.JarLauncher
+Start-Class: com.mycompany.project.MyApplication
+```
+
+다음은 war 파일의 경우:
+
+```
+Main-Class: org.springframework.boot.loader.WarLauncher
+Start-Class: com.mycompany.project.MyApplication
+```
+
+> 노트
+매니페스트 파일에 ```Class-Path``` 엔트리를 정의할 필요는 없다. 내장 jar 파일로 부터 추출한다.
+
+#### D.3.2. 아카이브 확장<a nam="D.3.2. 아카이브 확장"></a>
+PaaS 구현체들은 실행에 앞서 압축파일을 압축해제하는 선택을 할 것이다. 예를 들어, Cloud Foundry 는 이 방법을 수행한다. 런처가 실행될 때 간단하게 압축해제하도록 할 수 있다:
+
+```
+$ unzip -q myapp.jar
+$ java org.springframework.boot.loader.JarLauncher
+```
+
+### D.4. ```PropertiesLauncher``` 기능들<a name="D.4. PropertiesLauncher 기능들"></a>
+```PropertiesLauncher```는 확장 프로퍼티즈를 활성화할 수 있는 특별한 기능을 가진다(System properties, environment variables, manifest entries or application.properties).
+
+| KEY | Purpose |
+|-----|---------|
+|```loader.path```| 콤마(,)로 구분된 클래스패스(예, ```lib:${HOME}/app/lib```) 
+> 역자주: 그런데 왜 예에는 콜론...이지? |
+| ```loader.home``` | 추가적인 프로퍼티즈 파일 위치 예: ```/opt/app``` (기본 ```${user.dir}```) |
+| ```loader.args``` | (스페이스로 구분된) 메인메서드의 인자 |
+| ```loader.main``` | 실행 기본 클래스명, 예: ```com.app.Application``` |
+| ```loader.config.name``` | 프로퍼티즈 파일명, 예: ```loader``` (기본적으로 ```application```) |
+| ```loader.config.location``` | 프로퍼티즈 파일 경로, 예: ```classpath:loader.properties``` (기본 ```application.properties```) |
+| ```loader.system``` | 모든 프로퍼티즈를 시스템 프로퍼티즈에 추가할 것인지를 정의(기본 false) |
+
+매니페스트 엔트리 키는 단어의 첫 글자를 대문자로 형성되고 "." 에서 "-"로 분리하여 변환한다(예: ```Loader-Path```). 예외는 ```JarLauncher```과의 호환성을 위해 매니페스트에 시작-클래스로 조회되는 ```loader.main```가 된다. 
+
+환경변수는 기간 대신 밑줄구분으로 대문자화한다.
+* ```loader.home```은 ```loader.config.location```을 정의하지 않는 한 프로퍼티즈 파일의 디렉토리 경로다(기본을 오버라이딩).
+* ```loader.path``` 디렉토리(jar 와 zip 파일들을 회귀적으로 살펴보는), 압축파일 경로 혹은 와일드카드 패턴(JVM의 기본적인 행동)를 포함할 수 있다.
+* placeholder 는 시스템과 환경변수를 더해 사용전 프로퍼티즈 파일의 모든 값을 대체한다.
+
 ### D.5. 실행가능한 jar 제약사항
+몇몇 제약사항들 대문에 스프링부트 로더로 압축된 애플리케이션이 동작할 때 고려해야할 사항들이 있다.
+
 #### D.5.1. Zip 엔트리 압축
+내장된 jar ```ZipEntry```는 ```ZipEntry.STORED``` 메서드를 사용해서 저장해야 한다. 내장된 jar의 컨텐츠를 개별적으로 직접탐색할 수 있기 때문이다. 내장된 jar 파일의 컨텐츠는 외부 jar 안에 다른 항목들처럼 압축할 수 있다.
+
 #### D.5.2. System ClassLoader
+실행된 애플리케이션은 클래스를 로딩할 때(대부분의 라이브러리와 프레임웤가 기본적으로는 이렇게 한다) ```Thread.getContextClassLoader()```를 사용할 것이다. 내장된 jar의 클래스를 ```ClassLoader.getSystemClassLoader()```로 읽으려고 시도하면 실패할 것이다. ```java.util.Logging``` 를 사용하는 것은 항상 주의해야한다. 이런 이유로 다른 로깅 구현체를 고려해야 한다.
+
 ### D.6. 단독 jar 솔루션 대안
+위의 제약사항으로 스프링부트로더를 사용할수 없다면 다음의 대안들을 고려해볼 수 있다:
+* [Maven Shade Plugin](http://maven.apache.org/plugins/maven-shade-plugin/)
+* [JarClassLoader](http://www.jdotsoft.com/JarClassLoader.php)
+* [OneJar](http://one-jar.sourceforge.net/)
+
 ## E. 의존성 버전<a name="dependency-versions"></a>
