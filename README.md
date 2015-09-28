@@ -3486,14 +3486,150 @@ $ JAVA_OPTS=-Xmx1024m spring run hello.groovy
 ```java
 @GrabMetadata('io.spring.platform:platform-versions:1.0.4.RELEASE')
 ```
+### 55.2 코드 테스트하기
+`test` 명령은 어플리케이션을 컴파일하고 테스트를 실행할 수 있도록 해준다. 보통 다음과 같이 사용한다.
 
-### 56.3. 코드 테스트
-### 56.4. 다양한 소스파일을 가진 애플리케이션
-### 56.5. 애플리케이션 패키징
-### 56.6. 새로운 프로젝트 준비
-### 56.7. 내장형 쉘 사용
-## 57. 그루비 빈즈 DSL을 통해서 애플리케이션 개발
-## 58. 다음 읽을거리
+```
+	$ spring test app.groovy tests.groovy
+	Total: 1, Success: 1, : Failures: 0
+	Passed? true
+```
+
+이 예제에서는 `tests.groovy`가 JUnit `@Test` 메소드나 Spock `Specipication` 클래스를 포함하고 있다. 모든 공통 프레임워크 어노테이션과 스태틱 메소드는 `import`하지 않아도 사용할 수 있을 것이다.
+위에서 사용한 이 `tests.groovy` 파일은 JUnit으로 작성했다 : 
+
+```java
+	class ApplicationTests {
+
+		@Test
+		void homeSaysHello() {
+			assertEquals("Hello World!", new WebApplication().home())
+		}
+
+	}
+```
+ > 테스트용 소스 파일이 여러 개 있다면 `test`디렉토리 안에 넣어두는 편을 선호할 것이다.
+
+### 55.3. 소스 파일이 여러 개인 어플리케이션의 경우 
+파일 입력을 받아들이는 모든 명령어는 "`shell globbing`"(+정규식으로 파일을 찾아서 실행함)을 사용할 수 있다. 같은 디렉토리에서 파일 여러 개를 쉽게 실행하도록 해준다. 다음과 같다 : 
+
+```
+	$ spring run *.groovy
+```
+
+"`test`"나 "`spec`"코드를 메인 어플리케이션 코드와 분리하고 싶다면 이 방법도 쓸모있을 것이다:
+
+```
+	$ spring test app/*.groovy test/*.groovy
+```
+
+### 55.4. 애플리케이션 패키징 하기
+어플리케이션을 독립 실행가능한 jar 파일로 패키징하려면 `jar` 명령을 사용하면 된다. 다음과 같다 :
+
+```
+	$ spring jar my-app.jar *.groovy
+```
+
+이렇게 만들어진 jar는 어플리케이션을 컴파일하면서 얻은 클래스와 어플리케이션에 필요한 모든 의존성을 포함하고 있으므로, `java -jar`명령을 사용하여 실행할 수 있다. 이 jar 파일은 어플리케이션 클래스패스의 (+라이브러리 참조)항목들도 포함하고 있다. `--include`와 `--exclude`를 써서 jar 에 추가할 경로를 명시할 수 있다. (두 옵션 모두 경로를 쉼표(,)로 구분하고, 이 옵션이 기본적으로 설정하는 경로에서 빼고 싶은 경로는 "`+`"(+exclude의 경우),"`-`"(+include의 경우)를 해당 경로 앞에 쓴다. 기본적으로 포함하는 경로는 다음과 같다 : 
+
+```
+	public/**, resources/**, static/**, templates/**, META-INF/**, *
+```
+그리고 아래 경로는 기본적으로 제외한다.
+
+```
+	.*, repository/**, build/**, target/**, **/*.jar, **/*.groovy
+```
+
+더 자세한 정보는 `spring help jar`의 결과를 보라.
+
+### 55.5. 새로운 프로젝트 초기화 하기
+`init` 명령은 쉘을 나가지 않고도 [start.spring.io](https://start.spring.io)를 이용해서 새 프로젝트를 만들 수 있게 해준다. 예 : 
+
+```
+	$ spring init --dependencies=web,data-jpa my-project
+	Using service at https://start.spring.io
+	Project extracted to '/Users/developer/example/my-project'
+```
+
+이렇게 하면 `my-project`디렉토리를 만들고 여기에 `spring-boot-starter-web` 과`spring-boot-starter-data-jpa`를 이용하여 메이븐 기반 프로젝트를 만든다. `--list`플래그를 이용해서 제공하는 여러 기능 목록을 볼 수 있다.(+Project types, Parameters, Supported dependencies 목록이 나온다.)
+
+```
+	$ spring init --list
+	=======================================
+	Capabilities of https://start.spring.io
+	=======================================
+
+	Available dependencies:
+	-----------------------
+	actuator - Actuator: Production ready features to help you monitor and manage your application
+	...
+	web - Web: Support for full-stack web development, including Tomcat and spring-webmvc
+	websocket - Websocket: Support for WebSocket development
+	ws - WS: Support for Spring Web Services
+
+	Available project types:
+	------------------------
+	gradle-build -  Gradle Config [format:build, build:gradle]
+	gradle-project -  Gradle Project [format:project, build:gradle]
+	maven-build -  Maven POM [format:build, build:maven]
+	maven-project -  Maven Project [format:project, build:maven] (default)
+
+	...
+```
+
+`init` 명령은 여러가지 옵션을 지원하는데, `help`를 이용해서 더 자세한 정보를 볼 수 있다(+`prompt > spring --help init`). 예를 들면 다음 명령은 java 8을 이용하고 `war`로 패키징하는 그래들 프로젝트를 생성한다.
+
+----
+	$ spring init --build=gradle --java-version=1.8 --dependencies=websocket --packaging=war sample-app.zip
+	Using service at https://start.spring.io
+	Content saved to 'sample-app.zip'
+----
+
+### 55.6. 내장형 쉘 사용하기
+스프링부트는 BASH와 zsh 쉘을 위한 명령 완성 스크립트를 포함하고 있다. BASH나 zsh 쉘을 사용하지 않는다면(아마도 윈도우 사용자) `shell` 명령으로 통합된 쉘을 띄울 수 있다.
+
+```
+	$ spring shell
+	*Spring Boot* (v{spring-boot-version})
+	Hit TAB to complete. Type \'help' and hit RETURN for help, and \'exit' to quit.
+```
+
+내장형 쉘 안에서 다른 명령도 직접 실행시킬 수 있다 :
+
+```
+	$ version
+	Spring CLI v{spring-boot-version}
+```
+
+내장형 쉘은 `tab` 완성과 함께 ANSI 색으로 출력하는 것도 지원한다. 내장형 쉘이 아닌, 쉘 본래 명령을 실행하려면 앞에 `$`를 붙이면 된다.(+현재 Spring CLI v1.2.6.RELEASE 에서는 `!`이다.) `ctrl-c`를 누르면 내장형 쉘을 종료한다.
+
+### 55.7 CLI에 확장 추가하기
+`install` 명령으로 CLI에 확장을 추가할 수 있다. `group:artifact:version` 형태로 된 artifact coordinates를 한 개 이상 지정할 수 있다. 예 :
+
+```
+	$ spring install com.example:spring-boot-cli-extension:1.0.0.RELEASE
+```
+
+사용자가 지정한 artifacts를 인스톨하면서 해당 artifacts의 모든 의존성 또한 같이 설치될 것이다.
+
+의존성을 제거하려면 `uninstall` 명령을 사용한다. `install`처럼 artifact coordinates를 한 개 이상 지정할 수 있다. 예 :
+
+```
+	$ spring uninstall com.example:spring-boot-cli-extension:1.0.0.RELEASE
+```
+
+이렇게 하면 사용자가 지정한 artifact와 이 artifact의 의존성도 함께 제거될 것이다.
+
+모든 의존성을 제거하려면 `--all` 옵션을 사용한다 :
+
+```
+	$ spring uninstall --all
+```
+
+## 56. 그루비 빈즈 DSL을 통해서 애플리케이션 개발
+
+## 57. 다음 읽을거리
 
 # VIII. 빌드툴 플러그인<a name="빌드툴 플러그인"></a>
 스프링부트는 메이븐과 그레들 플러그인을 위한 빌드툴 플러그인을 제공한다. 플러그인은 실행가능한 jar 압축을 포함한 다양한 기능을 제공한다. 이 섹션은 플러그인에 대한 보다 상세한 내용을 제공하고, 지원하지 않는 빌드 시스템에 대한 확장에도 도움이 될 것이다. 만약 바로 시작하려한다면, [III. 스프링부트 사용](#III. 스프링부트 사용)에서 [13. 빌드시스템](#13. 빌드 시스템) 을 읽어보기를 바란다.
