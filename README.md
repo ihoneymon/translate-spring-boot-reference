@@ -273,7 +273,7 @@ Copies of this document may be made for your own use and for distribution to oth
 ### 60.5. 프로젝트 바로 실행
 ### 60.6. 스프링부트 플러그인 설정
 ### 60.7. 리패키징 설정
-### 60.8. 변경된 그레들 설정으로 리패키징
+### 60.8. 맞춤 그레들 설정으로 리패키징
 #### 60.8.1. 설정 사항
 ### 60.9. 그레들 플러그인의 동작방식 이해
 ### 60.10. 그레들을 이용해서 메이븐 레파지토리에 아티팩트 배포
@@ -3483,21 +3483,298 @@ war 파일을 빌드했을 경우에는 실행하거나 외부 컨테이너에 �
 보다 상세한 설정항목과 예는 [플러그인 안내 페이지](http://docs.spring.io/spring-boot/docs/1.2.0.BUILD-SNAPSHOT/maven-plugin/)에서 볼 수 있다.
 
 ## 60. 스프링부트 그레들 플러그인<a name="60. 스프링부트 그레들 플러그인"></a>
+스프링부트 그레들 플러그인은 그레들에서 스프링부트를 지원하도록 제공하며, 실행가능한 jar 혹은 war 파일을 압축하는 것을 허용하며, 스프링부트 애플리케이션을 실행시키고 ```build.gradle```` 파일에서 사전 정의된 의존성을 제공하여 버전을 삭제할 수 있다.
 
-### 60.1. 플러그인 추가
-### 60.2. 버전 없이 의존성 정의<a name="버전 없이 의존성 정의"></a>
-#### 60.2.1. 버전 관리 변경
-### 60.3. 기본적인 배제 원칙
-### 60.4. 실행가능한 jar 와 war 파일 패키징
-### 60.5. 프로젝트 바로 실행
-### 60.6. 스프링부트 플러그인 설정
-### 60.7. 리패키징 설정
-### 60.8. 변경된 그레들 설정으로 리패키징
+### 60.1. 플러그인 추가<a name="60.1. 플러그인 추가"></a>
+스프링부트 그레들 플러그인을 사용하려면 ```buildscript``` 의존성과 ```spring-boot``` 플러그인을 간단히 추가하면 된다:
+```
+buildscript {
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.2.0.BUILD-SNAPSHOT")
+    }
+}
+apply plugin: 'spring-boot'
+
+If you are using a milestone or snapshot release you will also need to add appropriate repositories reference:
+
+buildscript {
+    repositories {
+        maven.url "http://repo.spring.io/snapshot"
+        maven.url "http://repo.spring.io/milestone"
+    }
+    // ...
+}
+```
+
+### 60.2. 버전 없이 의존성 정의<a name="60.2. 버전 없이 의존성 정의"></a>
+```spring-boot``` 플러그인은 수정된 그레들 ```ResolutionStrategy```을 등록하여 "축복받은" 아티팩트의 의존성을 정의할 때 버전숫자를 생략하는 것을 허용한다. 이 기능의 사용법은, 정의된 의존성을 쉽게 사용할 수 있는, 버전숫자를 비우면 된다:
+
+```
+dependencies {
+    compile("org.springframework.boot:spring-boot-starter-web")
+    compile("org.thymeleaf:thymeleaf-spring4")
+    compile("nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect")
+}
+```
+
+> 노트:
+선언된 ```spring-boot``` 그레들플러그인이 "축복받은" 의존성의 실체 버전을 결정한다(비드는 항상 반복적이기에 이를 보장한다). 항상 사용하고자 하는 실제 스프링부트 버전으로 스프링부트 플러그인의 버전을 설정해야 한다(역자주: 60.1. 에서 정의한 buildscript 에서 의존성 정의시 버전을 말함). 제공되는 버전의 자세한 항목들은 [부록](#E. 의존성 버전)을 살펴보기 바란다.
+
+```spring-boot``` 플러그인은 정의되지 않은경우에만 정의된 버전을 제공한다. 아티팩트 정의에 플러그인에서 제공하는 것과 다른 버전을 사용하면, 항상 정의한 버전의 의존성으로 사용한다. 예를 들어:
+```
+dependencies {
+    compile("org.thymeleaf:thymeleaf-spring4:2.1.1.RELEASE")
+}
+```
+
+#### 60.2.1. 버전 관리 변경<a name="60.2.1. 버전 관리 변경"></a>
+스프링부트의 "축복받은" 의존성으로부터 벗어나야할 경우 ```ResolutionStrategy```에서 사용하는 버전을 사용자 정의할 수 있다. ```versionManagement``` 설정을 사용하여 대안버전 메타데이터를 정의할 수 있다. 예를 들어:
+```
+dependencies {
+    versionManagement("com.mycorp:mycorp-versions:1.0.0.RELEASE@properties")
+    compile("org.springframework.data:spring-data-hadoop")
+}
+```
+
+버전정보는 배포 레파지티로리 등록한 ```.properties``` 파일을 필요로 한다. 위에 예에서 ```mycorp-versions.properties``` 파일은 다음과 같다:
+```
+org.springframework.data\:spring-data-hadoop=2.0.0.RELEASE
+```
+
+프로퍼티즈 파일은 스프링부트의 기본값보다 우선하고, 필요한 경우 버전번호를 대체할 수 있다.
+
+### 60.3. 기본적인 배제 원칙<a name="60.3. 기본적인 배제 원칙"></a>
+그레들은 starter POMs를 사용할 때  예기치 않은 결과가 발생할 수 있기에 메이븐과는 다른 방법으로 "배제 원칙"을 다룬다. 특히, 제외선언한 의존성이라고 하더라도 다른 경로로 접근한 의존성에 대해서는 제외가 저용되지 않을 것이다. 예를 들어, 다음과 같이 선언된 starter POM에서는:
+```xml
+<dependencies>
+    <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-core</artifactId>
+        <version>4.0.5.RELEASE</version>
+        <exclusions>
+            <exclusion>
+                <groupId>commons-logging</groupId>
+                <artifactId>commons-logging</artifactId>
+            </exclusion>
+        </exclusions>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-context</artifactId>
+        <version>4.0.5.RELEASE</version>
+    </dependency>
+</dependencies>
+``` 
+
+```commons-logging``` jar는 gradle에 의해서 제외되지 않을 것이다. 왜냐하면 ```spring-context (spring-context → spring-core → commons-logging)```에는 ```exclusion``` 요소가 없기 때문이다.
+
+제대로 제외가 적용되는 것을 보장하기 위해 스프링부트 그레들 플러그인은 자동으로 제외 규칙을 추가한다. 모든 제외는 ```spring-boot-dependencies``` POM에 정의되고 나서 "sta
+rter" POMs에 대한 묵시적 규칙이 추가될 것이다.
+
+만약 제외규칙이 자동적으로 적용되는 것을 원하지 않는 경우에는 다음처럼 설정할 수 있다:
+```
+springBoot {
+    applyExcludeRules=false
+}
+```
+
+### 60.4. 실행가능한 jar 와 war 파일 패키징<a name="60.4. 실행가능한 jar 와 war 파일 패키징"></a>
+```spring-boot``` 플러그인은 ```bootRepackage``` 태스크를 실행할 경우 자동적으로 압축파일을 재작성한다. 프로젝트를 jar 혹은 war로 빌드할지를 설정 혹은 선언할 수 있다.
+
+실행하려는 메인 클래스는 매니페스트에 ```Main-Class``` 속성을 추가하거나, 구성옵션을 사용하여 지정할 수 있다. 별도로 메인클래스를 선언하지 않아도 플러그인은 클래스에서 ```public static void main(String[] args)```을 탐색할 것이다.
+
+프로젝트 아티팩트를 빌드하고 실행할때, 다음과 같이 입력한다:
+
+```
+$ gradle build
+$ java -jar build/libs/mymodule-0.0.1-SNAPSHOT.jar
+```
+
+실행가능하거나 외부 컨테이너에 배포가능한 war를 빌드하려면, 내장된 컨테이너 의존성을 다음과 같이 "prvidedRuntime" 설정으로 선언해야한다. 예:
+```
+...
+apply plugin: 'war'
+
+war {
+    baseName = 'myapp'
+    version =  '0.5.0'
+}
+
+repositories {
+    jcenter()
+    maven { url "http://repo.spring.io/libs-snapshot" }
+}
+
+configurations {
+    providedRuntime
+}
+
+dependencies {
+    compile("org.springframework.boot:spring-boot-starter-web")
+    providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
+    ...
+}
+```
+> 팁:
+배포가능한 war 파일을 어떻게 생성하는지 보다 자세히 알고 싶다면 [75.1. 배포가능한 war 파일 생성](#75.1. 배포가능한 war 파일 생성)을 살펴보기 바란다.
+
+### 60.5. 프로젝트 바로 실행<a name="60.5. 프로젝트 바로 실행"></a>
+jar 빌딩 없이 프로젝트를 실행하려면 "bootRun" 태스크를 사용한다:
+```
+$ gradle bootRun
+```
+
+이 실행방법은 동작중인 애플리케이션의 정적 클래스패스 리소스(기본적으로 ```src/main/resources```)를 재적재가능하도록 만들어, 개발시 도움이 된다.
+> 팁:
+정적 클래스패스 리소스를 재적재가능하도록 만든다는 의미는 ```bootRun```은 ```processResources``` 태스크의 결과물을 사용하지 않는다. 애플리케이션이 ```bootRun```을 사용할 때 애플리케이션은 절차를 거치지 않은 형식의 리소스를 사용한다.
+
+### 60.6. 스프링부트 플러그인 설정<a name="60.6. 스프링부트 플러그인 설정"></a>
+그레들 플러그인은 빌드 스크립트 DSL의 부트 플러그인의 전역 설정의 ```springBoot``` 요소를 자동으로 확장한다. 다른 그레들 확장 속성들을 사용하도록 설정한다(설정사항의 목록에 다음과 같이 한다):
+```
+springBoot {
+    backupSource = false
+}
+``` 
+
+### 60.7. 리패키징 설정<a name="60.7. 리패키징 설정"></a>
+플러그인에 추가된 ```bootRepackage``` 태스크는 다음처럼 바로 설정할 수 있다:
+```
+bootRepackage {
+    mainClass = 'demo.Application'
+}
+```
+
+가능한 설정사항들은 다음과 같다:
+| 이름 | 설명 |
+|------|------|
+|```enabled```| Boolean flag는 리패키저를 끄는 스위치다(다른 부트 기능을 원할 때 유용하지만 이것 하나만이 아니다) |
+| ```mainClass``` |  실행될 메인 클래스를 정의한다. 만약 프로젝트 속성에 ```mainClassName``` 을 정의하지 않았다면 사용되거나, ```mainClassName``` 가 저으이되지 않았다면 적절한 클래스를 탐색한다. "적절한"은 ```main()``` 메소드를 가지고 있는 유일한 클래스를 의미한다(하나 이상을 찾게 되면 실패한다). "run" 태스크(```main``` 속성)에 사용될 메인 클래스를 정의할 수 있으며 "springBoot" 설정을 사용하여 "startScripts"(```mainClassName``` 속성)을 대안으로 사용할 수 있다. |
+| ```classifier``` | 원래 (확장이전) 파일명 세그먼트는 원래 위치에 보존되도록, 아카이브에 추가할 수 있다. 기본이 null인 경우 아카이브에 위치가 재보장된다. 기본값은 많은 목적을 위해 편리하지만 다른 프로젝트의 종속성으로 원래의 jar를 사용할 경우, 실행 파일 압축파일을 정의하는 확장 기능을 사용하는 것이 가장 좋다. |
+|```withJarTask```| 재포장하는 압축파일을 찾는데 사용되는 이름이나 ```jar``` 작업의 값(```jar``` 유형의 모든 태스크 기본값) |
+|```customConfiguration```|내장된 lib 디렉토리에 자주사용되는 맞춤설정의 이름(이를 지정하지 않으면 모든 컴파일 및 런타임 종속성을 얻음) | 
+
+### 60.8. 맞춤 그레들 설정으로 리패키징<a name="60.8. 맞춤 그레들 설정으로 리패키징"></a>
+때때로 ```compile```, ```runtime``` 그리고 ```provided``` 스코프로부터 기본 의존성들을 패키지하지 않도록 지시할 수 있다. 만약 생성된 실행가능한 jar 파일을 그 자체로 실행할 경우에는 모든 의존성을 파일 안에 포함하고 있어야할 필요가 있다. 그러나 jar 파일을 압축해제하여 메인 클래스를 실행려는 계획이라면 ```CLASSPATH``` 상에 사용가능한 라이브러리들을 사용할 수 있다.  이런 상황에 맞춰 jar 를 리패키징하는 과정에서 의존성을 다르게 설정할 수 있다.
+
+사용자 정의 설정을 사용한다면 ```compile```, ```runtime``` 과 ```provided``` 스코프를 통해서 자동으로 의존성 설정을 비활성화할 수 있다. 사용자 정의 설정은 전역적(```springBoot``` 섹션 안에서)으로 혹은 태스크에 한정지어 정의할 수 있다.
+
+```
+task clientJar(type: Jar) {
+    appendix = 'client'
+    from sourceSets.main.output
+    exclude('**/*Something*')
+}
+
+task clientBoot(type: BootRepackage, dependsOn: clientJar) {
+    withJarTask = clientJar
+    customConfiguration = "mycustomconfiguration"
+}
+```
+
+위의 예에서, 컴파일된 소스로부터 재정의된 파일을 패키징하는 ```clientJar``` jar 태스크를 생성했다. 그리고 ```clientBoot```  라는 BootRepackage 태스크를 생성하고 ```mycustomconfiguration``` 설정과 함께 ```clientJar``` 태스크와 동작하도록 정의했다.
+
+```
+configurations {
+    mycustomconfiguration.exclude group: 'log4j'
+}
+
+dependencies {
+    mycustomconfiguration configurations.runtime
+}
+```
+
+설정configuration이 참조하고 있는 ```BootRepackage```는 일반적인 [Gradle 설정](http://www.gradle.org/docs/current/dsl/org.gradle.api.artifacts.Configuration.html)이다. 앞에서 살펴본 예제에서  ```runtime```에서 파생되고 ```log4j``` 그룹을 제외하는 ```mycustomconfiguration``` 라는 설정을 
+생성했다. ```clientBoot``` 태스크가 실행되면, 리패키지된 boot jar는 ```log4j``` jar를 제외한 ```runtime``` 의 의존성들을 가지고 있을 것이다.
+
 #### 60.8.1. 설정 사항
-### 60.9. 그레들 플러그인의 동작방식 이해
-### 60.10. 그레들을 이용해서 메이븐 레파지토리에 아티팩트 배포
-#### 60.10.1. 그레들 설정을 이용한 상속적 의존성 관리 POM 제작
-#### 60.10.2. 그레들 설정을 이용한 imports 의존성 관리 POM 제작
+설정가능한 사항들은 다움과 같다:
+
+| 이름 | 설명 |
+|------|------|
+|```mainClass```|실행가능한 압축파일에서 실행할 메인클래스를 정의|
+|```providedConfiguration```|제공된 설정의 이름(기본 ```providedRuntime```|
+|```backupSource```| 재압축하기 전에 원본 압축파일을 백업 여부 정의(기본 ```true```|
+|```customConfiguration```|사용자 정의 설정 이름 |
+|```layout```|내부에 어떤 형태로 의존성을 구성할지, 압축 유형을 정의(압축유형을 기반으로 결정)|
+|```requiresUnpack```| 의존성 목록(실행시 fat jar 로부터 풀린 "groupId:artifactId"). 아이템들은 여전히 fat jar 안에 압축된 채로 유지되지만, 실행될 때에는 자동으로 압축해제될 것이다.
+
+### 60.9. 그레들 플러그인의 동작방식 이해<a name="60.9. 그레들 플러그인의 동작방식 이해"></a>
+```spring-boot```는 그레들 프로젝트에 ```bootRepackage``` 기본태스크를 자동생성한다. ```bootRepackage``` 태스크는 그레들 ```assemble`` 태스크에 의존성을 가지며, 실행시, qualifier가 비어있는 모든 jar 아티팩트를 찾는다(예, 테스트와 소스 jar는 제낀다).
+
+```bootRepackage```는 '모든' 생성된 jar 아티팩트를 찾는데, 그래들 태스크 실행명령에서 중요하다. 대부분의 프로젝트는 하나의 jar 파일을 생성하는 것이 별다른 문제가 되지는 않는다. 그러나, 좀 더 복잡한 프로젝트 설정을 생성할 계획이라면 ``Jar``` 그리고 ```bootRepackage``` 태스크를 사용자정의할 수 있는 기법 몇개가 있다.
+
+만약 프로젝트에서 사용자정의 ```jar```만 생성하고 싶다면 ```jar```와 ```bootRepackage``` 태스크를 간단하게 비활서오하 시킬 수 있다:
+```
+jar.enabled = false
+bootRepackage.enabled = false
+```
+
+다른 선택사항으로는 기본 ```bootRepackage``` 태스크가 기본 ```jar``` 태스크하고만 동작하도록 설정하는 것이다:
+
+```
+bootRepackage.withJarTask = jar
+```
+
+기본 프로젝트 설정으로 기본 ```jar``` 파일을 생성하고 재압축하고, '거기에 더해서' 추가적으로 사용자 정의 jar를 생성하길 원할 수도 있다, ```dependsOn``` 을 사용하여 ```bootRepackage```가 실행되고 난 후 ```bootJars``` 태스크가 실행되도록 연결할 수도 있다:
+
+```
+task bootJars
+bootJars.dependsOn = [clientBoot1,clientBoot2,clientBoot3]
+build.dependsOn(bootJars)
+```
+
+앞에서 살펴본 모든 기법들은 이미 생성된 boot jar를 다시 재압축하는 상황을 모면하는데 사용되었다. 재압축Repackaging은 이미 존재하는 boot jar를 훼손하지 않지만 불필요한 의존성이 포함되어 있는 것을 볼 수 있을 것이다.
+
+### 60.10. 그레들을 이용해서 메이븐 레파지토리에 아티팩트 배포<a name="60.10. 그레들을 이용해서 메이븐 레파지토리에 아티팩트 배포"></a>
+[60.2. 버전 없이 의존성 정의](#60.2. 버전 없이 의존성 정의)과 메이븐 레파지토리에 아티팩트를 배포하고 싶다면 스프링부트의 의존성 관리 상세를 통해서 메이븐 출간 설정이 필요할 것이다. ```spring-boot-starter-parent``` 를 상속받아 출시 ```poms```의 설정을 할수도 있고 ```spring-boot-dependencies```로부터 의존성 관리를 임포트할 수도 있다. 이 구성의 정확한 세부 사항은 그레들을 어떻게 사용할지 아티팩트를 어떻게 게시할지에 따라 달라진다.
+
+#### 60.10.1. 그레들 설정을 이용한 상속적 의존성 관리 POM 제작<a name="60.10.1. 그레들 설정을 이용한 상속적 의존성 관리 POM 제작"></a>
+``` spring-boot-starter-parent```에서 유전된 POM을 생성하는 그레들 설정 예제다. 보다 자세한 정보는 [그레들 사용자 가이드](http://www.gradle.org/docs/current/userguide/userguide.html)를 살펴보기 바란다.
+
+```
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            pom {
+                project {
+                    parent {
+                        groupId "org.springframework.boot"
+                        artifactId "spring-boot-starter-parent"
+                        version "1.2.0.BUILD-SNAPSHOT"
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+#### 60.10.2. 그레들 설정을 이용한 imports 의존성 관리 POM 제작<a name="60.10.2. 그레들 설정을 이용한 imports 의존성 관리 POM 제작"></a>
+```spring-boot-dependencies```에 의해 제공되는 의존성 관리를 가져오는 POM을 생성하는 그레들 설정 예제다. 보다 자세한 정보는 [그레들 사용자 가이드](http://www.gradle.org/docs/current/userguide/userguide.html)를 살펴보기 바란다.
+
+```
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            pom {
+                project {
+                    dependencyManagement {
+                        dependencies {
+                            dependency {
+                                groupId "org.springframework.boot"
+                                artifactId "spring-boot-dependencies"
+                                version "1.2.0.BUILD-SNAPSHOT"
+                                type "pom"
+                                scope "import"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+```
 
 ## 61. 다른 빌드 지원 시스템 지원
 ### 61.1. 리패키징 아카이브
@@ -4381,3 +4658,5 @@ $ java org.springframework.boot.loader.JarLauncher
 * [Maven Shade Plugin](http://maven.apache.org/plugins/maven-shade-plugin/)
 * [JarClassLoader](http://www.jdotsoft.com/JarClassLoader.php)
 * [OneJar](http://one-jar.sourceforge.net/)
+
+## E. 의존성 버전<a name="E. 의존성 버전"></a>
