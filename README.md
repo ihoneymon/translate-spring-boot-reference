@@ -242,7 +242,7 @@ Copies of this document may be made for your own use and for distribution to oth
 ## 53. Google App Engine
 ## 54. 다음 읽을거리
 
-# VII. 스프링부트 CLI
+# VII. [스프링부트 CLI](#스프링부트 CLI)
 ## 55. CLI 설치
 ## 56. CLI 사용
 ### 56.1. CLI를 이용해서 애플리케이션 실행
@@ -648,7 +648,7 @@ dependencies {
 }
 ```
 
-### 10.2. 스프링부트 CLI를 이용한 설치
+### 10.2. 스프링부트 CLI를 이용한 설치<a name="CLI를 이용한 설치"></a>
 스프링부트 CLI는 스프링 프로토타입을 빠르게 만들려고할 때 쓸만한 커맨드라인 툴이다. [그루비](http://groovy.codehaus.org/) 스크립트를 실행할 수 있다으며, 이는 자바와 매우 유사한 문법을 가지고 있기에 별도로 다른 복잡한 코드를 작성할 필요가 없다.
 
 스프링부트를 작업하데 CLI를 사용할 필요가 없을수도 있지만 스프링 애플리케이션을 만들 수 있는 가장 빠른 방법이라는 건 분명하다.
@@ -1779,7 +1779,7 @@ spring.profiles.include: proddb,prodmq
 기본적으로, 'Starter POMs'를 사용한다면, Logback을 로깅에 사용할 것이다. 유연한
  Logback은 Java Util Logging, Commons Logging, Log4j 혹은 SLF4J 를 사용하는 의존적 라이브러리들을 의존적인 라이브러리들도 문제없이 동작하는 것을 보장한다.
  > 팁:
- > 자바에서 사용가능한 로깅 프레임워크들은 대부분 지원한다. 목록만 보고서 당혹러워할 이유는 없다. 기본적으로 로깅 의존성을 변경할 필요는 없을 것이며 스프링부트는 기본적으로 잘 되어 있어있다. 
+ > 자바에서 사용가능한 로깅 프레임워크들은 대부분 지원한다. 목록만 보고서 당혹러워할 이유는 없다. 기본적으로 로깅 의존성을 변경할 필요는 없을 것이며 스프링부트는 기본적으로 잘 되어 있어있다.
 
 ### 25.1. 로그 형식
 스프링부트의 기본적인 로그 출력은 다음과 같다:
@@ -1808,11 +1808,11 @@ $ java -jar myapp.jar --debug
 터미널에서 ANSI를 지원한다면, 칼라로 출력되며 가독성을 높여줄 것이다. ```spring.output.ansi.enabled``` 를 정의하여 [제공값](http://docs.spring.io/spring-boot/docs/1.2.0.BUILD-SNAPSHOT/api/org/springframework/boot/ansi/AnsiOutput.Enabled.html)을 덧씌울 수 있다.
 
 ### 25.3. 파일 출력
-기본적으로, 로그파일은 실행환경에 정의된 ```temp``` 디렉토리에 ```spring.log``` 라는 이름으로 기록되며, 10MB 단위로 생성된다. 로그 생성 폴더는 ```logging.path``` 속성(```application.properties``` 를 예로 들자면)을 설정하여 쉽게 변경가능하다. 또한 ```logging.file``` 속성을 이용해서 파일명을 변경하는 것도 가능하다. 
+기본적으로, 로그파일은 실행환경에 정의된 ```temp``` 디렉토리에 ```spring.log``` 라는 이름으로 기록되며, 10MB 단위로 생성된다. 로그 생성 폴더는 ```logging.path``` 속성(```application.properties``` 를 예로 들자면)을 설정하여 쉽게 변경가능하다. 또한 ```logging.file``` 속성을 이용해서 파일명을 변경하는 것도 가능하다.
 
 > 노트: 만약 ```logging.file```을 사용한다면, ```loggging.path``` 설정은 적용되지 않는다.
 
-콘솔에 출력되는 것은 ```ERROR```, ```WARN``` 그리고 ```INFO``` 레벨의 메시지가 기본출력된다. 
+콘솔에 출력되는 것은 ```ERROR```, ```WARN``` 그리고 ```INFO``` 레벨의 메시지가 기본출력된다.
 
 ### 25.4. 로그 레벨
 
@@ -1921,7 +1921,7 @@ public class MyConfiguration {
 ```HttpMessageConverter``` 빈은 컨텍스트에 컨버터 목록을 추가할 것이다. 또한 기본 컨버터들을 덧칠override 하는 방법도 있다.
 
 #### 26.1.3. ```MessageCodesResolver```
-스프링MVC는 ```MessageCodeConverter```에 선언된 에러로부터 에러메시지를 표시하기 위해 에러코드를 생성하는 전략을 가지고 있다. ```spring.mvc.message-codes-resolver.format```를 설정하여 ```PREFIX_ERROR_CODE``` 혹은 ```PREFIX_ERROR_CODE``` 속성을 설정해뒀다면 스프링부트가 ```MessageCodesResolver```를 생성할 것이다(```DefaultMessageCodesResolver.Format``` 목록을 살펴보자 ). 
+스프링MVC는 ```MessageCodeConverter```에 선언된 에러로부터 에러메시지를 표시하기 위해 에러코드를 생성하는 전략을 가지고 있다. ```spring.mvc.message-codes-resolver.format```를 설정하여 ```PREFIX_ERROR_CODE``` 혹은 ```PREFIX_ERROR_CODE``` 속성을 설정해뒀다면 스프링부트가 ```MessageCodesResolver```를 생성할 것이다(```DefaultMessageCodesResolver.Format``` 목록을 살펴보자 ).
 
 #### 26.1.4. 정적 컨텐츠Static Content
 스프링부트는 기본적으로 클래스패스 혹은 ```ServletContext``` 루트에 있는 ```/static```(혹은 ```/public``` 혹은 ```/resource``` 혹은 ```/META-INF/resource```) 기반으로 정적 컨텐츠를 제공한다. 스프링MVC의 ```ResourceHttpRequestHandler```를 사용하거나 ```WebMvcConfigureAdapter```를 추가하고 ```addResourceHandler``` 메서드를 오버라이드하여 수정할 수 있다.
@@ -1989,7 +1989,7 @@ public FilterRegistrationBean myFilter() {
 > 패쓰!!
 
 ### 26.2. JAX-RS 그리고 Jersey
-REST 엔드포인트르 위해서 JAX-RS 프로그래밍 모델을 참조하여 스프링MVC를 대체할 구현체를 찾고 있다면, 애플리케이션 컨텍스트에 등록되는 ```@Bean``` 처럼 ```Servlet```과 ```Filter```를 등록하면 Jersy 1.x 와 Apache Celtix에서도 잘 동작할 것이다. Jersey 2.x 는 스프링을 지원하기에 스프링부트 스타터에 자동설정을 제공하고 있다. 
+REST 엔드포인트르 위해서 JAX-RS 프로그래밍 모델을 참조하여 스프링MVC를 대체할 구현체를 찾고 있다면, 애플리케이션 컨텍스트에 등록되는 ```@Bean``` 처럼 ```Servlet```과 ```Filter```를 등록하면 Jersy 1.x 와 Apache Celtix에서도 잘 동작할 것이다. Jersey 2.x 는 스프링을 지원하기에 스프링부트 스타터에 자동설정을 제공하고 있다.
 
 Jersey 2.x 을 시작할 때 ```spring-boot-starter-jersey``` 스타터에 대한 의존성을 추가하고 ```ResourceConfig``` 형태의 ```@Bean```이 하나 필요하며 여기에 모든 엔드포인트를 등록하면 된다:
 
@@ -2017,7 +2017,7 @@ public class Endpoint {
 }
 ```
 
-```EndPoint```는 ```@Autowired``` 의존성 과 ```@Value``` 를 이용하여 외부설정을 주입하는 등 스프링```@Component```처럼 스프링이 생명주기를 관리한다. Jersy 서블릿은 기본적으로 ```'/*'``` 와 매핑되어 등록된다. 매핑을 변경하고 싶다면 ```ResourceConfig```에 ```@ApplicationPath```를 추가하면 된다. 
+```EndPoint```는 ```@Autowired``` 의존성 과 ```@Value``` 를 이용하여 외부설정을 주입하는 등 스프링```@Component```처럼 스프링이 생명주기를 관리한다. Jersy 서블릿은 기본적으로 ```'/*'``` 와 매핑되어 등록된다. 매핑을 변경하고 싶다면 ```ResourceConfig```에 ```@ApplicationPath```를 추가하면 된다.
 
 Jersey는 기본적으로 ```@Bean``` 형태의 "jerseyServletRegistration"이란 이름의 ```ServletRegistrationBean``` 서블릿을 생성한다. 비활성화하거나 동일한 이름의 빈을 오버라이드 하여 생성할 수 있다. 서블릿으로 하는 설정대신 필터를 사용할 수 있다. ```spring.jersey.type=filter```("jerseyFilterRegistration"을 오버라이드 하거나 ```@Bean```을 대체). 서블릿이 가지고 있는 ```@Order```에 대해서는 ```spring.jersey.filter.order```으로 설정할 수 있다. 서블릿과 필터 등록을 할 때 프로퍼티즈에 ```spring.jersey.init.*``` 을 선언하여 초기화 파라메터를 전달할 수 있다.
 
@@ -2035,10 +2035,10 @@ Jersey는 기본적으로 ```@Bean``` 형태의 "jerseyServletRegistration"이�
 
 #### 26.3.2. ```EmbeddedWebApplicationContext```
 
-스프링부트는 내장형 서블릿 컨테이너를 지원하기 위해 ```ApplicationContext```의 새로운 형태를 사용한다. ```EmbbeddedWebApplicationContext```는 
+스프링부트는 내장형 서블릿 컨테이너를 지원하기 위해 ```ApplicationContext```의 새로운 형태를 사용한다. ```EmbbeddedWebApplicationContext```는
 
 #### 26.3.3. 내장형 서블릿 컨테이너 변경
-공통 서블릿 컨테이너 설정은 스프링 ```Environment``` 프로퍼티즈를 사용하여 설정할 수 있다. ```application.properties``` 파일에 정의한 프로퍼티즈를 사용한다. 
+공통 서블릿 컨테이너 설정은 스프링 ```Environment``` 프로퍼티즈를 사용하여 설정할 수 있다. ```application.properties``` 파일에 정의한 프로퍼티즈를 사용한다.
 
 공통 서버 설정에 포함된 내용은:
 * ```server.port``` - HTTP 요청 수용 포트
@@ -2083,7 +2083,7 @@ public EmbeddedServletContainerFactory servletContainer() {
 
 #### 26.3.4. JSP 제약사항
 스프링부트를 실행할 때 내장 서블릿 컨테이너를 사용한다면(실행가능한 압축패키지라면), JSP 지원이 제약되는 경우가 있다.
-* 톰캣에서 'war' 패키징을 사용한다면, 실행가능한 war로 동작한다면, 표준 컨테이너에 배포한다면 별다른 문제는 없을 것이다(제한은 없다, 톰캣을 포함해서). 실행가능한 jar 는 톰캣에서 하드코드 파일패턴 때문에 동작하지 않는다. 
+* 톰캣에서 'war' 패키징을 사용한다면, 실행가능한 war로 동작한다면, 표준 컨테이너에 배포한다면 별다른 문제는 없을 것이다(제한은 없다, 톰캣을 포함해서). 실행가능한 jar 는 톰캣에서 하드코드 파일패턴 때문에 동작하지 않는다.
 * 제티는 내장 컨테이너에서 JSP를 지원하지 않는다.
 * 언더토우는 JSP를 지원하지 않는다.
 
@@ -2098,10 +2098,10 @@ Using default security password: 78fa095d-3f4c-48b1-ad50-e24c31d5cf35
 
 제공되는 ```security.user.password``` 프로퍼티즈를 이용하여 비밀번호를 변경할 수 있다. 이것 외에 [SecurityProperties](http://github.com/spring-projects/spring-boot/tree/master/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/SecurityProperties.java) 의 다른 유용한 프로퍼티즈들로 확장가능하다(프로퍼티즈 접두어는 "security").
 
-기본적인 보안 설정은 ```SecurityAutoConfiguration```의 구현체와 그 안에 임포트되어 있는 클래스들(웹보안을 위한 ```SpringBootWebSecurityConfiguration``` 과 비-웹 애플리케이션과 관련된 인증설정을 위한 ```AuthenticationManagerConfiguration```)이 있다. ```@EnableWebSecurity``` 와 빈을 추가하는 것으로 웹 애플리케이션의 
+기본적인 보안 설정은 ```SecurityAutoConfiguration```의 구현체와 그 안에 임포트되어 있는 클래스들(웹보안을 위한 ```SpringBootWebSecurityConfiguration``` 과 비-웹 애플리케이션과 관련된 인증설정을 위한 ```AuthenticationManagerConfiguration```)이 있다. ```@EnableWebSecurity``` 와 빈을 추가하는 것으로 웹 애플리케이션의
 
 ## 28. <a name="SQL 데이터베이스 작업">SQL 데이터베이스 작업</a>
-스프링 프레임워크는 SQL 데이터베이스에서 동작하는 넓은 지원을 제공한다. ```JdbcTemplate```를 사용하여 바로 JDBC에 접속하는 것부터 '객체 관계 매핑' 기술의 하이버네이트까지 폭넓게 지원한다. 스프링 데이터는 인터페이스로부터 바로 ```Repository``` 구현체를 생성하고 메서드명으로부터 쿼리를 생성하는 관례를 사용할 수 있는 수준의 추가적인 기능성을 제공한다. 
+스프링 프레임워크는 SQL 데이터베이스에서 동작하는 넓은 지원을 제공한다. ```JdbcTemplate```를 사용하여 바로 JDBC에 접속하는 것부터 '객체 관계 매핑' 기술의 하이버네이트까지 폭넓게 지원한다. 스프링 데이터는 인터페이스로부터 바로 ```Repository``` 구현체를 생성하고 메서드명으로부터 쿼리를 생성하는 관례를 사용할 수 있는 수준의 추가적인 기능성을 제공한다.
 
 ### 28.1. 데이터베이스 설정<a name="데이터베이스 설정"></a>
 자바의 ```javax.sql.DataSource``` 인터페이스는 데이터베이스 연결을 위한 표준 메서드를 제공한다. 기본적으로 데이터소스는 데이터베이스 연결을 생성하는 자격들을 얻는데 ```URL```을 사용한다.
@@ -2236,7 +2236,7 @@ public class City implements Serializable {
 > 팁: ```@EntityScan``` 어노테이션을 사용하면 엔티티 스캔위치를 변경할 수 있다. 이와 관련된 내용은 [섹션 68.4. 스프링 설정으로 부터 @Entity 정의 분리](#스프링 설정으로 부터 @Entity 정의 분리)를 보면 어떻게 하는지 알 수 있을 것이다.
 
 #### 28.3.2. <a name="Spring Data JPA 레파지토리">Spring Data JPA 레파지토리</a>
-Spring Data JPA 레파지토리는 데이터에 대한 접근을 정의할 수 있는 인터페이스들이다. JPA 쿼리는 메서드의 이름으로부터 자동으로 쿼리를 생성한다. 예를 들어, ```CityRepository``` 인터페이스에 ```findAllByState(String state)``` 메서드가 정의되어 있다면 state를 주고 모든 도시를 검색할 것이다. 
+Spring Data JPA 레파지토리는 데이터에 대한 접근을 정의할 수 있는 인터페이스들이다. JPA 쿼리는 메서드의 이름으로부터 자동으로 쿼리를 생성한다. 예를 들어, ```CityRepository``` 인터페이스에 ```findAllByState(String state)``` 메서드가 정의되어 있다면 state를 주고 모든 도시를 검색할 것이다.
 
 보다 복잡한 쿼리는 Spring Data의 [Query](http://docs.spring.io/spring-data/jpa/docs/current/api/org/springframework/data/jpa/repository/Query.html) 어노테이션을 메서드에 어노테이드하여 사용할 수 있다.
 
@@ -2279,7 +2279,7 @@ spring.jpa.properties.hibernate.globally_quoted_identifiers=true
 
 ## 29. NoSQL 기술 작업<a name="NoSQL 기술 작업"></a>
 스프링 데이터는 [MongoDB](http://projects.spring.io/spring-data-mongodb/), [Neo4J](http://projects.spring.io/spring-data-neo4j/), [Elasticsearch](https://github.com/spring-projects/spring-data-elasticsearch/), [Solr](http://projects.spring.io/spring-data-solr/), [Redis](http://projects.spring.io/spring-data-redis/), [Gemfire](http://projects.spring.io/spring-data-gemfire/), [Couchbase](http://projects.spring.io/spring-data-couchbase/) 그리고 [Cassandra](http://projects.spring.io/spring-data-cassandra/) 등을 포함한 다양한 NoSQL 기술에 접근할 수 있도록 돕는 프로젝트들을 추가할 수 있다.
-스프링부트는 Redis, MongoDB, Elasticsearch, Solr 그리고 Gemfire 를 위한 자동설정을 지원한다. 다른 프로젝트들을 사용할 수도 있지만 필요하다면 설정을 변경할 수도 있다. [projects.spring.io/spring-data](http://projects.spring.io/spring-data)에 나와있는 참조문서들을 살펴보기 바란다. 
+스프링부트는 Redis, MongoDB, Elasticsearch, Solr 그리고 Gemfire 를 위한 자동설정을 지원한다. 다른 프로젝트들을 사용할 수도 있지만 필요하다면 설정을 변경할 수도 있다. [projects.spring.io/spring-data](http://projects.spring.io/spring-data)에 나와있는 참조문서들을 살펴보기 바란다.
 
 ### 29.1. 레디스Redis<a name="레디스Redis"></a>
 [Redis](http://redis.io/)는 캐시, 메시지 브로커 그리고 풍부한 기능을 가진 key-value 를 저장한다. 스프링부트는 [jedis](https://github.com/xetorthio/jedis/)와 [Spring Data Redis](https://github.com/spring-projects/spring-data-redis)에서 제공하는 추상화된 기초적인 자동설정을 제공한다. ```spring-boot-starter-redis```을 'Starter POM'을 이용하면 손쉽게 의존성을 추가할 수 있다.
@@ -2378,7 +2378,7 @@ public interface CityRepository extends Repository<City, Long> {
 }
 ```
 
->팁: 
+>팁:
 스프링 데이터 MongoDB에 관해 보다 자세히 살펴보려면, 리치 객체 매핑기술을 포함하여, [참고문서](http://projects.spring.io/spring-data-mongodb/)를 살펴보기 바란다.
 
 ### 29.3. <a name="Gemfire">Gemfire</a>
@@ -2453,7 +2453,7 @@ public class MyBean {
 ```javax.jms.ConnectionFactory``` 인터페이스는 JMS 브로커와 상호작용을 위한 ```javax.jms.Connection``` 를 만들기 위한 표준 메서드를 제공한다. 스프링이 JMS으로 동작하기 위해서는 ```ConnectionFactory```가 필요한데, 바로 생성할 필요없이 대신 더 높은 수준의 메시징 추상화에 의존할 수 있다.
 
 #### 30.1.1. HornetQ 지원<a name="HornetQ 지원"></a>
-스프링부트는 클래스패스 상에서 HornetQ가 탐색되었을 때 ```ConnectionFactory```를 자동설정할 수 있다. 만약 브로커broker가 존재한다면, 자동설정된 내장된 브로커가 구동된다(모드 속성이 명시적으로 설정되어 있지 않은 경우). 지원되는 모드는 ```embedded```(내장된 브로커는 명시적으로 필요하며 클래스패스 상에서 찾을 수 없는 경우 에러가 발생한다), 그리고 ```native```는 ```netty``` 전송 프로토콜을 사용하여 브로커에 연결한다. 레터가 설정되어 있다면, 스프링부트는 ```ConnectionFactory```를 설정하여 기본설정에 따라 로컬 머신에서 실행되고 있는 브로커에 연결한다. 
+스프링부트는 클래스패스 상에서 HornetQ가 탐색되었을 때 ```ConnectionFactory```를 자동설정할 수 있다. 만약 브로커broker가 존재한다면, 자동설정된 내장된 브로커가 구동된다(모드 속성이 명시적으로 설정되어 있지 않은 경우). 지원되는 모드는 ```embedded```(내장된 브로커는 명시적으로 필요하며 클래스패스 상에서 찾을 수 없는 경우 에러가 발생한다), 그리고 ```native```는 ```netty``` 전송 프로토콜을 사용하여 브로커에 연결한다. 레터가 설정되어 있다면, 스프링부트는 ```ConnectionFactory```를 설정하여 기본설정에 따라 로컬 머신에서 실행되고 있는 브로커에 연결한다.
 
 > 노트:
 ```spring-boot-starter-hornetq```를 사용하면 기존에 존재하는 HornetQ 인스턴스 연결에 필요한 의존성 뿐만 아니라 스프링 인프라스트럭처는 JMS 와 통합이 가능해진다. ```org.hornetq:hornetq-jms-server``` 을 애플리케이션에 추가하고 내장 모드를 사용하면 된다.
@@ -2515,7 +2515,7 @@ public class MyBean {
 }
 ```
 
-> 노트: 
+> 노트:
 [JmsMessagingTemplate](http://docs.spring.io/spring/docs/4.1.3.RELEASE/javadoc-api/org/springframework/jms/core/JmsMessagingTemplate.html)(스프링 4.1에 추가)는 비슷한 방법으로 주입가능하다.
 
 #### 30.1.5. 메시지 수신<a name="메시지 수신"></a>
@@ -2552,7 +2552,7 @@ Atomikos 는 스프링부트 애플리케이션에 내장시킬 수 있는 인�
 기본적으로 Atomikos 트랜잭션 로그는 애플리케이션 홈디렉토리(애플리케이션 jar 파일이 위치한 디렉토리)에서 ```transaction-logs``` 폴더에 작성한다. ```application.properties``` 파일에 ```spring.jta.log-dir``` 속성을 저으이하여 디렉토리를 변경할 수 있다. ```spring.jta```으로 시작하는 속성들을 통해 Atomikos ```UserTransactionServiceIml```를 변경할 수 있다. 자세한 사항은 [AtomikosProperties](http://docs.spring.io/spring-boot/docs/1.2.0.BUILD-SNAPSHOT/api/org/springframework/boot/jta/atomikos/AtomikosProperties.html)을 살펴보기 바란다.
 
 > 노트:
-다중 트랜잭션 관리는 같은 리소스 매니저들을 제어할 수 있는 것이 확실해야 한다. 각각의 Atomikos 인스턴스는 유일한 ID로 설정되어야 한다. 이 기본 ID는 Atomikos가 실행되는 머신의 IP주소를 사용한다. 제품의 유일성이 불확실하다면, 각 애플리케이션의 인스턴스에 ```spring.jta.transaction-manager-id``` 속성으로 설정할 수 있다. 
+다중 트랜잭션 관리는 같은 리소스 매니저들을 제어할 수 있는 것이 확실해야 한다. 각각의 Atomikos 인스턴스는 유일한 ID로 설정되어야 한다. 이 기본 ID는 Atomikos가 실행되는 머신의 IP주소를 사용한다. 제품의 유일성이 불확실하다면, 각 애플리케이션의 인스턴스에 ```spring.jta.transaction-manager-id``` 속성으로 설정할 수 있다.
 
 ### 32.2. Bitronix 트랜잭션 매니저 사용
 Bitronix 는 JTA 트랜잭션 매니저 구현체로 인기있는 오픈소스 중 하나다. ```spring-boot-starter-jta-bitronix``` Starter POM을 통해 프로젝트에 Bitronix의 의존성을 추가할 수 있다. Atomikos 와 마찬가지로, 스프링부트는 자동적으로 Bitronix를 설정하고 빈의 기동과 정지 순위에 따라 후속 조치를 취한다.
@@ -2561,7 +2561,7 @@ Bitronix 는 JTA 트랜잭션 매니저 구현체로 인기있는 오픈소스 �
 를 살펴보기 바란다.
 
 > 노트:
-다중 트랜잭션 관리는 같은 리소스 매니저들을 제어할 수 있는 것이 확실해야 한다. 각각의 Bitronix 인스턴스는 유일한 ID로 설정되어야 한다. 이 기본 ID는 Bitronix가 실행되는 머신의 IP주소를 사용한다. 제품의 유일성이 불확실하다면, 각 애플리케이션의 인스턴스에 ```spring.jta.transaction-manager-id``` 속성으로 설정할 수 있다. 
+다중 트랜잭션 관리는 같은 리소스 매니저들을 제어할 수 있는 것이 확실해야 한다. 각각의 Bitronix 인스턴스는 유일한 ID로 설정되어야 한다. 이 기본 ID는 Bitronix가 실행되는 머신의 IP주소를 사용한다. 제품의 유일성이 불확실하다면, 각 애플리케이션의 인스턴스에 ```spring.jta.transaction-manager-id``` 속성으로 설정할 수 있다.
 
 ### 32.3. Java EE 에서 관리하는 트랜잭션 매니저 사용
 만약 스프링부트 애플리케이션을 ```war``` 혹은 ```ear``` 로 압축하고 Java EE 애플리케이션 서버에 배포한다면, 애플리케이션 서버에서 제공하는 트랜잭션 매니저를 사용할 수 있다. 스프링 부트는 공통 JNDI 위치를 탐색하여 트랜잭션 매니저를 자동설정하려고 할 것이다(```java:comp/UserTransaction```, ```java:comp/TransactionManager``` 등등). 애플리케이션 서버에서 제공하는 트랜잭션 서비스를 사용한다면, 모든 자원들에 대해서 서버에 의해 관리되며 JNDI 외부로 드러나길 바랄 것이다. 스프링부트는 JNDI 경로 ```java:/JmsXA``` 혹은 ```java:/XAConnectionFactory``` 에서 ```ConnectionFactory```를 찾아 JMS 자동설정을 제공할 것이며 [spring.datasource.jndi-name](#JNDI 데이터베이스 연결) 속성을 사용하여 ```DataSource```에 대한 설정할 수 있다.
@@ -2627,7 +2627,7 @@ private ConnectionFactory nonXaConnectionFactory;
 스프링 부트 어플리케이션은 그냥 스프링 `ApplicationContext` 이므로 평범한[vanilla] 스프링 컨텍스트를 가지고 하려는 일 대부분은 테스트 할  때 특별히 해줘야 하는 것은 없다. 다만 한 가지 주의할 것은 `SpringApplication` 을 생성해서 사용한다면 로깅 등 스프링 부트의 기능, 외부 속성(|프로퍼티)은 컨텍스트에만 자동으로 설치해야한다는 것이다.(? 컨텍스트 안에 자동 설치되도록 해야만  `SpringApplication`을 쓸 수 있나?)
 
 스프링 부트는 표준 ```spring-test``` ```@ContextConfiguration``` 어노테이션 대신에 ```@SpringApplicationConfiguration``` 어노테이션을 제공한다. 테스트에 사용하는 ```ApplicationContext```를 설정할 때 ```@SpringApplicationConfiguration``` 를 사용하면 ```SpringApplication```에 의해 (+```ApplicationContext```가) 생성되고 스프링 부트의 추가 기능을 쓸 수 있을 것이다.
-예를 보자 : 
+예를 보자 :
 ```java
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = SampleDataJpaApplication.class)
@@ -2643,7 +2643,7 @@ public class CityRepositoryIntegrationTests {
 
 컨텍스트 로더는 ```@WebAppConfiguration``` 어노테이션을 찾아서 웹 어플리케이션을 테스트 할 것인지 아닌지(예를 들어 ```MockMVC```를 사용한다든지) 추측한다. (```MockMVC``` 와 ```@WebAppConfiguration``` 은 ```spring-test```의 일부분이다).
 
-(+테스트할 때 실제로) 웹 어플리케이션을 시작하고 포트에서 수신(|대기)하게 하려면  테스트할 클래스(또는 테스트할 클래스의 슈퍼 클래스 중 하나)에 ```@IntegrationTest``` 을 표시하여 HTTP(예를 들면 ```RestTemplate```을 사용하고) 를 써서 테스트 할 수 있다. 이 (+```@IntegrationTest```)는 매우 유용한데, 어플리케이션을 풀 스택으로 테스트할 수 있을 뿐만 아니라 컴포넌트들을 테스트 클래스에 주입하고 HTTP 상호작용이 끝난 다음 내부 상태를 단정[assert]할 수 있기 때문이다. 예시 : 
+(+테스트할 때 실제로) 웹 어플리케이션을 시작하고 포트에서 수신(|대기)하게 하려면  테스트할 클래스(또는 테스트할 클래스의 슈퍼 클래스 중 하나)에 ```@IntegrationTest``` 을 표시하여 HTTP(예를 들면 ```RestTemplate```을 사용하고) 를 써서 테스트 할 수 있다. 이 (+```@IntegrationTest```)는 매우 유용한데, 어플리케이션을 풀 스택으로 테스트할 수 있을 뿐만 아니라 컴포넌트들을 테스트 클래스에 주입하고 HTTP 상호작용이 끝난 다음 내부 상태를 단정[assert]할 수 있기 때문이다. 예시 :
 ```java
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = SampleDataJpaApplication.class)
@@ -2662,7 +2662,7 @@ public class CityRepositoryIntegrationTests {
 ```
 > 스프링의 테스트 프레임워크는 각 테스트 사이에 어플리케이션 컨텍스트를 캐쉬해둔다(|보관한다). 그러므로 테스트들이 같은 설정을 공유하는 한 실제로 테스트를 몇 개나 실행하든 상관없이 서버를 시작하고 멈추는 과정에서 시간을 소모하는 일은 딱 한 번 일어난다.
 
-포트를 바꾸고 싶다면 ```@IntegrationTest```에 환경 속성을 콜론(+;)이나 대입식 이름-값 묶음으로 추가하면 된다. 예를 들면  ```@IntegrationTest("server.port:9000")``` 와 같은 식이다. 게다가 ```server.port``` 와 ```management.port``` 속성을 `0`으로 설정하면 임의의 포트로 통합테스트 할 수있다. 예제 : 
+포트를 바꾸고 싶다면 ```@IntegrationTest```에 환경 속성을 콜론(+;)이나 대입식 이름-값 묶음으로 추가하면 된다. 예를 들면  ```@IntegrationTest("server.port:9000")``` 와 같은 식이다. 게다가 ```server.port``` 와 ```management.port``` 속성을 `0`으로 설정하면 임의의 포트로 통합테스트 할 수있다. 예제 :
 ```java
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = MyApplication.class)
@@ -2731,7 +2731,7 @@ public class MyTest {
 
 #### 35.4.4. ```TestRestTemplate```
 `TestRestTemplate`은 스프링 `RestTemplate`의 편리한 서브 클래스로 통합 테스트를 할 때 유용하다. 평범한 템플릿을 사용하거나 기본 HTTP 인증(사용자 이름과 암호 사용)을 보내는 방법을 쓸 수 있다. 어느 경우든 템플릿이 테스트 친화적인 방법이 될 것이다 : 리다이렉트를 따라가지 않고(이러면 응답 위치를 단정(|테스트)할 수 있다), 쿠키를 무시하거나(템플릿은 이전 상태를 저장하지 않는 stateless이다), 서버 사이드 에러에 대해 예외를 던지지 않도록 한다
-아파치 HTTP 클라이언트(4.3.2 또는 그 이상)을 사용하는 것은 추천이나 필수는 아니다. 클래스패스에 아파치 클라이언트가 있으면 `TestRestTemplate`는 클라이언트를 적당히 설정하여 응답할 것이다. 
+아파치 HTTP 클라이언트(4.3.2 또는 그 이상)을 사용하는 것은 추천이나 필수는 아니다. 클래스패스에 아파치 클라이언트가 있으면 `TestRestTemplate`는 클라이언트를 적당히 설정하여 응답할 것이다.
 
 ```java
 public class MyTest {
@@ -2776,7 +2776,7 @@ com.mycorp.libx.autoconfigure.LibXWebAutoConfiguration
 #### 36.3.2. 빈Bean 조건
 ```@ConditionalOnBean``` 과 ```@ConditionalOnMissingBean``` 어노테이션은 특정 빈이 존재하거나 존재하지 않는 경우에 대해서 설정을 건너뛸 수 있도록 해준다. 타입으로 특정 빈을 명시하는 데에 ```value``` 속성을 사용하거나 이름으로 명시할 때 ```name``` 속성을 사용할 수 있다. ```search``` 속성을 사용하여 빈을 찾을 때 ```ApplicationContext``` 계층에 제한을 둘 수 있다.
 
-> ```@Conditional``` 어노테이션은 ```@Configuration``` 클래스들이 파싱될 때 (+함꼐) 처리된다. 자동설정 ```@Configuration``` 은 항상 나중에(사용자가 정의한어떠한 빈들 다음에) 파싱된다. 하지만 이 어노테이션(?```@Conditional```?) 을 보통 ```@Configuration``` 클래스에 사용하려 한다면 아직 생성하지 않은 빈의 정의를 참조하지 않도록 주의해야한다. 
+> ```@Conditional``` 어노테이션은 ```@Configuration``` 클래스들이 파싱될 때 (+함꼐) 처리된다. 자동설정 ```@Configuration``` 은 항상 나중에(사용자가 정의한어떠한 빈들 다음에) 파싱된다. 하지만 이 어노테이션(?```@Conditional```?) 을 보통 ```@Configuration``` 클래스에 사용하려 한다면 아직 생성하지 않은 빈의 정의를 참조하지 않도록 주의해야한다.
 
 #### 36.3.3. 특성(|프로퍼티) 조건
 ```@ConditionalOnProperty```` 어노테이션은 스프링 환경 특성(|프로퍼티)에 따라 설정을 할 수 있도록 해준다. ```prefix``` 와 ```name``` 속성으로 체크해야할 특성을 명시한다. 존재하고 ```false```가 아닌 특성은 기본적으로(|설정 없이도|자동으로) 매치가 될 것이다. 상세하게 체크하고 싶다면 ```havingValue``` 와 ```matchIfMssing``` 속성을 사용하면 된다.
@@ -2801,7 +2801,7 @@ com.mycorp.libx.autoconfigure.LibXWebAutoConfiguration
 스프링부트의 핵심 기능들에 대해서 충분히 숙지했다면, [스프링부트 액츄에터: 출시준비 기능들](#스프링부트 액츄에터: 출시준비 기능들)으로 이동하도록 하자.
 
 # V. 스프링부트 액츄에터: 출시준비 기능들<a name="스프링부트 액츄에터: 출시준비 기능들"></a>
-스프링부트는 제품을 출시했을 때 애플리케이션을 관찰하고 관리하는데 유용한 많은 기능들을 포함하고 있다. HTTP endpoints, 그리고 JMX 혹은 리모트 쉘(SSH 혹은 Telnet) 등 다양한 기능 중에서 어떤 기능을 이용하여 애플리케이션을 관리하고 관찰할 지 결정할 수 있다. 애플리케이션에서 감시audting, 건강health 그리고 측정metrics 을 자동으로 획득할 수 있다. 
+스프링부트는 제품을 출시했을 때 애플리케이션을 관찰하고 관리하는데 유용한 많은 기능들을 포함하고 있다. HTTP endpoints, 그리고 JMX 혹은 리모트 쉘(SSH 혹은 Telnet) 등 다양한 기능 중에서 어떤 기능을 이용하여 애플리케이션을 관리하고 관찰할 지 결정할 수 있다. 애플리케이션에서 감시audting, 건강health 그리고 측정metrics 을 자동으로 획득할 수 있다.
 
 ## 39. 사용가능한 출시준비 기능들<a name="사용가능한 출시준비 기능들"></a>
 [```spring-boot-actuator```](http://github.com/spring-projects/spring-boot/tree/master/spring-boot-actuator) 모듈은 스프링부트의 출시준비 기능을 제공한다. ``` spring-boot-starter-actuator``` 'Starter POM' 의존성을 추가하는 것만으로 간단하게 기능을 활서오하할 수 있다.
@@ -2918,8 +2918,8 @@ info.build.description=@project.description@
 info.build.version=@project.version@
 ```
 
-> 노트: 
-위의 예에서 리소스 메이븐 필터링이 어떤 이유로 변환되지 않은 경우 폴백으로서 사용될 일부값을 설정하는데 ```project.*```를 사용했다. 
+> 노트:
+위의 예에서 리소스 메이븐 필터링이 어떤 이유로 변환되지 않은 경우 폴백으로서 사용될 일부값을 설정하는데 ```project.*```를 사용했다.
 
 > 노트:
 만약 starter parent를 사용하지 않는다면, ```pom.xml``` 에 ```<build/>``` 요소가 필요하다.
@@ -3007,7 +3007,7 @@ management.context-path=/manage
 ```application.properties``` 에 사용했을 때 엔드포인트는 ```/{id}``` 에서 ```/manage/{id}```로 변경될 것이다(예: ```/manage/info```).
 
 ### 41.3. 관리 서버포트 변경
-기본 HTTP 포트를 사용하는 노출된 관리 엔드포인트들은 클라우드 배포시 고려사항이 있다. 그러나, 애플리케이션을 자신의 데이터센터 내에서 실행할 때에는 다른 HTTP 포트를 사용하여 엔드포인트 노출을 선호할 수 있다. 
+기본 HTTP 포트를 사용하는 노출된 관리 엔드포인트들은 클라우드 배포시 고려사항이 있다. 그러나, 애플리케이션을 자신의 데이터센터 내에서 실행할 때에는 다른 HTTP 포트를 사용하여 엔드포인트 노출을 선호할 수 있다.
 
 ```management.port``` 속성을 사용하여 HTTP 포트를 변경할 수 있다.
 
@@ -3048,7 +3048,7 @@ health 엔드포인트를 통해 노출되는 정보는 익명으로 접근했�
 앞에서 설명했던것처럼 익명사용자에 대한 health 엔드포인트에 대한 모든 권한을 허용하지 않도록 설정할 수 있다. ```endpoints.health.sensitive```를 ```false``` 로 설정하면 된다.
 
 ## 42. JMX를 통한 모니터링 및 관리<a name="JMX를 통한 모니터링 및 관리"></a>
-자바 관리 확장(Java Management Extension, JMX)는 애플리케이션에 대한 모니터링과 관리에 대한 표준 메카니즘을 제공한다. 스프링부트는 기본적으로 ```org.springframework.boot``` 도메인 하위의 JMX MBeans에 관한 관리 엔드포인트를 제공한다. 
+자바 관리 확장(Java Management Extension, JMX)는 애플리케이션에 대한 모니터링과 관리에 대한 표준 메카니즘을 제공한다. 스프링부트는 기본적으로 ```org.springframework.boot``` 도메인 하위의 JMX MBeans에 관한 관리 엔드포인트를 제공한다.
 
 ### 42.1. MBean 이름 변경<a name="MBean 이름 변경"></a>
 MBean의 이름은 항상 엔드포인트의 ```id```를 기반으로 생성된다. 예를 들어 ```health``` 엔드포인트는 ```org.springframework.boot/Endpoint/HealthEndpoint```를 기반으로 하고 있다.
@@ -3092,7 +3092,7 @@ jolokia.config.debug=true
 스프링부트에서 Jolokia를 사용하지 않을 경우, ```endpoints.jolokia.enabled```를 ```false```로 설정하면 된다:
 
 ```
-endpoints.jolokia.enabled 
+endpoints.jolokia.enabled
 ```
 
 ## 43. <a name="리모트쉘을 사용하여 모니터링 및 관리">리모트쉘을 사용하여 모니터링 및 관리</a>
@@ -3104,7 +3104,7 @@ endpoints.jolokia.enabled
 </dependency>
 ```
 
-> 팁: 텔넷 접근을 활성화하려면 ```org.crsh:crsh.shell.telnet``` 의존성이 추가적으로 필요하다. 
+> 팁: 텔넷 접근을 활성화하려면 ```org.crsh:crsh.shell.telnet``` 의존성이 추가적으로 필요하다.
 
 ### 43.1. <a name="리모트쉘 연결">리모트쉘 연결</a>
 리모트쉘의 기본 연결포트는 ```2000```번이다. 기본설정된 사용자명은 ```user``` 이고 기본 패스워드는 불규칙하게 생성되어 로그출력으로 노출된다. 만약 스프링시큐리티를 애플리케이션에 사용한다면, 쉘은 기본설정에 의해 (같은 설정)[#보안]을 사용할 것이다. 그렇지 않다면 다음과 같은 메시지와 함께 간단한 인증절차를 제공할 것이다:
@@ -3268,10 +3268,10 @@ public class MyService {
 ### 44.5. <a name="Coda Hale 측정"></a>Coda Hale 측정
 [Coda Hale 'Metrics' 라이브러리](http://metrics.codahale.com/)의 사용자는 스프링부트 측정이 ```com.codahale.metrics.MetricRegistry```으로 출판한 것들을 자동으로 찾아낼 것이다. 기본 ```com.codahale.metrics.MetricRegistry``` 스프링빈은 ```com.codahale.metrics:metrics-core``` 의존성을 정의하면 생성된다. 변경이 필요하다면 ```@Bean``` 인스턴스를 추가등록할 수 있다.
 
-사용자는 적절한 형태로 자신의 측정에 대한 이름을 덥두어로 Coda Hale metrics 을 만들 수 있다(예: ```histogram.*```, ```meter.*```). 
+사용자는 적절한 형태로 자신의 측정에 대한 이름을 덥두어로 Coda Hale metrics 을 만들 수 있다(예: ```histogram.*```, ```meter.*```).
 
 ### 44.6. <a name="메시지 채널 통합"></a>메시지 채널 통합
-만약에 '스프링 메시징' jar 파일이 클래스패스 상에 있다면 ```metricsChannel```이라 불리는 ```MessageChannel```이 자동으로 생성된다(이미 존재하지 않는다면). 모든 측정 업데이트 이벤트는 채널을 통해 'messages'를 출판Publishing하여 추가한다. 클라이언트에서는 이 채널을 구독Subscribe하여 분석이나 액션을 추가할 수 있다. 
+만약에 '스프링 메시징' jar 파일이 클래스패스 상에 있다면 ```metricsChannel```이라 불리는 ```MessageChannel```이 자동으로 생성된다(이미 존재하지 않는다면). 모든 측정 업데이트 이벤트는 채널을 통해 'messages'를 출판Publishing하여 추가한다. 클라이언트에서는 이 채널을 구독Subscribe하여 분석이나 액션을 추가할 수 있다.
 
 ## 45. <a name="감시auditing"></a>감시auditing
 스프링부트 액추에이터는 스프링 시큐리티의 동작('인증 성공', '실패' 그리고 기본적인 '접근 거부')에서 발생하는 이벤트 들을 유연하게 감시할 수 있다. 이것은 리포팅에 매우 유용하며 인증 실패를 기반으로 한 잠금해제 정책을 구현할 수 있다.
@@ -3349,22 +3349,287 @@ org.springframework.boot.actuate.system.EmbeddedServerPortFileWriter
 ## 54. 다음 읽을거리
 
 # VII. 스프링부트 CLI<a name="스프링부트 CLI"></a>
-## 55. CLI 설치
-## 56. CLI 사용
-### 56.1. CLI를 이용해서 애플리케이션 실행
-### 56.2. CLI에 의존성 추가
-#### 56.2.1. "grab" 의존성 추정
-#### 56.2.2. "grab" 협력 추정
-#### "grab" 메타데이터 변경
-#### 56.2.3. 기본 불러오기 문장
-#### 56.2.4. 자동 main 메서드
-### 56.3. 코드 테스트
-### 56.4. 다양한 소스파일을 가진 애플리케이션
-### 56.5. 애플리케이션 패키징
-### 56.6. 새로운 프로젝트 준비
-### 56.7. 내장형 쉘 사용
-## 57. 그루비 빈즈 DSL을 통해서 애플리케이션 개발
-## 58. 다음 읽을거리
+스프링을 써서 빨리 개발하고 싶을 때 스프링부트 CLI를 쓸 수 있다. 스프링부트 CLI는 상투적으로 반복하는 코드를 잔뜩 쓰지 않고도, 익숙한 자바같은 문법을 쓰는 그루비 스크립트를 실행할 수 있게 해준다. 사용자만의 고유한 명령을 만들거나 새 프로젝트를 위한 환경을 빠르게 갖추려고 할 때에(bootstrap a new project) 쓸 수 있다.
+
+## 54. CLI 설치
+스프링부트 CLI는 수동으로 설치할 수 있다. GVM(그루비 환경관리자)이나 OSX 사용자라면 Homebrew를 써서 설치한다. 더 포괄적인 설치 지침은 [섹션 10.2, "스프링부트 CLI 설치하기"](#CLI를 이용한 설치)에서 보도록 하자.
+
+## 55. CLI 사용
+CLI를 설치하고 나면 `spring`이라고 쳐서 실행할 수 있다. 아무런 인자도 주지않고 `spring`을 실행하면 다음과 같이 간단한 도움말 화면을 보게 될 것이다 :
+```
+$ spring
+usage: spring [--help] [--version]
+       <command> [<args>]
+
+Available commands are:
+
+  run [options] <files> [--] [args]
+    Run a spring groovy script
+
+  ... more command help is shown here
+```
+`help`로 지원하는 명령을 자세하게 살펴볼 수 있다. 예를 들면 :
+```
+$ spring help run
+spring run - Run a spring groovy script
+
+usage: spring run [options] <files> [--] [args]
+
+Option                     Description
+------                     -----------
+--autoconfigure [Boolean]  Add autoconfigure compiler
+                             transformations (default: true)
+--classpath, -cp           Additional classpath entries
+-e, --edit                 Open the file with the default system
+                             editor
+--no-guess-dependencies    Do not attempt to guess dependencies
+--no-guess-imports         Do not attempt to guess imports
+-q, --quiet                Quiet logging
+-v, --verbose              Verbose logging of dependency
+                             resolution
+--watch                    Watch the specified file for changes
+```
+`version` 명령으로 사용하고 있는 스프링부트 버전이 어떤 것인지 빠르게 체크할 수 있다.
+```
+$ spring version
+Spring CLI v1.2.0.RELEASE
+```
+
+### 55.1. CLI를 이용해서 애플리케이션 실행
+`run` 명령으로 그루비 소스코드를 컴파일하고 실행할 수 있다. 스프링부트 CLLI는 그루비를 포함하고 있으므로 별다른 그루비를 설치할 필요가 없다.
+아래 그루비로 된 "hello world" 웹 어플리케이션 예를 보자 :
+
+*hello.groovy*.
+```groovy
+@RestController
+class WebApplication {
+
+    @RequestMapping("/")
+    String home() {
+        "Hello World!"
+    }
+
+}
+```
+어플리케이션을 컴파일하고 실행하려면 다음과 같이 입력한다 :
+```
+$ spring run hello.groovy
+```
+어플리케이션 명령행 인자를 주려면 `--`를 "spring" 명령과 분리하는 데 사용하도록 한다. 즉, 다음과 같다.
+```
+$ spring run hello.groovy -- --server.port=9000
+```
+JVM 명령행 인자를 설정하는 데에는 `JAVA_OPTS` 환경변수를 사용할 수 있다. 즉,
+```
+$ JAVA_OPTS=-Xmx1024m spring run hello.groovy
+```
+#### 55.1.1. "grab" 의존성 추정
+표준 그루비는 서드 파티 라이브러리에 대한 의존성을 선언할 수 있게 해주는 `@Grab` 어노테이션을 포함하고 있다.
+빌드 도구를 사용하지 않고서 메이븐이나 그래들과 같은 방법으로 그루비가 jar 파일을 다운로드 하게 해주는 유용한 방법이다.
+
+스프링 부트는 이 방법을 좀 더 확장하여, 코드를 토대로 `grab`할(+가져올) 라이브러리를 추론하려고 시도할 것이다. 예를 들어, `@RestController`어노테이션을 사용하고 있는 `WebApplication` 코드로 "`Tomcat`"과 "`Spring MVC`를 가져오게 될 것이다.
+
+다음은 "`grab hints`"(+가져오기 힌트)로 쓰이는 항목이다 :
+
+| 항목 | 가져오는 것|
+|--- | ---|
+|`JdbcTemplate`, `NamedParameterJdbcTemplate`, `DataSource` |JDBC 어플리케이션|
+|`@EnableJms` |JMS 어플리케이션|
+|`@EnableCaching` | Caching abstraction.|
+|`@Test` |JUnit.|
+|`@EnableRabbit` |RabbitMQ.|
+|`@EnableReactor` |Project Reactor.|
+|확장`Specification` |Spock test.|
+|`@EnableBatchProcessing` |Spring Batch.|
+|`@MessageEndpoint` `@EnableIntegrationPatterns` |Spring Integration.|
+|`@EnableDeviceResolver` |Spring Mobile.|
+|`@Controller` `@RestController` `@EnableWebMvc` |Spring MVC + Embedded Tomcat.|
+|`@EnableWebSecurity` |Spring Security.|
+|`@EnableTransactionManagement` |Spring Transaction Management.|
+
+ > 스프링부트 CLI 소스코드에서 사용자화[customization]가 어떻게 적용되는지 이해하려면 [`CompilerAutoConfiguration`](https://github.com/spring-projects/spring-boot/blob/v1.2.0.RELEASE/spring-boot-cli/src/main/java/org/springframework/boot/cli/compiler/CompilerAutoConfiguration.java)의 서브클래스를 보라.
+
+#### 55.1.2. 추정한 "grab"의 coordinates(+groupId:artifactId:packaging:version)
+스프링 부트는 그루비의 표준 `@Grab` 지원을 확장하여 그룹이나 버전정보 없이 의존성을 표기할 수 있도록 허용한다. (+스프링 부트의 `@Grab`은) artifact의 그룹과 버전 정보를 추정하기 위해 스프링 부트의 기본 의존성 메타데이터를 찾아볼 것이다.좌표기본 메타데이터는 현재 사용하고 있는 CLI 버전에 묶여있다는 것을 명심하자 - 이것은 새 버전 CLI로 이동했을 때에만 바뀌므로 사용자가 의존성의 버전이 바뀌는 것을 제어하도록 해준다.
+기본 메타데이터에 포함된 의존성과 버전에 대한 표는 [부록](#dependency-verions)에서 찾을 수 있다.
+
+#### 55.1.3. 기본 import문
+그루비 코드 크기를 줄이기 위해 몇몇 `import`문은 자동으로 포함된다.
+위에서 봤던 예에서 어떻게 `import`문이나 클래스를 표시한 이름을 쓰지 않고 `@Component`, `@RestController`와 `@RequestMapping`을 불러 썼는지 주의해서 살펴보라.
+
+ > 많은 스프링 어노테이션이 `import`문 없이 동작할 것이다. import를 추가하기 전에, 어플리케이션을 실행해서 어떤 것이 실패하는 지 살펴보라.
+
+#### 55.1.4. 자동 main 메소드
+비슷한 자바 어플리케이션과 다르게, `Groovy`스크립트에는 `public static void main(String[] args)`를 넣어둘 필요가 없다. `SpringApplication`은 자동으로 만들어져서 컴파일한 사용자 코드와 함께 `source`로 동작할 것이다.
+
+#### 55.1.5. 사용자[Custom] "`grab`" 메타데이터
+스프링부트는 스프링부트의 기본 메타데이터를 무시하고[overrides] 사용자가 지정한 의존성 메타데이터를 사용할 수 있도록 `@GrabMetadata` 어노테이션을 새롭게 제공한다.
+이 메타데이터는 어노테이션을 사용해서 지정할 수 있으며 하나 혹은 그 이상 프로퍼티 파일[properties files]을 어노테이션에 제공해줄 수 있다.((+프로퍼티 파일은)메이븐 저장소에 있는 `properties` `type` 식별자가 붙은 파일)
+
+각 프로퍼티 파일에 개별 항목은 `group:module=version`형식이어야 한다.
+
+예를 들면 다음 선언에서는:
+```java
+@GrabMetadata("com.example.custom-versions:1.0.0")
+```
+메이븐 저장소 `com/example/custom-versions/1.0.0/` 아래에서 `custom-versions-1.0.0.properties`를 가져올 것이다.
+
+어노테이션에 명시된 다중 프로퍼티 파일은 선언된 순서대로 적용될 것이다. 예로 :
+```
+@GrabMetadata(["com.example.custom-versions:1.0.0",
+    "com.example.more-versions:1.0.0"])
+```
+은 `more-versions`의 프로퍼티가 `custom-versions`의 프로퍼티를 [override]하게 될 것이다.
+
+`@Grab`을 쓸 수 있는 곳이면 어디나 `@GrabMetadata`를 쓸 수 있다. 하지만 메타데이터 순서에 일관성을 지키기 위해서 `@GrabMetadata`는 어플리케이션에서 최대 한 번만 사용하는 게 낫다.
+(스프링 부트의 상위집합인)유용한 의존성 메타데이터의 원천은 [Spring IO Platform](http://platform.spring.io/)이다. 예를 들면 다음과 같다 :
+```java
+@GrabMetadata('io.spring.platform:platform-versions:1.0.4.RELEASE')
+```
+### 55.2 코드 테스트하기
+`test` 명령은 어플리케이션을 컴파일하고 테스트를 실행할 수 있도록 해준다. 보통 다음과 같이 사용한다.
+
+```
+	$ spring test app.groovy tests.groovy
+	Total: 1, Success: 1, : Failures: 0
+	Passed? true
+```
+
+이 예제에서는 `tests.groovy`가 JUnit `@Test` 메소드나 Spock `Specipication` 클래스를 포함하고 있다. 모든 공통 프레임워크 어노테이션과 스태틱 메소드는 `import`하지 않아도 사용할 수 있을 것이다.
+위에서 사용한 이 `tests.groovy` 파일은 JUnit으로 작성했다 :
+
+```java
+	class ApplicationTests {
+
+		@Test
+		void homeSaysHello() {
+			assertEquals("Hello World!", new WebApplication().home())
+		}
+
+	}
+```
+ > 테스트용 소스 파일이 여러 개 있다면 `test`디렉토리 안에 넣어두는 편을 선호할 것이다.
+
+### 55.3. 소스 파일이 여러 개인 어플리케이션의 경우
+파일 입력을 받아들이는 모든 명령어는 "`shell globbing`"(+정규식으로 파일을 찾아서 실행함)을 사용할 수 있다. 같은 디렉토리에서 파일 여러 개를 쉽게 실행하도록 해준다. 다음과 같다 :
+
+```
+	$ spring run *.groovy
+```
+
+"`test`"나 "`spec`"코드를 메인 어플리케이션 코드와 분리하고 싶다면 이 방법도 쓸모있을 것이다:
+
+```
+	$ spring test app/*.groovy test/*.groovy
+```
+
+### 55.4. 애플리케이션 패키징 하기
+어플리케이션을 독립 실행가능한 jar 파일로 패키징하려면 `jar` 명령을 사용하면 된다. 다음과 같다 :
+
+```
+	$ spring jar my-app.jar *.groovy
+```
+
+이렇게 만들어진 jar는 어플리케이션을 컴파일하면서 얻은 클래스와 어플리케이션에 필요한 모든 의존성을 포함하고 있으므로, `java -jar`명령을 사용하여 실행할 수 있다. 이 jar 파일은 어플리케이션 클래스패스의 (+라이브러리 참조)항목들도 포함하고 있다. `--include`와 `--exclude`를 써서 jar 에 추가할 경로를 명시할 수 있다. (두 옵션 모두 경로를 쉼표(,)로 구분하고, 이 옵션이 기본적으로 설정하는 경로에서 빼고 싶은 경로는 "`+`"(+exclude의 경우),"`-`"(+include의 경우)를 해당 경로 앞에 쓴다. 기본적으로 포함하는 경로는 다음과 같다 :
+
+```
+	public/**, resources/**, static/**, templates/**, META-INF/**, *
+```
+그리고 아래 경로는 기본적으로 제외한다.
+
+```
+	.*, repository/**, build/**, target/**, **/*.jar, **/*.groovy
+```
+
+더 자세한 정보는 `spring help jar`의 결과를 보라.
+
+### 55.5. 새로운 프로젝트 초기화 하기
+`init` 명령은 쉘을 나가지 않고도 [start.spring.io](https://start.spring.io)를 이용해서 새 프로젝트를 만들 수 있게 해준다. 예 :
+
+```
+	$ spring init --dependencies=web,data-jpa my-project
+	Using service at https://start.spring.io
+	Project extracted to '/Users/developer/example/my-project'
+```
+
+이렇게 하면 `my-project`디렉토리를 만들고 여기에 `spring-boot-starter-web` 과`spring-boot-starter-data-jpa`를 이용하여 메이븐 기반 프로젝트를 만든다. `--list`플래그를 이용해서 제공하는 여러 기능 목록을 볼 수 있다.(+Project types, Parameters, Supported dependencies 목록이 나온다.)
+
+```
+	$ spring init --list
+	=======================================
+	Capabilities of https://start.spring.io
+	=======================================
+
+	Available dependencies:
+	-----------------------
+	actuator - Actuator: Production ready features to help you monitor and manage your application
+	...
+	web - Web: Support for full-stack web development, including Tomcat and spring-webmvc
+	websocket - Websocket: Support for WebSocket development
+	ws - WS: Support for Spring Web Services
+
+	Available project types:
+	------------------------
+	gradle-build -  Gradle Config [format:build, build:gradle]
+	gradle-project -  Gradle Project [format:project, build:gradle]
+	maven-build -  Maven POM [format:build, build:maven]
+	maven-project -  Maven Project [format:project, build:maven] (default)
+
+	...
+```
+
+`init` 명령은 여러가지 옵션을 지원하는데, `help`를 이용해서 더 자세한 정보를 볼 수 있다(+`prompt > spring --help init`). 예를 들면 다음 명령은 java 8을 이용하고 `war`로 패키징하는 그래들 프로젝트를 생성한다.
+
+----
+	$ spring init --build=gradle --java-version=1.8 --dependencies=websocket --packaging=war sample-app.zip
+	Using service at https://start.spring.io
+	Content saved to 'sample-app.zip'
+----
+
+### 55.6. 내장형 쉘 사용하기
+스프링부트는 BASH와 zsh 쉘을 위한 명령 완성 스크립트를 포함하고 있다. BASH나 zsh 쉘을 사용하지 않는다면(아마도 윈도우 사용자) `shell` 명령으로 통합된 쉘을 띄울 수 있다.
+
+```
+	$ spring shell
+	*Spring Boot* (v{spring-boot-version})
+	Hit TAB to complete. Type \'help' and hit RETURN for help, and \'exit' to quit.
+```
+
+내장형 쉘 안에서 다른 명령도 직접 실행시킬 수 있다 :
+
+```
+	$ version
+	Spring CLI v{spring-boot-version}
+```
+
+내장형 쉘은 `tab` 완성과 함께 ANSI 색으로 출력하는 것도 지원한다. 내장형 쉘이 아닌, 쉘 본래 명령을 실행하려면 앞에 `$`를 붙이면 된다.(+현재 Spring CLI v1.2.6.RELEASE 에서는 `!`이다.) `ctrl-c`를 누르면 내장형 쉘을 종료한다.
+
+### 55.7 CLI에 확장 추가하기
+`install` 명령으로 CLI에 확장을 추가할 수 있다. `group:artifact:version` 형태로 된 artifact coordinates를 한 개 이상 지정할 수 있다. 예 :
+
+```
+	$ spring install com.example:spring-boot-cli-extension:1.0.0.RELEASE
+```
+
+사용자가 지정한 artifacts를 인스톨하면서 해당 artifacts의 모든 의존성 또한 같이 설치될 것이다.
+
+의존성을 제거하려면 `uninstall` 명령을 사용한다. `install`처럼 artifact coordinates를 한 개 이상 지정할 수 있다. 예 :
+
+```
+	$ spring uninstall com.example:spring-boot-cli-extension:1.0.0.RELEASE
+```
+
+이렇게 하면 사용자가 지정한 artifact와 이 artifact의 의존성도 함께 제거될 것이다.
+
+모든 의존성을 제거하려면 `--all` 옵션을 사용한다 :
+
+```
+	$ spring uninstall --all
+```
+
+## 56. 그루비 빈즈 DSL을 통해서 애플리케이션 개발
+
+## 57. 다음 읽을거리
 
 # VIII. 빌드툴 플러그인<a name="빌드툴 플러그인"></a>
 스프링부트는 메이븐과 그레들 플러그인을 위한 빌드툴 플러그인을 제공한다. 플러그인은 실행가능한 jar 압축을 포함한 다양한 기능을 제공한다. 이 섹션은 플러그인에 대한 보다 상세한 내용을 제공하고, 지원하지 않는 빌드 시스템에 대한 확장에도 도움이 될 것이다. 만약 바로 시작하려한다면, [III. 스프링부트 사용](#III. 스프링부트 사용)에서 [13. 빌드시스템](#13. 빌드 시스템) 을 읽어보기를 바란다.
@@ -3564,7 +3829,7 @@ org.springframework.data\:spring-data-hadoop=2.0.0.RELEASE
         <version>4.0.5.RELEASE</version>
     </dependency>
 </dependencies>
-``` 
+```
 
 ```commons-logging``` jar는 gradle에 의해서 제외되지 않을 것이다. 왜냐하면 ```spring-context (spring-context → spring-core → commons-logging)```에는 ```exclusion``` 요소가 없기 때문이다.
 
@@ -3634,7 +3899,7 @@ $ gradle bootRun
 springBoot {
     backupSource = false
 }
-``` 
+```
 
 ### 60.7. 리패키징 설정<a name="60.7. 리패키징 설정"></a>
 플러그인에 추가된 ```bootRepackage``` 태스크는 다음처럼 바로 설정할 수 있다:
@@ -3651,7 +3916,7 @@ bootRepackage {
 | ```mainClass``` |  실행될 메인 클래스를 정의한다. 만약 프로젝트 속성에 ```mainClassName``` 을 정의하지 않았다면 사용되거나, ```mainClassName``` 가 저으이되지 않았다면 적절한 클래스를 탐색한다. "적절한"은 ```main()``` 메소드를 가지고 있는 유일한 클래스를 의미한다(하나 이상을 찾게 되면 실패한다). "run" 태스크(```main``` 속성)에 사용될 메인 클래스를 정의할 수 있으며 "springBoot" 설정을 사용하여 "startScripts"(```mainClassName``` 속성)을 대안으로 사용할 수 있다. |
 | ```classifier``` | 원래 (확장이전) 파일명 세그먼트는 원래 위치에 보존되도록, 아카이브에 추가할 수 있다. 기본이 null인 경우 아카이브에 위치가 재보장된다. 기본값은 많은 목적을 위해 편리하지만 다른 프로젝트의 종속성으로 원래의 jar를 사용할 경우, 실행 파일 압축파일을 정의하는 확장 기능을 사용하는 것이 가장 좋다. |
 |```withJarTask```| 재포장하는 압축파일을 찾는데 사용되는 이름이나 ```jar``` 작업의 값(```jar``` 유형의 모든 태스크 기본값) |
-|```customConfiguration```|내장된 lib 디렉토리에 자주사용되는 맞춤설정의 이름(이를 지정하지 않으면 모든 컴파일 및 런타임 종속성을 얻음) | 
+|```customConfiguration```|내장된 lib 디렉토리에 자주사용되는 맞춤설정의 이름(이를 지정하지 않으면 모든 컴파일 및 런타임 종속성을 얻음) |
 
 ### 60.8. 맞춤 그레들 설정으로 리패키징<a name="60.8. 맞춤 그레들 설정으로 리패키징"></a>
 때때로 ```compile```, ```runtime``` 그리고 ```provided``` 스코프로부터 기본 의존성들을 패키지하지 않도록 지시할 수 있다. 만약 생성된 실행가능한 jar 파일을 그 자체로 실행할 경우에는 모든 의존성을 파일 안에 포함하고 있어야할 필요가 있다. 그러나 jar 파일을 압축해제하여 메인 클래스를 실행려는 계획이라면 ```CLASSPATH``` 상에 사용가능한 라이브러리들을 사용할 수 있다.  이런 상황에 맞춰 jar 를 리패키징하는 과정에서 의존성을 다르게 설정할 수 있다.
@@ -3683,7 +3948,7 @@ dependencies {
 }
 ```
 
-설정configuration이 참조하고 있는 ```BootRepackage```는 일반적인 [Gradle 설정](http://www.gradle.org/docs/current/dsl/org.gradle.api.artifacts.Configuration.html)이다. 앞에서 살펴본 예제에서  ```runtime```에서 파생되고 ```log4j``` 그룹을 제외하는 ```mycustomconfiguration``` 라는 설정을 
+설정configuration이 참조하고 있는 ```BootRepackage```는 일반적인 [Gradle 설정](http://www.gradle.org/docs/current/dsl/org.gradle.api.artifacts.Configuration.html)이다. 앞에서 살펴본 예제에서  ```runtime```에서 파생되고 ```log4j``` 그룹을 제외하는 ```mycustomconfiguration``` 라는 설정을
 생성했다. ```clientBoot``` 태스크가 실행되면, 리패키지된 boot jar는 ```log4j``` jar를 제외한 ```runtime``` 의 의존성들을 가지고 있을 것이다.
 
 #### 60.8.1. 설정 사항
@@ -3976,7 +4241,7 @@ spring.resources.add-mappings=true # if default mappings should be added
 # HTTP encoding (HttpEncodingProperties)
 spring.http.encoding.charset=UTF-8 # HTTP 요청/응답 인코딩 설정
 spring.http.encoding.enabled=true # HTTP 인코딩 지원여부
-spring.http.encoding.force=true # 인코딩 강제처리 설정 
+spring.http.encoding.force=true # 인코딩 강제처리 설정
 
 # JACKSON (JacksonProperties)
 spring.jackson.date-format= # 데이터형식 문자열 (예. yyyy-MM-dd HH:mm:ss), 혹은 날짜 형식 클래스의 완전한 경로 (e.g. com.fasterxml.jackson.databind.util.ISO8601DateFormat)
@@ -4628,7 +4893,7 @@ $ java org.springframework.boot.loader.JarLauncher
 
 | KEY | Purpose |
 |-----|---------|
-|```loader.path```| 콤마(,)로 구분된 클래스패스(예, ```lib:${HOME}/app/lib```) 
+|```loader.path```| 콤마(,)로 구분된 클래스패스(예, ```lib:${HOME}/app/lib```)
 > 역자주: 그런데 왜 예에는 콜론...이지? |
 | ```loader.home``` | 추가적인 프로퍼티즈 파일 위치 예: ```/opt/app``` (기본 ```${user.dir}```) |
 | ```loader.args``` | (스페이스로 구분된) 메인메서드의 인자 |
@@ -4637,7 +4902,7 @@ $ java org.springframework.boot.loader.JarLauncher
 | ```loader.config.location``` | 프로퍼티즈 파일 경로, 예: ```classpath:loader.properties``` (기본 ```application.properties```) |
 | ```loader.system``` | 모든 프로퍼티즈를 시스템 프로퍼티즈에 추가할 것인지를 정의(기본 false) |
 
-매니페스트 엔트리 키는 단어의 첫 글자를 대문자로 형성되고 "." 에서 "-"로 분리하여 변환한다(예: ```Loader-Path```). 예외는 ```JarLauncher```과의 호환성을 위해 매니페스트에 시작-클래스로 조회되는 ```loader.main```가 된다. 
+매니페스트 엔트리 키는 단어의 첫 글자를 대문자로 형성되고 "." 에서 "-"로 분리하여 변환한다(예: ```Loader-Path```). 예외는 ```JarLauncher```과의 호환성을 위해 매니페스트에 시작-클래스로 조회되는 ```loader.main```가 된다.
 
 환경변수는 기간 대신 밑줄구분으로 대문자화한다.
 * ```loader.home```은 ```loader.config.location```을 정의하지 않는 한 프로퍼티즈 파일의 디렉토리 경로다(기본을 오버라이딩).
