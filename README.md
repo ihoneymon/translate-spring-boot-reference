@@ -4042,10 +4042,35 @@ uploadArchives {
 ```
 
 ## 61. 다른 빌드 지원 시스템 지원
+만약 메이븐이나 그레들 이외의 다른 빌드툴을 사용하길 원한다면, 플러그인을 개발해야할 것이다. 실행가능한 jar는 정의된 형식을 따라야하고 압축해제된 폼 안에 포함되어야할 엔트리를 작성해야하기 때문이다(보다 자세한 사항은 부록에 있는 [부록 D. 실행가능한 jar 형식](#D. 실행가능한 jar 형식) 섹션을 살펴보기 바란다).
+
+스프링부트 메이븐과 그레들 플러그인은 실제로 jar를 생성할 때 둘다 ```spring-boot-loader-tools```를 사용하여 만든다. 필요하다면 자유롭게 이 라이브러리를 사용할 수 있다.
+
 ### 61.1. 리패키징 아카이브
+있는 압축파일을 재압축은 실행가능한 압축파일에  ```org.springframework.boot.loader.tools.Repackager```를 스스로 포함한다. ```Repackager``` 클래스는 존재하는 jar 혹은 war 에 대한 인자를 받는 단독 생성자를 가지고 있다. 사용가능한 두 개의 ```repackage()``` 메서드 중에서 하나를 사용하여 기존 파일을 대체하거나 새로운 곳에 작성한다. 다양한 설정은 리패키저가 실행되기 전에 할 수 있다.
+
 ### 61.2. 내포된 라이브러리
+재압축되고 있을 때 참조된 의존성 파일들은 ```org.springframework.boot.loader.tools.Libraries``` 인터페이스를 이용한다. 빌드 시스템에 정의된 항목 외에는 ```Libraries``` 구현체를 제공할 수 없다. 
+
+이미 압축파일 안에 라이브러리들을 포함하고 있다면 ```Libraries.NONE```를 사용하면 된다.
+
 ### 61.3. 메인 클래스 탐색
+메인 클래스를 정의하는데 ```Repackager.setMainClass()```를 사용하지 않았다면, 리패키저는 [ASM](http://asm.ow2.org/)를 이용하여 클래스 파일을 읽고 ```public static void main(String[] args)``` 메서드를 가지고 있는 적절한 클래스를 찾으려고 할 것이다. 대상이 되는 클래스를 한개 이상 찾게 되면 예외를 던진다.
+
 ### 61.4. repackage 구현 예제
+여기 기본적인 리패키지 예외가 있다.
+
+```
+Repackager repackager = new Repackager(sourceJarFile);
+repackager.setBackupSource(false);
+repackager.repackage(new Libraries() {
+    @Override
+    public void doWithLibraries(LibraryCallback callback) throws IOException {
+        // Build system specific implementation, callback for each dependency
+        // callback.library(new Library(nestedFile, LibraryScope.COMPILE));
+    }
+});
+```
 
 ## 62. 다음 읽을 거리
 빌드툴 플러그인이 어떻게 동작하는지에 흥미가 있다면 깃헙의 [spring-boot-tools](http://github.com/spring-projects/spring-boot/tree/master/spring-boot-tools)모듈을 살펴볼 수 있다. 보다 기술적인 상세정보는 [부록 D. 실행가능한 jar 형식](#D. 실행가능한 jar 형식)을 살펴보기 바란다.
@@ -4060,6 +4085,7 @@ uploadArchives {
 ### 63.2. 시작 전 ```Environment``` 혹은 ```ApplicationContext``` 변경
 ### 63.3. ```ApplicationContext``` 계층 빌드(부모 혹은 루트 컨텍스트 추가)
 ### 63.4. non-web 애플리케이션 생성
+
 ## 64. 속성 및 설정
 ### 64.1. 스프링애플리케이션의 설정 확장
 ### 64.2. 애플리케이션의 외부 속성 위치 변경
@@ -4068,6 +4094,7 @@ uploadArchives {
 ### 64.5. 활성 스프링 프로파일 설정
 ### 64.6. <a href="환경 의존적 설정 변경">환경 의존적 설정 변경</a>
 ### 64.7. 외부 속성들의 빌트인 항목 살펴보기
+
 ## 65. 내장형 서블릿 컨테이너
 ### 65.1. Servlet, Filter 혹은 ServletContextListener 를 애플리케이션에 추가
 ### 65.2. HTTP 포트 변경
@@ -4084,6 +4111,7 @@ uploadArchives {
 ### 65.13. 톰캣 7 사용
 ### 65.14. 제티 8 사용
 ### 65.15. ```@ServerEndpoint```를 사용해서 웹소켓 엔드포인트 생성
+
 ## 66. 스프링 MVC
 ### 66.1. JSON REST 서비스 작성
 ### 66.2. XML REST 서비스 작성
@@ -4093,9 +4121,11 @@ uploadArchives {
 ### 66.6. Spring MVC ```DispatcherServlet``` 끄기
 ### 66.7. 기본 MVC 설정 끄기
 ### 66.8. ViewResolver 변경
+
 ## 67. 로깅
 ### 67.1. 로깅을 위한 Logback 설정
 ### 67.2. 로깅을 위한 Log4j 설정
+
 ## 68. 데이터 접근
 ### 68.1. 데이터소스 설정
 ### 68.2. 복수 데이터소스 설정
@@ -4106,6 +4136,7 @@ uploadArchives {
 ### 68.7. 복수 엔티티매니저 사용
 ### 68.8. 전통적인 ```persistence.xml```  사용
 ### 68.9. 스프링데이터 JPA와 몽고 레파지토리 사용
+
 ## 69. <a name="데이터베이스 초기화">데이터베이스 초기화</a>
 ### 69.1. JPA 사용하여 데이터베이스 초기화
 ### 69.2. Hibernate를 사용하여 데이터베이스 초기화
@@ -4114,14 +4145,18 @@ uploadArchives {
 ### 69.5. 고차원 데이터베이스 마이그레이션 도구 사용
 #### 69.5.1. 시작시 Flyway 실행하여 데이터베이스 마이그레이션
 #### 69.5.2. 시작시 Liquibase를 실행하여 데이터베이스 마이그레이션
+
 ## 70. 배치 애플리케이션
 ### 70.1. 시작시 스프링 배치 작업 실행
+
 ## 71. 액츄에이터Actuator
 ### 71.1. 액츄에이터 엔드포인트의 주소 혹은 HTTP 포트 변경
 ### 71.2. 'whitelabel' 오류 페이지 변경
+
 ## 72. 시큐리티
 ### 72.1. 스프링부트 시큐리티 설정 끄기
 ### 72.2. ```AuthenticationManager```를 변경하고 사용자 계정 추가
+
 ## 73. 핫스와핑
 ### 73.1. 정적컨텐츠 다시 읽기
 ### 73.2. 컨테이너 재시작없이 타임리프Thymeleaf 템플렛 다시 읽기
@@ -4131,6 +4166,7 @@ uploadArchives {
 ### 73.6. 컨테이너 재시작없이 자바 클래스 다시 읽기
 #### 73.6.1. 메이븐을 이용한 Spring Loaded 설정
 #### 73.6.2. 그레들과 IntelliJ를 이용한 Spring Loaded 설정
+
 ## 74. 빌드
 ### 74.1. 메이븐으로 의존성 버전 변경
 ### 74.2. 메이븐으로 실행가능한 JAR 생성
@@ -4140,6 +4176,7 @@ uploadArchives {
 ### 74.6. 메이븐을 이용해서 스프링부트 애플리케이션 원격 디버그 시작
 ### 74.7. 그레들을 이용해서 스프링부트 애플리케이션 원격 디버그 시작
 ### 74.8. 앤트를 이용해서 실행가능한 아카이브 빌드<a name="앤트를 이용해서 실행가능한 아카이브 빌드"></a>
+
 ## 75. 전통적 배포
 ### 75.1. 배포가능한 war 파일 생성<a name="75.1. 배포가능한 war 파일 생성"></a>
 ### 75.2. 오래된 서블릿 컨테이너에 배포가능한 war 파일 생성
