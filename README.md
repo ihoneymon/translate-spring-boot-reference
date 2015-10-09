@@ -4123,8 +4123,82 @@ repackager.repackage(new Libraries() {
 ### 66.8. ViewResolver 변경
 
 ## 67. 로깅
+
+스프링부트는 의존 라이브러리들이 가진 ```commons-logging``` API를 제외하곤 로깅 라이브러리를 자유롭게 선택할 수 있다. [Logback](http://logback.qos.ch/)을 사용하기를 원한다면 먼저 Logback을 포함하고, ```commons-logging```을 연결하면 된다. 가장 간단한 방법은 ```spring-boot-starter-logging```이 내부에 포함되어 있는 Starter pom을 사용하는 것이다. 로깅 라이브러리에 의존하고 있기에 ```spring-boot-starter-web``` 만 있으면 된다. 메이븐에서는 아래와 같이 사용할 수 있다. 
+
+```
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-web</artifactId>
+</dependency>
+```
+
+스프링부트는 추상화된 ```LoggingSystem```을 가지고 있으며, 클래스패스를 기준으로 설정을 시도한다. 만약 Loback이 가능할 경우 첫번째로 선택된다.
+
+```application.properties``` 파일에 "logging.level"로 시작하는 로거와 레벨을 추가하는 것만으로 로깅을 시작할 수 있다. 
+
+```
+logging.level.org.springframework.web: DEBUG
+logging.level.org.hibernate: ERROR
+```
+
+또한 "logging.file"을 사용하여 로깅파일의 위치(콘솔에도 출력)를 지정하여 줄 수 있다.
+
+조금 더 상세한 설정을 위해서는 각 구현체가 요구하는 설정양식을 사용하여야 한다. 기본적으로 스프링부트는 설정파일을 기본 경로에서 찾으며(Logback의 경우 ```classpath:logback.xml```), 이 경로는 "logging.config" 속성을 통해 변경하여줄 수 있다.
+
 ### 67.1. 로깅을 위한 Logback 설정
+
+```logback.xml```을 classpath의 root에 추가하여 설정값을 지정하여줄 수 있다. 스프링 부트는 기본 설정을 제공하고 있으며, 로깅레벨을 변경할 필요가 있을 경우 아래와 같이 설정이 가능하다.
+
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/base.xml"/>
+    <logger name="org.springframework.web" level="DEBUG"/>
+</configuration>
+```
+
+spring-boot jar내부의 기본 ```logback.xml```에서는 ```LoggingSystem```이 제공해주는 유용한 시스템 변수들을 찾을 수 있을 것이다.
+
+- ${PID} : 현재 프로세스ID.
+- ${LOG_FILE} : 직접 지정한 ```logging.file```의 위치.
+- ${LOG_PATH} : 직접 지정한 ```logging.path```의 위치(로그파일이 저장되는 위치).
+
+스프링부트는 콘솔(파일은 제외)에 출력되는 로그의 ANSI색상을 지정할 수 있다. 관련 기본설정은 ```base.xml```에서 확인할 수 있다.
+
+만약 Groovy가 클래스패스에 존재하면 ```logback.groovy```파일을 사용하여 설정을 정의할 수 있다.(존재하는 경우 기본 설정값도 적용됨)
+
+
 ### 67.2. 로깅을 위한 Log4j 설정
+
+스프링부트는 [Log4j](http://logging.apache.org/log4j/1.2), [Log4j 2](http://logging.apache.org/log4j/2.x)가 클래스패스에 존재할 경우에 설정할 수 있도록 지원한다. 만약 Starter pom을 사용하여 의존관계를 지정하였다면 반드시 Logback을 제거한뒤 사용할 버전의 Log4j를 추가하여야 한다. 만약 Starter pom을 사용하지 않을 경우에는 Log4j에 해당하는 ```commons-logging```(최소한) 제공하여 주어야 한다.
+
+Log4j를 적용하는 간단한 방법은 Starter pom을 사용(exclude구문이 복잡하게 나타나긴 하지만)하는 것이다.
+
+```
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-web</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter</artifactId>
+    <exclusions>
+        <exclusion>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-logging</artifactId>
+        </exclusion>
+    </exclusions>
+</dependency>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-log4j</artifactId>
+</dependency>
+```
+
+Log4j 2를 사용한다면 ```spring-boot-starter-log4j2```를 ```spring-boot-starter-log4j```대신 사용하라.
+
+> 팁 : Log4j Staeter를 공통로깅을 한군데 모으는데 사용하기를 원한다면 (예를들어, 톰캣이 `java.util.logging`을 사용하지만, Log4j 또는 Log4j 2의 설정으로 로깅을 할 경우) Actuator Log4j 또는 Log4j 2 의 샘플에서 어떻게 동작하는지 살펴볼 수 있다.
 
 ## 68. 데이터 접근
 ### 68.1. 데이터소스 설정
