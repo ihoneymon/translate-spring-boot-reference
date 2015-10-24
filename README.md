@@ -3628,6 +3628,31 @@ $ JAVA_OPTS=-Xmx1024m spring run hello.groovy
 ```
 
 ## 56. 그루비 빈즈 DSL을 통해서 애플리케이션 개발
+스프링 프레임워크 4.0 은 "DSL" ```beans{}``` 를 지원하도록 해준다. 
+
+```
+@Configuration
+class Application implements CommandLineRunner {
+
+    @Autowired
+    SharedService service
+
+    @Override
+    void run(String... args) {
+        println service.message
+    }
+
+}
+
+import my.company.SharedService
+
+beans {
+    service(SharedService) {
+        message = "Hello World"
+    }
+}
+```
+
 
 ## 57. 다음 읽을거리
 
