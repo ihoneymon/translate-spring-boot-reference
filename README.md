@@ -4148,19 +4148,209 @@ repackager.repackage(new Libraries() {
 ### 66.8. ViewResolver 변경
 
 ## 67. 로깅
+
+스프링부트는 의존 라이브러리들이 가진 ```commons-logging``` API를 제외하곤 로깅 라이브러리를 자유롭게 선택할 수 있다. [Logback](http://logback.qos.ch/)을 사용하기를 원한다면 먼저 Logback을 포함하고, ```commons-logging```을 연결하면 된다. 가장 간단한 방법은 ```spring-boot-starter-logging```이 내부에 포함되어 있는 Starter pom을 사용하는 것이다. 로깅 라이브러리에 의존하고 있기에 ```spring-boot-starter-web``` 만 있으면 된다. 메이븐에서는 아래와 같이 사용할 수 있다. 
+
+```
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-web</artifactId>
+</dependency>
+```
+
+스프링부트는 추상화된 ```LoggingSystem```을 가지고 있으며, 클래스패스를 기준으로 설정을 시도한다. 만약 Loback이 가능할 경우 첫번째로 선택된다.
+
+```application.properties``` 파일에 "logging.level"로 시작하는 로거와 레벨을 추가하는 것만으로 로깅을 시작할 수 있다. 
+
+```
+logging.level.org.springframework.web: DEBUG
+logging.level.org.hibernate: ERROR
+```
+
+또한 "logging.file"을 사용하여 로깅파일의 위치(콘솔에도 출력)를 지정하여 줄 수 있다.
+
+조금 더 상세한 설정을 위해서는 각 구현체가 요구하는 설정양식을 사용하여야 한다. 기본적으로 스프링부트는 설정파일을 기본 경로에서 찾으며(Logback의 경우 ```classpath:logback.xml```), 이 경로는 "logging.config" 속성을 통해 변경하여줄 수 있다.
+
 ### 67.1. 로깅을 위한 Logback 설정
+
+```logback.xml```을 classpath의 root에 추가하여 설정값을 지정하여줄 수 있다. 스프링 부트는 기본 설정을 제공하고 있으며, 로깅레벨을 변경할 필요가 있을 경우 아래와 같이 설정이 가능하다.
+
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/base.xml"/>
+    <logger name="org.springframework.web" level="DEBUG"/>
+</configuration>
+```
+
+spring-boot jar내부의 기본 ```logback.xml```에서는 ```LoggingSystem```이 제공해주는 유용한 시스템 변수들을 찾을 수 있을 것이다.
+
+- ${PID} : 현재 프로세스ID.
+- ${LOG_FILE} : 직접 지정한 ```logging.file```의 위치.
+- ${LOG_PATH} : 직접 지정한 ```logging.path```의 위치(로그파일이 저장되는 위치).
+
+스프링부트는 콘솔(파일은 제외)에 출력되는 로그의 ANSI색상을 지정할 수 있다. 관련 기본설정은 ```base.xml```에서 확인할 수 있다.
+
+만약 Groovy가 클래스패스에 존재하면 ```logback.groovy```파일을 사용하여 설정을 정의할 수 있다.(존재하는 경우 기본 설정값도 적용됨)
+
+
 ### 67.2. 로깅을 위한 Log4j 설정
 
-## 68. 데이터 접근
-### 68.1. 데이터소스 설정
-### 68.2. 복수 데이터소스 설정
-### 68.3. 스프링 데이터 레파지토리 사용
+스프링부트는 [Log4j](http://logging.apache.org/log4j/1.2), [Log4j 2](http://logging.apache.org/log4j/2.x)가 클래스패스에 존재할 경우에 설정할 수 있도록 지원한다. 만약 Starter pom을 사용하여 의존관계를 지정하였다면 반드시 Logback을 제거한뒤 사용할 버전의 Log4j를 추가하여야 한다. 만약 Starter pom을 사용하지 않을 경우에는 Log4j에 해당하는 ```commons-logging```(최소한) 제공하여 주어야 한다.
+
+Log4j를 적용하는 간단한 방법은 Starter pom을 사용(exclude구문이 복잡하게 나타나긴 하지만)하는 것이다.
+
+```
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-web</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter</artifactId>
+    <exclusions>
+        <exclusion>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-logging</artifactId>
+        </exclusion>
+    </exclusions>
+</dependency>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-log4j</artifactId>
+</dependency>
+```
+
+Log4j 2를 사용한다면 ```spring-boot-starter-log4j2```를 ```spring-boot-starter-log4j```대신 사용하라.
+
+> 팁 : Log4j Staeter를 공통로깅을 한군데 모으는데 사용하기를 원한다면 (예를들어, 톰캣이 `java.util.logging`을 사용하지만, Log4j 또는 Log4j 2의 설정으로 로깅을 할 경우) Actuator Log4j 또는 Log4j 2 의 샘플에서 어떻게 동작하는지 살펴볼 수 있다.
+
+## 68. <a name="데이터 접근">데이터 접근</a>
+
+### 68.1. <a name="데이터소스 설정">데이터소스 설정</a>
+
+```DataSource```를 ```@Bean```으로 정의하기만 하면 데이터소스 설정이 완료된다. 스프링 부트는 빌더 클래스 ```DataSourceBuilder```를 제공하며 클래스패스에서 정의된 값을 기준으로 만들거나, 또는```Environment```에 정의된 값을 사용하여 만들 수 있다:
+
+```
+@Bean
+@ConfigurationProperties(prefix="datasource.mine")
+public DataSource dataSource() {
+    return new FancyDataSource();
+}
+
+datasource.mine.jdbcUrl=jdbc:h2:mem:mydb
+datasource.mine.user=sa
+datasource.mine.poolSize=30
+```
+
+보다 자세한 내용은 '스프링부트 기능'섹션의 [28.1. 데이터베이스 설정](#데이터베이스 설정) 섹션이나, [DataSourceAutoConfiguration](http://github.com/spring-projects/spring-boot/tree/master/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/jdbc/DataSourceAutoConfiguration.java)클래스를 참조하여라.
+
+### 68.2. <a name="복수 데이터소스 설정">복수 데이터소스 설정</a>
+
+하나 이상의 데이터소스를 사용하기 위한 방법은 위와 동일하다.  이 경우 데이터소스에 ```@Primary```를 표기하면 JDBC나 JPA에서 기본으로 사용될 데이터소스가 무엇인지를 표기하여 줄 수 있다.
+
+```
+@Bean
+@Primary
+@ConfigurationProperties(prefix="datasource.primary")
+public DataSource primaryDataSource() {
+    return DataSourceBuilder.create().build();
+}
+
+@Bean
+@ConfigurationProperties(prefix="datasource.secondary")
+public DataSource secondaryDataSource() {
+    return DataSourceBuilder.create().build();
+}
+```
+
+### 68.3. <a name="스프링 데이터 레파지토리 사용">스프링 데이터 레파지토리 사용</a>
+
+스프링 데이터는 ```@Repository```인터페이스를 사용하여 다양하게 구현할 수 있다. 스프링부트는 ```@EnableAutoConfiguration``` 클래스를 기준으로 동일한 (또는 그 아래) 패키지에 존재하는 ```@Repository```클래스들을 다룰 수 있습니다.
+
+스프링 부트를 사용하여 작성하는 애플리케이션의 클래스패스에는 그에 맞는 의존관계가 설정되어야 한다.(JPA를 사용한다면 ```spring-boot-starter-data-jpa```를 몽고를 사용한다면```spring-boot-starter-data-mongodb```가 필요하다.)
+
+스프링 부트는 ```@EnableAutoConfiguration```을 기준으로 ```@Repository```의 설정값을 추측한다. 상세한 설정이 필요하다면 JPA의 설정이 담긴 ```@EnableJpaRepositories```같은 걸 사용하는 것처럼 설정이 필요하다.
+
 ### 68.4. <a name="스프링 설정으로 부터 @Entity 정의 분리">스프링 설정으로 부터 ```@Entity``` 정의 분리</a>
-### 68.5. JPA 속성 설정
-### 68.6. ```EntityManagerFactory``` 변경
-### 68.7. 복수 엔티티매니저 사용
-### 68.8. 전통적인 ```persistence.xml```  사용
-### 68.9. 스프링데이터 JPA와 몽고 레파지토리 사용
+
+스프링 부트는 ```@EnableAutoConfiguration```을 기준으로 ```@Entity```의 설정값을 추측한다. 상세한 설정이 필요하다면 아래와 같이 ```@EntityScan```을 사용하도록 하자 : 
+
+```
+@Configuration
+@EnableAutoConfiguration
+@EntityScan(basePackageClasses=City.class)
+public class Application {
+
+    //...
+
+}
+```
+
+### 68.5. <a name="JPA 속성 설정">JPA 속성 설정</a>
+
+스프링 데이터 JPA는 벤더에 의존적인 설정 옵션들을 지원하며(예를 들어 SQL Logging) 스프링부트에서는 이에 더해 몇몇 하이버네이트의 설정을 지원한다. 주로 사용되는 옵션들을 다음과 같이 설정할 수 있다 : 
+
+```
+spring.jpa.hibernate.ddl-auto: create-drop
+spring.jpa.hibernate.naming_strategy: org.hibernate.cfg.ImprovedNamingStrategy
+spring.jpa.database: H2
+spring.jpa.show-sql: true
+```
+
+```ddl-auto```의 설정값은 특정기술에 따라 기본값이 다르게 설정된다. 임베디드 데이터베이스일 경우에는 ```create-drop```로 설정되며, 아닐경우에는 ```none```으로 설정된다. 또한  ```spring.jpa.properties.*```로 설정된 값들은 EntityManagerFactory가 생성될때 JPA의 속성으로 설정된다.(설정키 앞의 spring.jpa.properties는 무시된다.)
+
+더욱 자세한 내용은 [HibernateJpaAutoConfiguration](http://github.com/spring-projects/spring-boot/tree/master/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/orm/jpa/HibernateJpaAutoConfiguration.java)과 [JpaBaseConfiguration](http://github.com/spring-projects/spring-boot/tree/master/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/orm/jpa/JpaBaseConfiguration.java)을 참조하여라.
+
+### 68.6. <a name="EntityManagerFactory 변경">```EntityManagerFactory``` 변경</a>
+
+```EntityManagerFactory```의 모든 상세한 설정이 필요하다면, ‘entityManagerFactory'의 ```@Bean```이 필요하다. 스프링부트의 자동설정은 해당 타입의 빈여부에 따라 설정이 변경된다.
+
+### 68.7. <a name="복수 엔티티매니저 사용">복수 엔티티매니저 사용</a>
+
+
+기본으로 설정된 ```EntityManagerFactory```가 정상적으로 동작하더라도 새로운 엔티티매니저 팩토리를 만들 경우에 기본 설정이 무시되므로, 아래와 같이 둘다 함께 빈을 설정하여야 한다 : 
+
+
+```
+// 데이터소스 설정이 이미 존재한다고 가정한다.
+
+@Bean
+public LocalContainerEntityManagerFactoryBean customerEntityManagerFactory(
+        EntityManagerFactoryBuilder builder) {
+    return builder
+            .dataSource(customerDataSource())
+            .packages(Customer.class)
+            .persistenceUnit("customers")
+            .build();
+}
+
+@Bean
+public LocalContainerEntityManagerFactoryBean orderEntityManagerFactory(
+        EntityManagerFactoryBuilder builder) {
+    return builder
+            .dataSource(orderDataSource())
+            .packages(Order.class)
+            .persistenceUnit("orders")
+            .build();
+}
+```
+
+위의 설정은 거의 완벽하게 동작하지만, ```EntityManager```에 대한 ```TransactionManager``` 설정이 포함되어있지 않다. 두 엔티티 매니저상단에 ```@Primary```을 추가하여 기본값을 추가할 수 있으며, 그 외의 엔티티매니저는 각 사용할 클래스에서 명시적으로  설정하여 사용할 수 있다. 또는 JTA의 트랜잭션을 사용하여 둘을 동시에 사용할수도 있다.
+
+### 68.8. <a name="전통적인 persistence.xml 사용">전통적인 ```persistence.xml``` 사용</a>
+
+스프링은 JPA의 설정에서 XML을 요구하지 않으며 이는 스프링 부트도 마찬가지이다. 만약 ```persistence.xml```를 사용하기를 원할 경우, ```LocalEntityManagerFactoryBean```의 타입을 빈(이 빈의 id는 ‘entityManagerFactory’)으로 선언하고, persistence unit의 이름으로 설정하여라.
+
+스프링 부트에 설정된 기본 설정은 [JpaBaseConfiguration](https://github.com/spring-projects/spring-boot/blob/master/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/orm/jpa/JpaBaseConfiguration.java)클래스를 확인하여라.
+
+### 68.9. <a name="스프링데이터 JPA와 몽고 레파지토리 사용">스프링데이터 JPA와 몽고 레파지토리 사용</a>
+
+스프링 Data JPA와 스프링 Data Mongo 둘 모두 자동으로 Repository를 설정해준다. 만약 클래스 패스에 의존관계가 존재한다면, 스프링 부트에서 어떤 Repository가 필요한지(또는 둘 모두)를 설정해 주어야 한다. 가장 명시적인 방법은 Spring Data에서 기본으로 제공하는 ```@Enable*Repositories```을 ```Repository```상단에 추가하는 것이다.(*에는 'Jpa'와 'Mongo'둘 다 사용할 수 있다.)
+
+설정파일의 키값 ```spring.data.*.repositories.enabled``` 을 사용하면 자동설정여부를 켜거나 끌 수 있다. 기존의 Mongo Repsitory가 아닌 자동 설정된 ```MongoTemplate``` 를 사용하는 경우에 유용하게 사용할 수 있을 것이다.
+
+동일한 문제점과 기능이 다른 자동 설정되는 Spring Data에도(Elasticsearch, Solr) 에도 적용된다.각 변경되는 어노테이션과 플래그들이 다르므로 유의하여 사용하도록 하자.
 
 ## 69. <a name="데이터베이스 초기화">데이터베이스 초기화</a>
 ### 69.1. JPA 사용하여 데이터베이스 초기화
