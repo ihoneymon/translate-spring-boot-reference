@@ -4387,6 +4387,14 @@ public LocalContainerEntityManagerFactoryBean orderEntityManagerFactory(
 ## 70. 배치 애플리케이션
 ### 70.1. 시작시 스프링 배치 작업 실행
 
+스프링 배치 자동설정은 컨텐스트와 관련된 클래스에 `@EnableBatchProcessing`(스프링 배치로 부터)를 추가하면 활성화된다.
+
+**모든** `Jobs`는 기본적으로 애플리케이션 컨텍스트가 시작될 때 실행된다(보다 자세한 사항은 [`JobLauncherCommandLineRunner`](http://github.com/spring-projects/spring-boot/tree/master/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/batch/JobLauncherCommandLineRunner.java)을 살펴보자).  `spring.batch.job.names`을 통해 특정 작업 또는 작업들로 좁힐 수 있다(콤마로 구분되는 작업 이름 패턴).
+
+만약 애플리케이션 컨텍스트에 `JobRegistry`가 포함된 경우 컨텍스트로부터 자동연결된 것을 대신하여 `spring.batch.job.names` 의 작업들이 등록된다. 이것은 여러 작업이 자식 컨텍스트에 정의고 중앙에 등록된 더욱 복잡한 시스템의 일반적인 패턴이다.
+
+보다 자세한 사항들은 [BatchAutoConfiguration](http://github.com/spring-projects/spring-boot/tree/master/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/batch/BatchAutoConfiguration.java)와 [@EnableBatchProcessing](https://github.com/spring-projects/spring-batch/blob/master/spring-batch-core/src/main/java/org/springframework/batch/core/configuration/annotation/EnableBatchProcessing.java)를 살펴보기 바란다.
+
 ## 71. 액츄에이터Actuator
 ### 71.1. 액츄에이터 엔드포인트의 주소 혹은 HTTP 포트 변경
 ### 71.2. 'whitelabel' 오류 페이지 변경
