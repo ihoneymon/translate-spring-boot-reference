@@ -1436,7 +1436,7 @@ new SpringApplicationBuilder()
 
 > 노트: ```ApplicationContext``` 계층을 생성할 때 몇가지 제약이 있다면, 예를 들어, 웹 컴포넌트는 자식 컨텍스트를 반드시 포함해야 하며 부모와 자식 컨텍스트 모두 같은 ```Envirionment```를 사용해야 한다. 보다 상세한 내용은 [SpringApplicationBuilder javadoc](http://docs.spring.io/spring-boot/docs/1.2.0.BUILD-SNAPSHOT/api/org/springframework/boot/builder/SpringApplicationBuilder.html)를 살펴보라.
 
-### 22.4. 애플리케이션 이벤트와 리스너
+### 22.4. 애플리케이션 이벤트와 리스너<a name="22.4. 애플리케이션 이벤트와 리스너"></a>
 [ContextRefreshedEvent](http://docs.spring.io/spring/docs/4.1.3.RELEASE/javadoc-api/org/springframework/context/event/ContextRefreshedEvent.html)와 같은 스프링 프레임워크 이벤트를 사용한다면, ```SpringApplication```은 몇가지 애플리케이션 이벤트를 추가적으로 전송한다. 어떤 이벤트들은 ```ApplicationContext```가 생성되기 이전에 발생하기도 한다.
 
 이벤트 리스너를 등록하는 방법은 여러가지가 있는데, 가장 일반적인 방법은 ```SpringApplication.addListener(...)``` 메서드를 사용하는 것이다.
@@ -4107,9 +4107,32 @@ repackager.repackage(new Libraries() {
 
 # 63. 스프링부트 애플리케이션
 ### 63.1. 자동설정 문제해결
+스프링부트 자동설정은 '적절한 것을 한다'를 최고가치로 여기고 있지만 가끔 실패하고 왜 그런지 말하기 어려울 때가 있다.
+
+그런 때에 스프링부트 `ApplicationContext`에  `AutoConfigurationReport`이 유용하다. `DEBUG` 로깅출력을 했을 때 볼 수 있다. `spring-boot-actuator`를 사용하면 `autoconfig` 엔드포인트를 통해서 JSON으로된 결과를 받을 수 있다. 애플리케이션을 디버그하고 실행시 스프링부트가 제공하는 추가적인 기능들(그리고 할 수 없는 것들)은 무엇이 있는지 살펴보자.
+
+보다 많은 질문은 소스코드와 Javadoc을 살펴보면 답을 찾을 수 있을 것이다. 몇가지 룰이 있다면:
+* `*AutoConfiguration` 클래스를 찾아보고 그 소스코드를 읽어보라, `@Conditional*` 애노테이션이 사용된 부분들을 찾아보고 그 기능이 활성화 되기 위한 조건이 무엇인지 살펴본다. 커맨드라인에서 `--debug` 을 추가하거나 시스템 프로퍼티 `-Ddebug`를 통해 애플리케이션에서 만들어진 자동설정 결정사항들을 콘솔 로그로 볼 수 있다. 액츄에이터 앱이 실행되고 있다면 `autoconfig` 엔드포인트(`/autoconfig` 혹은 JMX equivalent)를 통해서 같은 정보를 볼 수 있다.
+* `@ConfigurationProperties`(예, [`ServerProperties`](http://github.com/spring-projects/spring-boot/tree/master/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/web/ServerProperties.java)) 와 가능한 외부 설정 옵션들을 살펴본다. `@ConfigurationProperties`는 `name` 속성은 외부 프로퍼티즈들의 접두어로 사용한다. `ServerProperties`는 `prefix="server"`이고 그 설정 속성들은 `server.port`, `server.address` 등이 있다. 실행중인 액추에이터 앱은 `configprops` 엔드포인트에서 찾아볼 수 있다.
+* 명시적 `Environment`에서 구성값을 추출하여 `RelaxedEnvironment`의 사용을 찾는다. 접두사로 종종 사용된다.
+* `@Value` 애노테이션을 살펴보면 `Environment`에 바로 연결된다. 이 일부 느슨한 결합을 허용하지만 `RelaxedEnvironment` 접근보다는 OS 환경변수에 대한 접근 유연성이 부족하다.
+* `@ConditionalOnExpression` 애노테이션을 찾아 SpEL 을 표현식에 대한 응답으로 온오프 기능 전환, `Environment`으로부터 위치변환자를 통해 확인한다. 
+
+
 ### 63.2. 시작 전 ```Environment``` 혹은 ```ApplicationContext``` 변경
+`SpringApplication`는 `ApplicationListeners`와 `ApplicationContextInitializers`르 가지고 있으며 이를 사용하여 컨텍스트나 환경에 대한 사용자설정을 허용한다. 스프링부트는 내부의 `META-INF/spring.factories`를 사용하여 다양한 사용자설정을 적재한다. 추가하는 방법은 다음과 같다:
+
+* `SpringApplication`가 실행되기 전에 `addListeners`와 `addInitializers` 메서드에 구현한다.
+* 선언적으로 `context.initializer.classes` 혹은 `context.listener.classes` 설정을 정의한다.
+* `META-INF/spring.factories` 을 선언하고 jar로 만들어 모든 애플리케이션에 라이브러리로 사용한다.
+
+`SpringApplication`은 리스너들에 `ApplicationEvents`를 보낸다(컨텍스트가 생성되기도 전에), 그리고 `ApplicationContext`를 발표되는 이벤트에 대한 리스너로 등록한다. 스프링부트 기능 관련 항목 중에서 [22.4. "애플리케이션 이벤트와 리스너"](#22.4. 애플리케이션 이벤트와 리스너)를 보라.
+
 ### 63.3. ```ApplicationContext``` 계층 빌드(부모 혹은 루트 컨텍스트 추가)
+`ApplicationBuilder` 클래스를 사용하여 부모/자식 `ApplicationContext` 계층을 생성한다. 이와 관련된 사항은 '스프링부트 기능' 항목의 [22.3. 플루언트 빌더 API](#22.3. 플루언트 빌더 API)를 살펴보라.
+
 ### 63.4. non-web 애플리케이션 생성
+모든 스프링 애플리케이션이 웹 애플리케이션(웹 서비스)이어야 하는 건 아니다. 뿐만 아니라 스프링 애플리케이션을 구동하여 인프라를 설정하고 `main` 메서드를 실행하고 싶다면 스프링부트의 `SpringApplication` 기능을 통해 쉽게할 수 있다. `SpringApplication`은 웹 애플리케이션이 필요한지에 따라 `ApplicationContext` 클래스를 변경한다. 첫번째 해야할 것은 클래스패스 상에서 서블릿 API 의존성들을 모두 제거해야 한다. 만약 그렇게 할 수 없다면(예를 들어, 같은 코드로 2개의 애플리케이션을 실행하고 있다면) `SpringApplication.setWebEnvironment(false)` 설정하거나, `applicationContextClass` 프로퍼티를 설정해야 한다(Java API나 외부 프로퍼티즈를 통해서). 비즈니스 로직을 실행하려면 `CommandLineRunner`를 구현하고 `@Bean` 정의를 컨텍스트에서 삭제한다.
 
 ## 64. 속성 및 설정
 ### 64.1. 스프링애플리케이션의 설정 확장
