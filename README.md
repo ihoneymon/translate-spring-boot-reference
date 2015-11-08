@@ -86,7 +86,7 @@ Copies of this document may be made for your own use and for distribution to oth
 ### 22.5. 웹 환경
 ### 22.6. 커맨드라인러너 사용
 ### 22.7. 애플리케이션 종료
-## 23. 외부설정
+## (23. 외부설정)[#23. 외부설정]
 ### 23.1. 커맨드라인 속성 접근
 ### 23.2. 애플리케이션 속성 파일들
 ### 23.3. 프로파일 지정 속성들
@@ -1482,7 +1482,7 @@ public class MyBean implements CommandLineRunner {
 
 추가적으로, ```org.springframework.boot.ExitCodeGenerator``` 인터페이스를 구현한 빈들은 애플리케이션이 종료될 떄 특정 exit code를 반환하기를 원하는 경우 사용한다.
 
-## 23. 외부설정<a name="외부설정"></a>
+## 23. 외부설정<a name="23. 외부설정"></a>
 스프링부트는 동일한 애플리케이션으로 다른 환경에서 동작할 수 있도록 설정을 확장하는 것을 허용한다. 프로퍼티스 파일, YAML 파일, environment 변수 그리고 커맨드라인 인자를 통해서 설정을 확장할 수 있다. 속성 값은 ```@Value``` 애노테이션을 사용하여 바로 주입할 수도, 스프링의 ```Environment``` 추상화에 접근하거나 객체를 구축하여 연동할 수 있다.
 
 스프링부트는 값values, 속성properties 들에 대해서 다음과 같은 순위를 고려하여 합리적으로 오버라이딩하는 것을 허용하도록 설계된 매우 세분화된 ```Pr다opertySource``` 순위order를 사용한다.
@@ -1569,7 +1569,7 @@ app.description=${app.name} is a Spring Boot application
 
 > 팁: 스프링부트에 있는 프로퍼티스들을 축약하여 기술적으로 사용할 수 있다. 이와 관련해서는 [64.3. '간략한' 커맨드라인 인자 사용](#'간략한' 커맨드라인 인자 사용)에서 어떻게 사용하는지 상세한 설명을 볼 수 있다.
 
-### 23.5. Properties 대신 YAML 사용<a name="Properties 대신 YAML 사용"></a>
+### 23.5. Properties 대신 YAML 사용<a name="23.5. Properties 대신 YAML 사용"></a>
 [YAML](http://yaml.org/)은 JSON에 포함되며 계층적인 설정 데이터를 정의하는데 매우 편리한 문법을 가지고 있다. ```SpringApplication``` 클래스는 클래스패스 상에 [SnakeYAML]()라이브러리를 가지고 있다면 YAML을 지원할 수 있도록 프로퍼티스에서 자동전환한다.
 
 > 노트: ```spring-boot-starter```에서는 자동으로 ```SnakeYAML``` 'starter POM`'를 제공한다.
@@ -1729,7 +1729,7 @@ public class ConnectionSettings {
 또한 ```configurationPropertiesValidator```이라 불리는 빈 정의를 생성하면 커스텀 스프링 ```Validator```를 추가할 수 있다.
 > 팁: ```spring-boot-actuator``` 모듈은 모든 ```@ConfigurationProperties``` 빈들을 탐색할 수 있는 엔드포인트를 포함하고 있다. 간단하게 브라우저에서 ```/configprops```로 접근하거나 이와 동등한 JMX 엔드포인트를 사용할 수 있다. 이와 관련해서는 보다 자세한 사항은 [출시준비 기능](#엔드포인트) 섹션을 살펴보기 바란다.
 
-## 24. 프로파일<a name="프로파일"></a>
+## 24. 프로파일<a name="24. 프로파일"></a>
 스프링 프로파일즈는 독립된 환경 속에서 명확한 환경 속에서 애플리케이션의 설정을 관리할 수 있도록 분리하는 방법을 제공하고 있다. 어느 ```@Conponent``` 혹은 ```@Configuration``` 이든 ```@Profile```을 지정하여 읽어오는 것을 제한할 수 있다:
 
 ```java
@@ -3006,7 +3006,7 @@ management.context-path=/manage
 
 ```application.properties``` 에 사용했을 때 엔드포인트는 ```/{id}``` 에서 ```/manage/{id}```로 변경될 것이다(예: ```/manage/info```).
 
-### 41.3. 관리 서버포트 변경
+### 41.3. 관리 서버포트 변경<a name="41.3. 관리 서버포트 변경"></a>
 기본 HTTP 포트를 사용하는 노출된 관리 엔드포인트들은 클라우드 배포시 고려사항이 있다. 그러나, 애플리케이션을 자신의 데이터센터 내에서 실행할 때에는 다른 HTTP 포트를 사용하여 엔드포인트 노출을 선호할 수 있다.
 
 ```management.port``` 속성을 사용하여 HTTP 포트를 변경할 수 있다.
@@ -4135,13 +4135,125 @@ repackager.repackage(new Libraries() {
 모든 스프링 애플리케이션이 웹 애플리케이션(웹 서비스)이어야 하는 건 아니다. 뿐만 아니라 스프링 애플리케이션을 구동하여 인프라를 설정하고 `main` 메서드를 실행하고 싶다면 스프링부트의 `SpringApplication` 기능을 통해 쉽게할 수 있다. `SpringApplication`은 웹 애플리케이션이 필요한지에 따라 `ApplicationContext` 클래스를 변경한다. 첫번째 해야할 것은 클래스패스 상에서 서블릿 API 의존성들을 모두 제거해야 한다. 만약 그렇게 할 수 없다면(예를 들어, 같은 코드로 2개의 애플리케이션을 실행하고 있다면) `SpringApplication.setWebEnvironment(false)` 설정하거나, `applicationContextClass` 프로퍼티를 설정해야 한다(Java API나 외부 프로퍼티즈를 통해서). 비즈니스 로직을 실행하려면 `CommandLineRunner`를 구현하고 `@Bean` 정의를 컨텍스트에서 삭제한다.
 
 ## 64. 속성 및 설정
-### 64.1. 스프링애플리케이션의 설정 확장
-### 64.2. 애플리케이션의 외부 속성 위치 변경
+### 64.1. 스프링애플리케이션의 설정 확장<a name="64.1. 스프링애플리케이션의 설정 확장"></a>
+`SpringApplication` 은 애플리케이션이 생성될 때 행위를 변경할 수 있는 Java API 로 사용할 수 있는 속성들(기본 setters사용)을 가지고 있다. 혹은 `spring.main.*` 속성을 사용하여 외부적으로 설정할 수 있다. 예를 들어, `application.properties`에 다음과 같이 설정한다면:
+
+```
+spring.main.web_environment=false
+spring.main.show_banner=false
+```
+
+이렇게 설정하면, 시작시 스프링부트 배너가 출력되지 않고, 애플리케이션은 웹 애플리케이션이 아닐 것이다.
+
+> 노트: 
+예제에 있는 구분자로 언더스코어(`_`) 혹은 대시(`-`)를 속성 이름에 사용하는 것도 허용한다.
+
+### 64.2. 애플리케이션의 외부 속성 위치 변경<a name="64.2. 애플리케이션의 외부 속성 위치 변경"></a>
+서로 다른 소스코드로부터 기본 속성들을 정의된 순서에 따라 Spring `Environement` 에 추가할 수 있다('스프링 부트 기능' 섹션의 (23. 외부설정)[#23. 외부설정]을 보라).
+
+인자를 통해 넘기는 것이 좋은 방법이며 `@PropertySource` 애노테이션을 애플리케이션 소스에 추가하여 변경할 수 있다. 클래스는 `SpringApplication` 정적 관례적인 메서드에 전달하고 `@PropertySrouce`를 가지고 있는지 검사한 후에 `setSources()`를 사용하여 추가한다, 그렇게 하고나면, 그 속성은 초기에 `ApplicationContext` 생명주기의 모든 단계의 `Environment`에 추가된다. 이 방법으로 추가된 속성은 기본설정으로 추가된 것보다 우선순위를 가지지만, 시스템 속성, 환경변수 혹은 명령행보다는 낮은 순위를 가지게 된다.
+
+또한 시스템 속성을 변경할 수 있는 방법을 제공한다:
+* `spring.config.name`(`SPRING_CONFIG_NAME`), 파일명은 `application`으로 구성
+* `spring.config.location`(`SPRING_CONFIG_LOCATION`)는 파일이 적재되는 위치를 지정한다(예, 클래스패스 리소스 혹은 URL). 분리된 `Environment` 속성 소스는 이 문서를 통해서 설정할 수 있으며, 시스템 속성, 환경변수 혹은 명령행에서 정의된 속성들을 덮어쓰기 할 수 있다.
+
+어떤 환경설정을 하던지 스프링부트는 항상 `application.properties`를 읽어온다고 앞에서 이야기 했다. YAML은 `.yml` 확장자를 가진 파일을 사용하는 경우도 기본적으로 목록에 추가된다. 
+
+보다 자세한 사항은 [`ConfigFileApplicationListener`](http://github.com/spring-projects/spring-boot/tree/master/spring-boot/src/main/java/org/springframework/boot/context/config/ConfigFileApplicationListener.java)을 살펴보기 바란다.
+
 ### 64.3. '간략한' 커맨드라인 인자 사용<a name="'간략한' 커맨드라인 인자 사용"></a>
-### 64.4. 외부 속성을 YAML로 정의
-### 64.5. 활성 스프링 프로파일 설정
-### 64.6. <a href="환경 의존적 설정 변경">환경 의존적 설정 변경</a>
+몇몇 이들은 명령행에서 `--server.port=9000` 대신에 `--port=9000`을 사용하여 설정하길 원하는 이들이 있을 것이다. `application.properties`에서 위치변환자를 사용하여 쉽게 설정할 수 있다, 예
+```
+server.port=${port:8080}
+```
+
+> 팁:
+`spring-boot-starter-parent` POM을 상속받았다면, `maven-resources-plugins`의 기본 필터토큰은 스프링 스타일의 위치변환자를 통해 충돌을 예방하며 `${*}`으로 변경할 수 있다(예, `@maven.token@` 대신에 `${maven.token}`). 만약 `application.properties`를 바로 메이븐 필터링을 활성화하고 있다면, [다른 구분자](http://maven.apache.org/plugins/maven-resources-plugin/resources-mojo.html#delimiters)를 사용하여 기본 필터 토큰을 변경할 수도 있다.
+
+> 노트:
+Heroku와 Cloud Foundry 와 같은 PaaS 환경에서는 특정 작업 포트가 지정된 경우가 있다, 이 두가지 플랫폼에서는 `PORT` 환경변수가 있어 자동설정되며 스프링은 `Environment` 속성을 대문자 동의어로 연결할 수 있다.
+
+### 64.4. 외부 속성을 YAML로 정의<a name="64.4. 외부 속성을 YAML로 정의"></a>
+YAML은 JSON 타입의 상위설정이며 계층형 형태의 외부속성을 위한 매우 편리한 문법을 제공한다. 예
+
+```yml
+spring:
+    application:
+        name: cruncher
+    datasource:
+        driverClassName: com.mysql.jdbc.Driver
+        url: jdbc:mysql://localhost/test
+server:
+    port: 9000
+```
+
+`application.yml` 이란 파일을 만들고 루트 클래스패스에 위치시키고, `snakeyaml` 의존성을 추가한다(메이븐 의존성 `org.yaml:snakeyaml`은, 이미 `spring-boot-starter` 를 사용하여 포함하고 있다). YAML 파일은 Java `Map<String,Object>` 형태로 파싱하고, 스프링부트는 평평한 지도 1단계 깊이로 구분된 키로 구성는데, 몇몇 이들은 자바에서 `Properties` 를 사용하는 것을 선호하는 이들도 있다.
+
+다음의 예는 위에서 YAML에 작성한 내용을  `application.properties` 파일로 작성한 것이다.
+
+```
+spring.application.name=cruncher
+spring.datasource.driverClassName=com.mysql.jdbc.Driver
+spring.datasource.url=jdbc:mysql://localhost/test
+server.port=9000
+```
+
+YAML에 대한 보다 자세한 정보는 '스프링부트 기능' 섹션에 [23.5. Properties 대신 YAML 사용](#23.5. Properties 대신 YAML 사용)를 살펴보라.
+
+### 64.5. 활성 스프링 프로파일 설정<a name="64.5. 활성 스프링 프로파일 설정"></a>
+스프링 `Environment`는 이것을 위한 API를 가지고 있으며, 시스템 프로파일(`spring.profils.active`) 를 OS 환경 변수(`SPRING_PROFILES_ACVIE`)을 설정할 수 있다. 예로, 애플리케이션을 실행할 때 `-D` 인자와 함께 실행(메인 클래스 혹은 jar 아카이브 전에 실행해야 한다):
+
+```
+$ java -jar -Dspring.profiles.active=production demo-0.0.1-SNAPSHOT.jar
+```
+
+혹은 스프링부트에서 `application.properties` 를 통해 활성 프로파일이 설정할 수도 있다:
+
+```
+spring.profiles.active=production
+```
+
+이 방법으로 설정된 값은 시스템 속성 혹은 환경변수 설정을 대체한다, 그러나 `SpringApplicationBuilder.profiles()` 메서드에 의한 것은 아니다. 그래서 Java API를 사용하면 기본값을 변경하지 않고 프로파일을 인자로 사용할 수 있다. 
+
+보다 자세한 내용은 '스프링부트 기능' 섹션에 [24. 프로파일](#24. 프로파일)을 살펴보기 바란다. 
+
+### 64.6. 환경 의존적 설정 변경<a name="64.6. 환경 의존적 설정 변경"></a>
+YAML 파일은 `---` 줄을 기준으로 분리된 문서들로 구성된다, 그리고 각 문서는 독립된 평평한 맵의 형태로 파싱된다.
+
+만약 YAML 문서에 `spring.profiles` 키가 포함되어 있다면, 프로파일 값(프로파일의 콤마로 분리된 목록)은 스프링 `Environment.acceptsProfiles()`에 설정되고 활성화된 문서의 프로파일에 병합된다(혹은 그렇지 않을 수도 있다).
+> 역자주: **프로파일이 설정되지 않은 문서의 내용**은 **프로파일이 설정된 문서의 내용**이 덮어씌여지고 프로파일 설정된 문서의 내용에 없는 부분은 병합된다.
+
+예:
+```yaml
+server:
+    port: 9000
+---
+
+spring:
+    profiles: development
+server:
+    port: 9001
+
+---
+
+spring:
+    profiles: production
+server:
+    port: 0
+```
+
+이 예제에서 기본 포트는 9000번이다, 그러나 스프링 프로파일 'development'가 활성화되면 포트는 9001이 활성화되고, 'production' 이 활성화되면 0이 된다.
+
+YAML 문서는 마주친 순서대로 우선순위를 가지고 병합된다(그래서 최근 값이 이전의 것들을 덮어쓴다).
+
+같은 방법을 프로퍼티즈 파일에서 사용하기 위해서는 `application-${profile}.properties` 를 사용해서 프로파일-설정 값을 설정해야 한다.
+
 ### 64.7. 외부 속성들의 빌트인 항목 살펴보기
+스프링부트는 애플리케이션이 실행될 때 `application.properties` (or `.yml`) 확장 속성들과 연결(혹은 다른 위치들을 포함)된다. 단독 위치에 있는 모든 지원가능한 속성을 다 사용하는 것은 아니다(기술적으로 불가능). 왜냐하면 클래스패스상에 추가된 jar 파일들에서 제공받기 때문이다.
+
+실행중인 애플리케이션은 `configprops` 엔드포인트 액추에이터 기능을 통해 `@ConfigurationProperties`을 통해 연결가능한 속성들과 연결된 속성들을 모두 보여준다.
+
+부록에 있는 [application.properties](#A. 일반적인 애플리케이션 속성) 예제에는 스프링부트에서 지원하는 거의 모든 속성들의 목록이 있다. `@ConfigurationProperties`와 `@Value` 애노테이션이 선언된 소스코드를 탐색하여 정의돈 목록은 `RelaxedEnvironment` 에 의해 사용된다.
 
 ## 65. 내장형 서블릿 컨테이너
 ### 65.1. Servlet, Filter 혹은 ServletContextListener 를 애플리케이션에 추가
@@ -4397,7 +4509,12 @@ public LocalContainerEntityManagerFactoryBean orderEntityManagerFactory(
 
 ## 71. 액츄에이터Actuator
 ### 71.1. 액츄에이터 엔드포인트의 주소 혹은 HTTP 포트 변경
+단독실행중인 애플리케이션의 액추에이터 HTTP 포트는 기본적으로 메인 HTTP port와 동일한 것을 사용한다. 애플리케이션 액추에이터 접속 포트를 변경하려고 한다면 `management.port` 확장 속성을 다르게 설정하면 된다. 다른 네트워크 주소로 접근하도록 하고자 할 경우(관리를 위한 내부 네트워크를 가지고 있거나 사용자 애플리케이션 중 외부의 하나) `management.address`에 서버에 연결할 수 있는 검증된 IP 주소를 설정할 수 있다.
+
+보다 자세한 사항은 [ManagementServerProperties](http://github.com/spring-projects/spring-boot/tree/master/spring-boot-actuator/src/main/java/org/springframework/boot/actuate/autoconfigure/ManagementServerProperties.java) 소스코드를 살펴보거나 '출시 준비 기능' 세션의 [41.3. 관리 서버포트 변경](#41.3. 관리 서버포트 변경)를 살펴보라.
+
 ### 71.2. 'whitelabel' 오류 페이지 변경
+스프링부트는 서버 에러가 발생했을 때 클라이언트 브라우저에서 볼 수 있는 'whitelable'에러페이지가 설치되어 있다(클라이언트에 JSON으로
 
 ## 72. 시큐리티
 ### 72.1. 스프링부트 시큐리티 설정 끄기
