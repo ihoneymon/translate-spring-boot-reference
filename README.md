@@ -4255,8 +4255,10 @@ YAML 문서는 마주친 순서대로 우선순위를 가지고 병합된다(그
 
 부록에 있는 [application.properties](#A. 일반적인 애플리케이션 속성) 예제에는 스프링부트에서 지원하는 거의 모든 속성들의 목록이 있다. `@ConfigurationProperties`와 `@Value` 애노테이션이 선언된 소스코드를 탐색하여 정의돈 목록은 `RelaxedEnvironment` 에 의해 사용된다.
 
-## 65. 내장형 서블릿 컨테이너
+## 65. 내장형 서블릿 컨테이너<a name="65. 내장형 서블릿 컨테이너"></a>
 ### 65.1. Servlet, Filter 혹은 ServletContextListener 를 애플리케이션에 추가
+Servlet, Filter, ServletContextListener
+
 ### 65.2. HTTP 포트 변경
 ### 65.3. HTTP 포트를 지정하지 않고 무작위로 사용
 ### 65.4. 실행시 HTTP Port 살펴보기
@@ -4517,8 +4519,45 @@ public LocalContainerEntityManagerFactoryBean orderEntityManagerFactory(
 스프링부트는 서버 에러가 발생했을 때 클라이언트 브라우저에서 볼 수 있는 'whitelable'에러페이지가 설치되어 있다(클라이언트에 JSON으로
 
 ## 72. 시큐리티
-### 72.1. 스프링부트 시큐리티 설정 끄기
-### 72.2. ```AuthenticationManager```를 변경하고 사용자 계정 추가
+### 72.1. 스프링부트 시큐리티 설정 끄기<a name="72.1. 스프링부트 시큐리티 설정 끄기"></a>
+`@Configuration` 와 `@EnableWebSecurity`가 선언된 곳이면 어디서든지 스프링부트의 기본 웹앱 보안설정을 끌 수 있다. `security.*` 에 기본설정들은 변경할 수 있다([`SecurityProperties`](http://github.com/spring-projects/spring-boot/tree/master/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/security/SecurityProperties.java) 에서 보다 자세한 설정가능항목들을 볼 수 있다) 그리고 [일반적인 애플리케이션 속성](#A. 일반적인 애플리케이션 속성) 부분 중에서 `SECURITY` 항목에 보다 자세한 설정들이 있다.
+
+### 72.2. `AuthenticationManager`를 변경하고 사용자 계정 추가
+
+`AuthenticationManager` 타입의 `@Bean`을 제공한다면 기본설정의 것은 생성되지 않는다, 그러면 스프링 시큐리티의 가능한 모든 기능들을 설정해야 한다(예, [다양한 인증 선택항목들](http://docs.spring.io/spring-security/site/docs/current/reference/htmlsingle/#jc-authentication))
+
+스프링 시큐리티는 또한 편리한 `AuthenticationManagerBuilder`을 제공하여 일반적인 선택항목들과 함께 `AuthenticationManager` 를 빌드할 수 있도록 해준다. 웹앱에서 사용시 권장하는 방법은 `WebSecurityConfigurerAdapter` void 메서드에 추가하는 방법이다, 예:
+
+```java
+@Configuration
+public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+
+    @Autowired
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+            auth.inMemoryAuthentication()
+                .withUser("barry").password("password").roles("USER"); // ... etc.
+    }
+
+    // ... other stuff for application security
+
+}
+```
+
+여기에 nested 클래스혹은 단독실행 클래스(인스턴스화 순위에 영향을 끼치는 다른 `@Bean`이 섞이지 않은)를 추가하면 가장 좋은 결과를 얻을 것이다. [security web 예제](http://github.com/spring-projects/spring-boot/tree/master/spring-boot-samples/spring-boot-sample-web-secure)는 따라하기 용이한 형틀이다.
+
+만약 구체적인 이슈에 대한 경험이 있다면(예를 들어, JDBC 혹은 JPA를 사용하여 사용자 상세정보UserDetails를 저장) `GlobalAuthenticationConfigurerAdapter` 안에서 `AuthenticationManagerBuilder`를 콜백으로 추출할 수있다(인증매니저가 다른 곳에서 필요로 하기 전에 `init()` 메서드가 먼저 호출된다). 예,
+```java
+@Configuration
+public class AuthenticationManagerConfiguration extends
+
+    GlobalAuthenticationConfigurerAdapter {
+    @Override
+    public void init(AuthenticationManagerBuilder auth) {
+        auth.inMemoryAuthentication() // ... etc.
+    }
+
+}
+```
 
 ## 73. 핫스와핑
 ### 73.1. 정적컨텐츠 다시 읽기
