@@ -299,7 +299,7 @@ Copies of this document may be made for your own use and for distribution to oth
 ### 64.4. 외부 속성을 YAML로 정의
 ### 64.5. 활성 스프링 프로파일 설정
 ### 64.6. 환경 의존적 설정 변경
-### 64.7. 외부 속성들의 빌트인 항목 살펴보기
+### [64.7. 외부 속성들의 빌트인 항목 살펴보기](#64.7. 외부 속성들의 빌트인 항목 살펴보기)
 ## 65. 내장형 서블릿 컨테이너
 ### 65.1. Servlet, Filter 혹은 ServletContextListener 를 애플리케이션에 추가
 ### 65.2. HTTP 포트 변경
@@ -4248,7 +4248,7 @@ YAML 문서는 마주친 순서대로 우선순위를 가지고 병합된다(그
 
 같은 방법을 프로퍼티즈 파일에서 사용하기 위해서는 `application-${profile}.properties` 를 사용해서 프로파일-설정 값을 설정해야 한다.
 
-### 64.7. 외부 속성들의 빌트인 항목 살펴보기
+### 64.7. 외부 속성들의 빌트인 항목 살펴보기<a name="64.7. 외부 속성들의 빌트인 항목 살펴보기"></a>
 스프링부트는 애플리케이션이 실행될 때 `application.properties` (or `.yml`) 확장 속성들과 연결(혹은 다른 위치들을 포함)된다. 단독 위치에 있는 모든 지원가능한 속성을 다 사용하는 것은 아니다(기술적으로 불가능). 왜냐하면 클래스패스상에 추가된 jar 파일들에서 제공받기 때문이다.
 
 실행중인 애플리케이션은 `configprops` 엔드포인트 액추에이터 기능을 통해 `@ConfigurationProperties`을 통해 연결가능한 속성들과 연결된 속성들을 모두 보여준다.
@@ -4257,22 +4257,232 @@ YAML 문서는 마주친 순서대로 우선순위를 가지고 병합된다(그
 
 ## 65. 내장형 서블릿 컨테이너<a name="65. 내장형 서블릿 컨테이너"></a>
 ### 65.1. Servlet, Filter 혹은 ServletContextListener 를 애플리케이션에 추가
-Servlet, Filter, ServletContextListener
+Servlet, Filter, ServletContextListener 그리고 서블릿 스펙을 지원하는 다른 리스너들은 애플리케이션에서 `@Bean` 정의로 추가할 수 있다. eager 초기화 때문에 너무 많은 빈이 등록되지 않도록 매우 조심해야하는데 컨테이너는 애플리케이션 생명주기에서 매우 초기에 설치되기 때문이다(예, `DataSource` 혹은 JPA 설정을 이 녀석들에게 의존하는 것은 좋은 생각이 아니다). 초기화 대신에 처음 사용할 때에는 느슨한 초기화를 하는 것이 좋다.
+
+`Filter`와 `Servlets`의 경우 `FilterRegisterBean` 혹은 `ServletREgisterationBean` 을 사용하여 초기화 파라메터와 연결할 수 있다. 
 
 ### 65.2. HTTP 포트 변경
-### 65.3. HTTP 포트를 지정하지 않고 무작위로 사용
+단독실행 애플리케이션의 메인 HTTP 포트는 `8080`이다, 그러나 `server.port` 를 사용하여 설정할 수 있다(예를 들어, `application.properties` 혹은 시스템 속성을 통해). `Environment`값의 관련된 연결 덕분에 또한 `SERVER_PORT`를 사용할 수 있다(예, OS 환경 변수).
+
+`WebApplicationContext`를 만들 때, `server.port=-1`(테스트에 유용)를 사용하여 HTTP 엔드포인트를 완벽하게 전환할 수 있다.()
+
+### 65.3. HTTP 포트를 지정하지 않고 무작위로 사용<a name="65.3. HTTP 포트를 지정하지 않고 무작위로 사용"></a>
+`server.port=0`을 사용하면 포트를 탐색하여 사용하지 않는 포트를 사용한다.
+
 ### 65.4. 실행시 HTTP Port 살펴보기
-### 65.5. SSL 설정
-### 65.6. 톰캣 설정
-### 65.7. 톰캣의 다중커넥터 활성화
-### 65.8. 톰캣을 프론트엔드 프록시 서버로 사용
-### 65.9. 톰캣 대신 제티 사용
-### 65.10. 제티 설정
-### 65.11. 톰캣 대신 언더토우Undertow 사용
-### 65.12. 언더토우 설정
-### 65.13. 톰캣 7 사용
-### 65.14. 제티 8 사용
-### 65.15. ```@ServerEndpoint```를 사용해서 웹소켓 엔드포인트 생성
+실행중인 서버의 로그출력물이나 `EmbeddedServletContainer`을 통한 `EmbeddedWebApplicationContext` 에 접근할 수 있다. 최적의 방법은 `ApplicationListener<EmbeddedServletContainerInitializedEvent>` 타입의 `@Bean`을 초기화 과정에 추가하고 퍼블리싱된 이벤트들을 컨테이너쪽으로 끌어오는 것이다.
+
+`server.port=0`으로 설정학고 `@IntegrationTests`를 하면 실제 포트(`local`)는 `@Value`를 통해 주입받는 유용한 실습이 가능하다. 예를 들자면:
+
+```java
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringApplicationConfiguration(classes = SampleDataJpaApplication.class)
+@WebAppConfiguration
+@IntegrationTest("server.port:0")
+public class CityRepositoryIntegrationTests {
+
+    @Autowired
+    EmbeddedWebApplicationContext server;
+
+    @Value("${local.server.port}")
+    int port;
+
+    // ...
+
+}
+```
+
+### 65.5. SSL 설정<a name="65.5. SSL 설정"></a>
+SSL 은 `application.properties` 혹은 `application.yml`에 `server.ssl.*` 속성을 통해 다양한 설정들을 정의할 수 있다. 예를 들자면:
+```
+server.port = 8443
+server.ssl.key-store = classpath:keystore.jks
+server.ssl.key-store-password = secret
+server.ssl.key-password = another-secret
+```
+
+지원하는 속성들에 대한 보다 자세한 사항들은 [Ssl](http://github.com/spring-projects/spring-boot/tree/master/spring-boot/src/main/java/org/springframework/boot/context/embedded/Ssl.java) 을 살펴보자.
+
+> 노트:
+톰캣이 요구하는 key store(사용하려는 신뢰가능한 저장체)는 파일시스템을 통해 바로 접근이 가능해야 한다, 예를 들어, jar 파일을 통해서 읽어올 수는 없다.
+
+### 65.6. 톰캣 설정<a name="65.6. 톰캣 설정"></a>
+`@ConfigurationProperties`(`ServerProperties`는 여기서 주속성 중 하나)에 관한 조언들은 [64.7. 외부 속성들의 빌트인 항목 살펴보기](#64.7. 외부 속성들의 빌트인 항목 살펴보기)을 통해 따를 수 있다. 거기에 더해 `EmbeddedServletContainerCustomizer` 과 다양한 톰캣을위한 `*Customizers`을 추가할 수 있다. 톰캣 API는 `TomcatEmbeddedServletContainerFactory`에 접근할 수 있는 막강한 기능을 부여하여 변경할 수 있는 다양한 수단을 제공한다. 혹은 `TomcatEmbeddedServletContainerFactory`를 직접 추가하여 선택사항을 초기화할 수 있다.
+
+### 65.7. 톰캣의 다중커넥터 활성화<a name="65.7. 톰캣의 다중커넥터 활성화"></a>
+`TomcatEmbeddedServletContainerFactory`에 `org.apache.catalina.connector.Connector` 인터페이스를 구현한 다양한 커넥터를 허용한다. 예를 들어, HTTP and HTTPS 커넥터.
+
+```java
+
+```
+
+### 65.8. 톰캣을 프론트엔드 프록시 서버로 사용<a name="65.8. 톰캣을 프론트엔드 프록시 서버로 사용"></a>
+스프링부트는 톰캣의 `RemoteIpValve`가 활성화 되어 있다면 자동으로 설정한다. 이 설정은 표준 `x-forwarded-for` 와 `x-forwarded-proto`헤더를 투명하게 사용할 수 있도록 하여 거의 모든 프론트엔드 프록시 서버에 추가할 수 있다. 밸브는 하나 혹은 양쪽 속성이 비어있지 않다면 설정을 변환할 수 있다(관례적인 값은 대부분 프록시를 사용하며 하나를 설정하면 다른 것은 자동으로 설정된다).
+
+```
+server.tomcat.remote_ip_header=x-forwarded-for
+server.tomcat.protocol_header=x-forwarded-proto
+``` 
+
+프록시로 다른 헤더를 사용한다면 `application.properties`  항목을 추가하여 밸브 설정을 사용자가 정의할 수 있다.
+
+```
+server.tomcat.remote_ip_header=x-your-remote-ip-header
+server.tomcat.protocol_header=x-your-protocol-header
+```
+
+또한 밸브는 신뢰할 수 있는 내부 프록시 맞춤에 기본 정규 표현식을 사용한다. 기본적으로 IP주소는 `10/8`, `192.168/16`, `169.254/16` and `127/8`을 신뢰한다. 밸브의 설정값은 `application.properties`에 항목을 추가하여 변경할 수 있다.
+
+```
+server.tomcat.internal_proxies=192\\.168\\.\\d{1,3}\\.\\d{1,3}
+```
+
+> 노트: 
+이중 백슬러시는 설저응ㄹ 위해서 프로퍼티즈를 사용할 때만 필요하다. YAML을 사용하고 있다면 `192\.168\.\d{1,3}\.\d{1,3}` 다음과 같이 싱글 백슬러시를 사용하면 같은 효과를 볼 수 있다.
+
+대안으로, `TomcatEmbeddedServletContainerFactory` 빈을 추가하고 `RemoteIpValve` 설정을 조절하면 제어를 완료할 수도 있다.
+
+### 65.9. 톰캣 대신 제티 사용<a name="65.9. 톰캣 대신 제티 사용"></a>
+스프링부트 스타터(`spring-boot-starter-web` 일부)는 기본 내장 컨테이너로 톰캣을 사용한다. 필요하다면 그 의존성을 제외하고 대신 제티를 포함시킬 수 있다. 스프링부트는 톰캣과 제티에 관한 의존성을 기본제공하여 스타터를 분리하여 이 과정을 쉽게 가능하도록 돕고 있다.
+
+메이븐 예:
+
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-web</artifactId>
+    <exclusions>
+        <exclusion>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+        </exclusion>
+    </exclusions>
+</dependency>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-jetty</artifactId>
+</dependency>
+```
+
+그레들 예:
+```gradle
+configurations {
+    compile.exclude module: "spring-boot-starter-tomcat"
+}
+
+dependencies {
+    compile("org.springframework.boot:spring-boot-starter-web:1.2.0.BUILD-SNAPSHOT")
+    compile("org.springframework.boot:spring-boot-starter-jetty:1.2.0.BUILD-SNAPSHOT")
+    // ...
+}
+```
+
+### 65.10. 제티 설정<a name="65.10. 제티 설정"></a>
+`@ConfigurationProperties`에 관한 내용은 [64.7. 외부 속성들의 빌트인 항목 살펴보기](#64.7. 외부 속성들의 빌트인 항목 살펴보기)을 따르면 도움이 될 것이다(`ServerProperties`도 여기에 있다), 그리고 `EmbeddedServletContainerCustomizer`를 살펴보라. 제티 API는 매우 풍부한데 `JettyEmbeddedServletContainerFactory`를 통해 접근가능하며 다양한 방법으로 변경할 수 있다. 혹은 `JettyEmbeddedServletContainerFactory`를 추가하여 초기화시킬 수 있다.
+
+### 65.11. 톰캣 대신 언더토우Undertow 사용<a name="65.11. 톰캣 대신 언더토우Undertow 사용"></a>
+[65.9. 톰캣 대신 제티 사용](#65.9. 톰캣 대신 제티 사용)와 매우 유사하게 톰캣 대신 언더토우를 사용할 수 있다. 톰캣 의존성을 제외시키고 언더토우 스타터를 대신 포함시키면 된다.
+
+메이븐 예:
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-web</artifactId>
+    <exclusions>
+        <exclusion>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+        </exclusion>
+    </exclusions>
+</dependency>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-undertow</artifactId>
+</dependency>
+```
+
+그레들 예:
+```
+configurations {
+    compile.exclude module: "spring-boot-starter-tomcat"
+}
+
+dependencies {
+    compile("org.springframework.boot:spring-boot-starter-web:1.2.0.BUILD-SNAPSHOT")
+    compile("org.springframework.boot:spring-boot-starter-undertow:1.2.0.BUILD-SNAPSHOT")
+    // ...
+}
+```
+
+### 65.12. 언더토우 설정<a name="65.12. 언더토우 설정"></a>
+`@ConfigurationProperties`에 관한 내용은 [64.7. 외부 속성들의 빌트인 항목 살펴보기](#64.7. 외부 속성들의 빌트인 항목 살펴보기)을 따르면 도움이 될 것이다(`ServerProperties`도 여기에 있다), 그리고 `EmbeddedServletContainerCustomizer`를 살펴보라. 필요하다면 언더토우의 설정은 `UndertowBuilderCustomizer`를 사용하여 변경할 수 있으며 `UndertowEmbeddedServletContainerFactory` 에 접근가능하다. 혹은 `UndertowEmbeddedServletContainerFactory` 구현하여 초기화할 수 있다.
+
+
+### 65.13. 톰캣 7 사용<a name="65.13. 톰캣 7 사용"></a>
+톰캣 7도 스프링부트에서 동작한다, 그러나 기본은 톰캣 8을 사용한다. 톰캣 8을 사용할 수 없다면(예를 들어, 자바 1.6을 사용한다거나) 톰캣 7과 서블릿 API 3.0을 참조하는 클래스 패스를 변경해야 한다.
+
+만약 스타터 poms와 parents를 사용하고 있다면 버전 속성만 변경하면 된다. 다음의 간단한 예를 보자:
+
+```xml
+<properties>
+    <tomcat.version>7.0.56</tomcat.version>
+    <servlet-api.version>3.0.1</servlet-api.version>
+</properties>
+<dependencies>
+    ...
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+    ...
+</dependencies>
+```
+
+### 65.14. 제티 8 사용<a name="65.14. 제티 8 사용"></a>
+스프링부트에서는 제티8을 사용할 수 있지만, 기본적으로는 제티 9을 사용한다. 만약 제티 9을 사용할 수 없다면(예를 들어, 자바 1.6을 사용한다거나) 제티 8과 서블릿 API 3.0을 참조하는 클래스패스를 변경하면 된다. 추가적으로 제티의 웹소켓관련 의존성을 제외시켜야 한다.
+
+만약 스타터 poms와 parent를 사용중이라면 웹소켓 요구사항을 제외시키고 버전 속성을 변경하면 된다. 다음의 간단한 예를 보자:
+
+```xml
+<properties>
+    <jetty.version>8.1.15.v20140411</jetty.version>
+    <jetty-jsp.version>2.2.0.v201112011158</jetty-jsp.version>
+    <servlet-api.version>3.0.1</servlet-api.version>
+</properties>
+<dependencies>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+        <exclusions>
+            <exclusion>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-tomcat</artifactId>
+            </exclusion>
+        </exclusions>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-jetty</artifactId>
+        <exclusions>
+            <exclusion>
+                <groupId>org.eclipse.jetty.websocket</groupId>
+                <artifactId>*</artifactId>
+            </exclusion>
+        </exclusions>
+    </dependency>
+</dependencies>
+```
+### 65.15. `@ServerEndpoint`를 사용해서 웹소켓 엔드포인트 생성<a name="65.15. `@ServerEndpoint`를 사용해서 웹소켓 엔드포인트 생성"></a>
+스프링부트 애플리케이션에서 `@ServerEndpoint`와 내장 컨테이너를 사용하고 있다면 `ServerEndpointExporter` `@Bean`은 단독으로 선언해야 한다:
+
+```java
+@Bean
+public ServerEndpointExporter serverEndpointExporter() {
+    return new ServerEndpointExporter();
+}
+```
+
+이 빈은 다른 `@ServerEndPoint` 애노테이션을 사용한 빈과 함께 웹소켓 컨테이너에 등록된다. 단독 서블릿 컨테이너가 배포될 때 서블릿 컨테이너 초기화의 역할을 수행하며 `ServerEndpointExporter` 빈은 필요하지 않다.
 
 ## 66. 스프링 MVC
 ### 66.1. JSON REST 서비스 작성
@@ -4489,14 +4699,14 @@ public LocalContainerEntityManagerFactoryBean orderEntityManagerFactory(
 
 동일한 문제점과 기능이 다른 자동 설정되는 Spring Data에도(Elasticsearch, Solr) 에도 적용된다.각 변경되는 어노테이션과 플래그들이 다르므로 유의하여 사용하도록 하자.
 
-## 69. <a name="데이터베이스 초기화">데이터베이스 초기화</a>
-### 69.1. JPA 사용하여 데이터베이스 초기화
-### 69.2. Hibernate를 사용하여 데이터베이스 초기화
-### 69.3. Spring JDBC를 사용하여 데이터베이스 초기화
-### 69.4. 스프링 배치 데이터베이스 초기화
-### 69.5. 고차원 데이터베이스 마이그레이션 도구 사용
-#### 69.5.1. 시작시 Flyway 실행하여 데이터베이스 마이그레이션
-#### 69.5.2. 시작시 Liquibase를 실행하여 데이터베이스 마이그레이션
+## 69. 데이터베이스 초기화<a name="69. 데이터베이스 초기화"></a>
+### 69.1. JPA 사용하여 데이터베이스 초기화<a name="69.1. JPA 사용하여 데이터베이스 초기화"></a>
+### 69.2. Hibernate를 사용하여 데이터베이스 초기화<a name="69.2. Hibernate를 사용하여 데이터베이스 초기화"></a>
+### 69.3. Spring JDBC를 사용하여 데이터베이스 초기화<a name="69.3. Spring JDBC를 사용하여 데이터베이스 초기화"></a>
+### 69.4. 스프링 배치 데이터베이스 초기화<a name="69.4. 스프링 배치 데이터베이스 초기화"></a>
+### 69.5. 고차원 데이터베이스 마이그레이션 도구 사용<a name="69.5. 고차원 데이터베이스 마이그레이션 도구 사용"></a>
+#### 69.5.1. 시작시 Flyway 실행하여 데이터베이스 마이그레이션<a name="69.5.1. 시작시 Flyway 실행하여 데이터베이스 마이그레이션"></a>
+#### 69.5.2. 시작시 Liquibase를 실행하여 데이터베이스 마이그레이션<a name="69.5.2. 시작시 Liquibase를 실행하여 데이터베이스 마이그레이션"></a>
 
 ## 70. 배치 애플리케이션
 ### 70.1. 시작시 스프링 배치 작업 실행
@@ -4579,12 +4789,12 @@ public class AuthenticationManagerConfiguration extends
 ### 74.7. 그레들을 이용해서 스프링부트 애플리케이션 원격 디버그 시작
 ### 74.8. 앤트를 이용해서 실행가능한 아카이브 빌드<a name="앤트를 이용해서 실행가능한 아카이브 빌드"></a>
 
-## 75. 전통적 배포
+## 75. 전통적 배포<a name="75. 전통적 배포"></a>
 ### 75.1. 배포가능한 war 파일 생성<a name="75.1. 배포가능한 war 파일 생성"></a>
-### 75.2. 오래된 서블릿 컨테이너에 배포가능한 war 파일 생성
-### 75.3. 기존의 애플리케이션을 스프링부트로 변환
-### 75.4. 웹로직을 위한 war 배포
-### 75.5. 오래된(Servlet 2.5) 컨테이너에 war 배포
+### 75.2. 오래된 서블릿 컨테이너에 배포가능한 war 파일 생성<a name="75.2. 오래된 서블릿 컨테이너에 배포가능한 war 파일 생성"></a>
+### 75.3. 기존의 애플리케이션을 스프링부트로 변환<a name="75.3. 기존의 애플리케이션을 스프링부트로 변환"></a>
+### 75.4. 웹로직을 위한 war 배포<a name="75.4. 웹로직을 위한 war 배포"></a>
+### 75.5. 오래된(Servlet 2.5) 컨테이너에 war 배포<a name="75.5. 오래된(Servlet 2.5) 컨테이너에 war 배포"></a>
 
 # X. 부록<a name="X. 부록"></a>
 ## A. 일반적인 애플리케이션 속성<a name="A. 일반적인 애플리케이션 속성"></a>
@@ -5363,4 +5573,4 @@ $ java org.springframework.boot.loader.JarLauncher
 * [JarClassLoader](http://www.jdotsoft.com/JarClassLoader.php)
 * [OneJar](http://one-jar.sourceforge.net/)
 
-## E. 의존성 버전<a name="E. 의존성 버전"></a>
+## E. 의존성 버전<a name="E. 의존성 버전"></a>UndertowBuilderCustomizer
