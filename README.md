@@ -338,7 +338,7 @@ Copies of this document may be made for your own use and for distribution to oth
 ### 68.7. 복수 엔티티매니저 사용
 ### 68.8. 전통적인 ```persistence.xml```  사용
 ### 68.9. 스프링데이터 JPA와 몽고 레파지토리 사용
-## 69. 데이터베이스 초기화
+## [69. 데이터베이스 초기화](#69. 데이터베이스 초기화)
 ### 69.1. JPA 사용하여 데이터베이스 초기화
 ### 69.2. Hibernate를 사용하여 데이터베이스 초기화
 ### 69.3. Spring JDBC를 사용하여 데이터베이스 초기화
@@ -4700,13 +4700,47 @@ public LocalContainerEntityManagerFactoryBean orderEntityManagerFactory(
 동일한 문제점과 기능이 다른 자동 설정되는 Spring Data에도(Elasticsearch, Solr) 에도 적용된다.각 변경되는 어노테이션과 플래그들이 다르므로 유의하여 사용하도록 하자.
 
 ## 69. 데이터베이스 초기화<a name="69. 데이터베이스 초기화"></a>
+SQL 데이터베이스는 어떤 스택을 사용하느냐에 따라서 다른 방법들로 초기화할 수 있다. 혹은 각 단계별로 데이터베이스에 메뉴얼적으로 처리하는 방법도 있다.
+
 ### 69.1. JPA 사용하여 데이터베이스 초기화<a name="69.1. JPA 사용하여 데이터베이스 초기화"></a>
+JPA는 DDL 생성 기능을 가지고 있으며 데이터베이스와는 달리 기동이 시작되는 순간에 설정할 수 있다. 이부분은 두가지 확장 속성을 통해 제어가능하다:
+* `spring.jpa.generate-ddl` (boolean) 는 기능을 켜거나 끌 수 있으며 벤더에 의존적이지 않다.
+* `spring.jpa.hibernate.ddl-auto` (enum) 는 하이버네이트 기능으로 보다 합리적인 방법으로 행동을 제어할 수 있다. 자세한 내용은 다음과 같다.
+
 ### 69.2. Hibernate를 사용하여 데이터베이스 초기화<a name="69.2. Hibernate를 사용하여 데이터베이스 초기화"></a>
+`spring.jpa.hibernate.ddl-auto` 에 설정가능한 표준 하이버네이트 속성값은 `none`, `validate`, `update`, `create-drop` 이 있다. 스프링부트이 선택하는 기본값은 데이터베이스가 내장형인 경우(기본 `create-drop`)와 그렇지 않은 경우(기본 `none`)으로 생각해볼 수 있다. 내장형 데이터베이스는 `Connection` 유형을 탐색하여 `hsqldb`, `h2` 그리고 `derby`이면 내장형, 그 이외에는 내장형이 아니라고 판단한다. 인-메모리를 **'실제'** 데이터베이스로 변경할 때 새로운 플랫폼 안에 테이블과 데이터가 존재할 것이라고 추측하지 않도록 주의해야 한다. 명시적으로 `ddl-auto` 을 설정하거나, 다른 데이터베이스 초기화 기작을 사용하는 것이 좋다.
+
+추가적으로, `import.sql` 파일명을 가진 파일이 루트 클래스패스에 있다면 시동시 실행될 것이다. 이것은 잘 관리만 한다면 데모와 테스트를 위해서 매우 유용하지만, 출시제품의 경우에는 없기를 바라는 경우도 있을 것이다. 이것은 하이버네이트의 기능이다(스프링은 아무것도 하지 않는다).
+
 ### 69.3. Spring JDBC를 사용하여 데이터베이스 초기화<a name="69.3. Spring JDBC를 사용하여 데이터베이스 초기화"></a>
+스프링 JDBC는 `DataSource` 초기화 기능을 가지고 있다. 스프링부트는 기본적으로 그 기능을 활성화하고 있으며 표준 위치에 있는 `schema.sql`과 `data.sql`로부터 SQL을 읽어온다(클래스패스 루트). 추가적으로 스프링부트는 `schema-${platform}.sql` 그리고 `data-${platform}.sql` 파일을 읽을 것이다(파일들이 존재한다면), `platform`의 값은 `spring.datasource.platform` 값이며, 그 값들은 데이터베이스 벤더 이름들(`hsqldb`, `h2`, `oracle`, `mysql`, `postgresql` 등 )중에서 선택할 수 있다. 스프링부트는 스프링 JDBC 초기화에 대해서 '빠른 실패'를 기본으로 하고 있다. 그래서 애플리케이션 시작시 스크립트로 인해 예외가 생기면 시동에 실패한다. 스크립트 위치는 `spring.datasource.schema` 그리고 `spring.datasource.data` 를 설정하여 변경할 수 있으며 `spring.datasource.initialize=false` 속성을 설정하면 동작하지 않는다.
+
+`spring.datasource.continueOnError=true` 설정을 하면 '빠른 실패' 를 비활성화할 수 있다. 이것은 애플리케이션 개발이 완료되고 배포되는 시점에 유용하다. 스크립트는 가난한 남자의 이주‘poor man’s migrations’처럼 동작하여 입력실패는 데이터가 이미 존재한다는 의미기 때문에, 애플리케이션이 실행되거나 인스턴스로 동작할 때 방지할 필요가 없는 경우에 사용하면 된다.
+
+JPA app(하이버네이트를 함께 사용하는 경우)에서 `schema.sql`를 사용하고자 할 때 `ddl-auto=create-drop` 사항을 선택하여 하이버네이트가 같은 테이블을 생성하려고 시도하면서 에러가 발생할 수 있다. 이 상황을 피하기 위해서는 `ddl-auto`를 명시적으로 `""` 혹은 `"none"`을 설정하면 된다. `ddl-auto=create-drop`를 사용하지 않으면 항상 `data.sql`을 통해 새로운 데이터를 초기화할 것이다.
+
 ### 69.4. 스프링 배치 데이터베이스 초기화<a name="69.4. 스프링 배치 데이터베이스 초기화"></a>
+스프링배치를 사용하면 대부분의 인기있는 데이터베이스 플랫폼을 위한 SQL 초기화 스크립트를 사전에 패키징할 수 있다. 스프링부트는 데이터베이스 타입을 탐색하여 그에 적합한 스크립트를 실행할 수 있으며 '빠른 실패'를 비활성화 처리할 수 있다(에러는 로그로 출력되지만 애플리케이션이 시작되는 것을 차단하지는 않는다). 이런 이유로 스크립트는 신뢰할 수 있는 것으로 알려져 있으며, 일반적으로 버그가 포함되어 있지 않기 때문에 오차가 무시할 수 있을 정도이며 이를 무시하는 스크립트는 상호불변적이다. 명시적으로 `spring.batch.initializer.enabled=false`를 사용하여 초기화를 끌 수 있다.
+
 ### 69.5. 고차원 데이터베이스 마이그레이션 도구 사용<a name="69.5. 고차원 데이터베이스 마이그레이션 도구 사용"></a>
+스프링부트는 [Flyway](http://flywaydb.org/)(SQL-기반) 그리고 [Liquibase](http://www.liquibase.org/)(XML) 과 같은 높은수준의 마이그레이션 도구를 사용할 수 있다. Flyway를 추천하는데 그 이유는 눈으로 읽기 쉽고, 플랫폼 의존성을 크게 요구하지 않기 때문이다: 보틍 플랫폼과 긴밀한 것이 하나이상 필요하다.
+
 #### 69.5.1. 시작시 Flyway 실행하여 데이터베이스 마이그레이션<a name="69.5.1. 시작시 Flyway 실행하여 데이터베이스 마이그레이션"></a>
+시동시 Flyway 데이터베이스 마이그레이션 도구를 자동으로 실행하기 위해서는, `org.flywaydb:flyway-core`가 클래스패스에 추가되어야 한다.
+
+마이그레이션을 위한 스크립트는 ` V<VERSION>__<NAME>.sql` 형태여야 한다(그리고 `<VERSION>`은 `'1'` 혹은 `'2_'` 형태로 구분된다). 기본 동작폴더는 `classpath:db/migration` 이지만 `flyway.location`(목록)을 사용하여 변경할 수 있다. `flyway-core`에 있는 Flyway 클래스들을 보다 자세히 살펴보면 `schemas` 와 기타 등등을 상세히 설정할 수 있다. 추가적으로 스프링부트는 [FlywayProperties](http://github.com/spring-projects/spring-boot/tree/master/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/flyway/FlywayProperties.java)를 통해서 세부적으로 설정할 수 있으며 마이그레이션을 비활성화하거나 위치 점검을 끌 수 있다.
+
+기본적으로 Flyway는 마이그레이션을 사용한다면 컨텍스트의 `(@Primary) DataSource`와 자동연결된다. 만약 다른 `DataSource`를 사용하려한다면 `@Bean` 그 위에 `@FlywayDataSource`를 표시하면 된다 - 두 개의 데이터소스를 사용하길 원한다면 하나에는 `@Primary` 를 표시해야한다는 것을 기억해두자. 혹은 flyway에서 제공하는 `DataSource`를 사용하려 한다면 `flyway`를 설정하면 된다. 확장 프로퍼티즈에 [`url`,`user`,`password`]가 있다.
+
+[Flyway 예제](http://github.com/spring-projects/spring-boot/tree/master/spring-boot-samples/spring-boot-sample-flyway)를 보면 어떻게 설정할 수 있는지 살펴볼 수 있다.
+
 #### 69.5.2. 시작시 Liquibase를 실행하여 데이터베이스 마이그레이션<a name="69.5.2. 시작시 Liquibase를 실행하여 데이터베이스 마이그레이션"></a>
+
+시동시 Liquibase 데이터베이스 마이그레이션이 자동으로 실행되게 하려면, `org.liquibase:liquibase-core`를 클래스패스에 추가해야 한다.
+
+마스터 변경로그는 `db/changelog/db.changelog-master.yaml`을 읽어오지만 `liquibase.change-log`를 사용하도록 설정할 수 있다. [LiquibaseProperties](http://github.com/spring-projects/spring-boot/tree/master/spring-boot-autoconfigure/src/main/java/org/springframework/boot/autoconfigure/liquibase/LiquibaseProperties.java) 를 보면 컨텍스트, 기본 스키마 등의 설정을 할 수 있는 것들을 살펴볼 수 있다.
+
+[Liquibase 예제](http://github.com/spring-projects/spring-boot/tree/master/spring-boot-samples/spring-boot-sample-liquibase)를 살펴보면 어떻게 설정할 수 있을지 살펴볼 수 있다.
 
 ## 70. 배치 애플리케이션
 ### 70.1. 시작시 스프링 배치 작업 실행
